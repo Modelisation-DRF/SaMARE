@@ -93,7 +93,6 @@ Gaules<-Gaules %>%
   filter(!Espece %in% c("ERE","ERP","PRP","SAL","SOA","SOD","AME","AUR","ERE"))
 Gaules<-Gaules[ColOrdre]
 
-}
 
 #############Sélection des placetes avec Gaules
 
@@ -102,6 +101,7 @@ IndexGaules<-Gaules %>%
   summarise()
 Data<-Data %>%
   inner_join(IndexGaules)
+}
 
 #########Selection nombre d'iteration et de l'horizon de simulation#############
 
@@ -113,9 +113,10 @@ RandPlacStep<-RandomPlacStep(CovParms=CovParms,Data=Data,
 
 
 ######################Gaules###########
+if (RecruesGaules==1){
 RandPlacStepGaules<-RandomPlacStepGaules(CovParms=CovParmsGaules,Data=Gaules,
                                          NbIter=NbIter)
-
+}
 ################################################################################
 ###########################Copie des données initiale * Nb Iter################
 ##############################################################################
