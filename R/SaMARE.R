@@ -256,11 +256,12 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
       Plac <- Plac %>%
         mutate(Annee=AnneeDep+k*t)
 
-     ##################Atribution de vigueur et de produit##############
+      ##################Atribution de vigueur et de produit##############
 
       if (any(is.na(Plac$Vigueur)==FALSE)){
+
         Placa <- Plac[which(is.na(Plac$Vigueur)==FALSE),] %>%
-          mutate(vig0=ifelse(Vigueur %in% c(1,2,5),"ViG",ifelse(is.na(Vigueur)==FALSE,"NONVIG",NA))) %>%
+          mutate(vigu0=ifelse(Vigueur %in% c(1,2,5),"ViG",ifelse(is.na(Vigueur)==FALSE,"NONVIG",NA))) %>%
           mutate(prod0=ifelse(Vigueur %in% c(1,3),"sciage",
                               ifelse(Vigueur %in% c(2,4),"pate","resineux")))
       }else{Placa=NULL}
@@ -269,11 +270,11 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
       if (any(is.na(Plac$Vigueur)==TRUE & is.na(Plac$MSCR)==FALSE)){
 
 
-        predVig0<-ConvMSCRVig(Plac[which(is.na(Plac$MSCR)==FALSE & is.na(Plac$Vigueur)==TRUE),],Para.ConvMSCRVig)
+        predvigu0<-ConvMSCRVig(Plac[which(is.na(Plac$MSCR)==FALSE & is.na(Plac$Vigueur)==TRUE),],Para.ConvMSCRVig)
 
         Placb<-Plac[which(is.na(Plac$MSCR)==FALSE & is.na(Plac$Vigueur)==TRUE),] %>%
-          mutate(vig0=predVig0,Alea=runif(n()),
-                 vig0=ifelse(vig0>=Alea,"vig","NONVIG")) %>%
+          mutate(vigu0=predvigu0,Alea=runif(n()),
+                 vigu0=ifelse(vigu0>=Alea,"vig","NONVIG")) %>%
           select(-Alea)
 
         if (any(Placb$DHPcm <= 23.0)){
@@ -308,18 +309,18 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
       if (any(is.na(Plac$Vigueur)==TRUE & is.na(Plac$MSCR)==TRUE)){
 
         Placf<-Plac[which(is.na(Plac$MSCR)==TRUE & is.na(Plac$Vigueur)==TRUE),] %>%
-          mutate(vig0="vig",prod0="pate")
+          mutate(vigu0="vig",prod0="pate")
       }else{Placf<-NULL}
 
       Plac<-rbind(Placa,Place,Placf)
       rm(Placa,Place,Placf)
 
       # if (any(is.na(Plac$Vigueur) & !is.na(Plac$MSCR))){
-      #   predVig0<-ConvMSCRVig(Plac,Para.ConvMSCRVig)
+      #   predvigu0<-ConvMSCRVig(Plac,Para.ConvMSCRVig)
       #
       #   Plac<-Plac %>%
-      #     mutate(vig0=predVig0,Alea=runif(n()),
-      #            vig0=ifelse(vig0>=Alea,"vig","NONVIG")) %>%
+      #     mutate(vigu0=predvigu0,Alea=runif(n()),
+      #            vigu0=ifelse(vigu0>=Alea,"vig","NONVIG")) %>%
       #     select(-Alea)
       #
       #   if (any(Plac$DHPcm <= 23.0)){
@@ -771,7 +772,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   }  # fin de la boucle des simulations
 
   outputTot <- outputTot %>%
-               mutate(Residuel= ifelse(trt=="cp",1,0))
+    mutate(Residuel= ifelse(trt=="cp",1,0))
 
   return(outputTot)
 
