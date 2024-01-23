@@ -1,15 +1,22 @@
-
-
+#'Fonction qui prévoie la probabilité de présence de recrues par grouoe d'espèce.
+#'Cette fonction corespond à la première portion de la fonction zero-inflated
+#' de prévision du nombre de recrues non basé sur les gaules.
 #'
 #'
-#' @param type_pe_Plac
-#' @param ntrt
-#' @param Rec    Nombre de  Recrues
-#' @param Iterj  l'iteration souhaité
-#' @param t0_aj_
-#' @param st_tot0
-#' @param t
-#' @return
+#' @param type_pe_Plac Variable indicatrice de la taille de la placette soit
+#'                     400 m2, entre 2500 et 5000 m2 inclusivement ou
+#'                     une autre dimension.
+#' @param ntrt  Nombre de traitements de coupes partielles précédement
+#'              effectuées sur la placette.
+#' @param Rec  Un dataframe qui contient la prévision du nombre de recrues par
+#'            groupes d'espèces.
+#' @param Iterj Itération en cours.
+#' @param t0_aj_  Temps écoulé depuis la dernière coupe partielle.
+#' @param st_tot0  Surface terrière marchande (DHP >9.0cm) de la placette
+#'                 au début du pas de simulation.
+#' @param t  La longueur du pas de simulation en annee (en annees).
+#' @return  Retourne le prédicteur linéaire de l'équation de la prévision
+#'          de la présence de recrues par groupe d'espèce.
 #' @examples
 
 rec_pi<-function(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj){

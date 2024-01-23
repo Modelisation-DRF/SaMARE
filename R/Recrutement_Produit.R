@@ -1,12 +1,19 @@
-
-
-
-#' @param RecSelect
-#' @param type_pe_Plac
-#' @param rid1
-#' @param Iterj
-#' @param Para.rec_prod
-#' @return
+#'Fonction qui prevoit le prédicteur linéaire de l'équation de prévision
+#'de la probabilité qu'une recrue de groupe d'essence feuillue ait un potentiel
+#'de production de sciage.
+#'
+#' @param RecSelect Un dataframe qui contient la prévision du nombre de recrues
+#'                  par groupe d'espèce.
+#' @param type_pe_Plac Variable indicatrice de la taille de la placette soit
+#'                      400 m2, soit entre 2500 et 5000 m2 inclusivement ou
+#'                      soit une autre dimension.
+#' @param rid1  Variable de groupement de variables écologiques.
+#' @param Iterj Itération en cours.
+#' @param Para.rec_prod  Paramètres de l'équation de la probabilité de présence
+#'                      de potentiel sciage des recrues de groupe d'essence feuillus.
+#' @return Retourne le prédicteur linéaire de l'équation de prévision de la
+#'         probabilité de présence de potentiel sciage pour les recrues de groupes
+#'         d'essences feuillues.
 #' @examples
 #'
 

@@ -1,14 +1,25 @@
-
+#'Fonction qui prévoie le nombre de recrues par grouoe d'espèce lorsqu'il
+#'y a présence de recrues du groupe d'espèce. Cette fonction corespond à la
+#'deuxième portion de la fonction zero-inflated de prévision du nombre
+#'de recrues de Rijal et al. 2023.
 #'
 #'
-#' @param RecGaules Recrutement Gaules
-#' @param t
-#' @param Rec    Nombre de  Recrues
-#' @param Iterj  l'iteration souhaité
-#' @param RandomPlacGaules  placette de RandomGaules choisie
-#' @param st_tot0
-#' @param Para.rec_gaules
-#' @return
+#' @param RecGaules Dataframe qui contient les information sur la distribution
+#'                  des gaules dans la placette.
+#' @param t La longueur du pas de simulation en annees (en annees).
+#' @param Rec  Un dataframe qui contient la prévision du nombre de recrues par
+#'             groupes d'espèces.
+#' @param Iterj  Itération en cours.
+#' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à
+#'                          l'échelle de la placette du module de
+#'                          recrutement basé sur les gaules et du module
+#'                          d'évolution des gaules.
+#' @param st_tot0  Surface terrière marchande (DHP >9.0cm) de la placette
+#'                 au début du pas de simulation.
+#' @param Para.rec_gaules Paramètres de l'équation de prévivion du nombre de
+#'                        recrues utilisant le nombre de gaules.
+#' @return  Retourne une prévision du nombre de recrues, prévisions basées sur
+#'          les informations provenant des recrues.
 #' @examples
 
 

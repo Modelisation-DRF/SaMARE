@@ -1,11 +1,17 @@
+#' Fonction qui prévoit l'évolution de la classe de produit des tiges feuillus.
+#'  Produit qui est contenu dans les classes "sciage" ou "pate".
 
-
-#' @param Prod
-#' @param type_pe_Plac
-#' @param rid1
-#' @param Iterj
-#' @param Para.prod
-#' @return
+#' @param Prod Un dataframe qui contient les arbres pour lesquels on veut
+#'             prévoir l'évolution de la classe de produit des arbres feuillus.
+#' @param type_pe_Plac Variable indicatrice de la taille de la placette soit
+#'                      400 m2, soit entre 2500 et 5000 m2 inclusivement ou
+#'                      une autre dimension.
+#' @param rid1 Variable de groupement de variables écologiques.
+#' @param Iterj Itération en cours.
+#' @param Para.prod Un dataframe  contenant les parametres du module d'évolution
+#'                 des produits des tiges feuillues.
+#' @return Retourne le prédicteur linéaire de l'équation de la probabilité que
+#'         la tige contienne un produit de type "sciage".
 #' @examples
 #'
 

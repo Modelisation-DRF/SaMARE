@@ -1,11 +1,14 @@
-
-
-
-#' @param RecSelect
-#' @param latitude
-#' @param Iterj
-#' @param Para.rec_vig
-#' @return
+#'Fonction qui prevoit le prédicteur linéaire de l'équation de prévision
+#'de la probabilité qu'une recrue soit vigoureuse.
+#'
+#' @param RecSelect  Un dataframe qui contient la prévision du nombre de recrues
+#'                  par groupe d'espèce.
+#' @param latitude Latitude de la placette.
+#' @param Iterj  Itération en cours.
+#' @param Para.rec_vig  Paramètres de l'équation de la probabilité que les recrues
+#'                     soit vigoureuses.
+#' @return  Retourne le prédicteur linéaire de l'équation de prévision de la
+#'         probabilité qu'une recrue soit vigoureuse.
 #' @examples
 #'
 

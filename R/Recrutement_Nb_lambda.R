@@ -1,14 +1,19 @@
-
-
+#'Fonction qui prevoit le paramètre lambda de la fonction Weibull qui est
+#'la deuxième portion du modèles zero-inflated du nombre de recrues de SaMARE.
 #'
-#'
-#' @param type_pe_Plac
-#' @param t
-#' @param Rec    Nombre de  Recrues
-#' @param Iterj  l'iteration souhaité
-#' @param st_tot0
-#' @param Para.rec_n
-#' @return
+#' @param type_pe_Plac Variable indicatrice de la taille de la placette soit
+#'                     400 m2, entre 2500 et 5000 m2 inclusivement ou
+#'                     une autre dimension.
+#' @param t  La longueur du pas de simulation en annee (en annees).
+#' @param Rec  Un dataframe qui contient la prévision du nombre de recrues par
+#'             groupes d'espèces.
+#' @param Iterj Itération en cours.
+#' @param st_tot0  Surface terrière marchande (DHP >9.0cm) de la placette
+#'                 au début du pas de simulation.
+#' @param Para.rec_n  Paramètres de l'équation du nombre de recrues qui n'utilise
+#'                   pas les recrues comme prédicteurs.
+#' @return  Retourne le prédicteur linéaire du paramètre delta de la fonction
+#'          de prévision du nombre de recrues.
 #' @examples
 
 

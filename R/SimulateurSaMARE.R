@@ -1,13 +1,30 @@
-
-#'fonction pour faire une simulation
+#'Fonction qui sert à appeler le simulateur SaMARE et qui fournit les données
+#'initiales ainsi qu'un choix de paramètres pour la simulation.
 #'
-#' @param NbIter le nombre d'iteration
-#' @param AnneeDep année de départ
-#' @param Horizon le nombre de periode de 5 ans
-#' @param RecruesGaules nombre de recrue
-#' @param Data donnée de départ
-#' @param Gaules donnée de départ pour les gaules
-#' @return
+#' @param NbIter Valuere numérique du nombre d'iterations à effectuer (ex: 300).
+#' @param AnneeDep Année de départ de la simulation, cette valeure sera ajustée de
+#'                 5 ans pour à chaque pas de simulation (ex: 2023).
+#' @param Horizon Valeure numérique du nombre de période de 5 ans sur lesquelles
+#'                le simulateur effectuera ses simulations (ex: 6 pour 30 ans de simulations).
+#' @param RecruesGaules Variable prenant la valeur de "1" pour utiliser les
+#'                       paramètres de recrutement basé sur l'inventaire des gaules
+#'                       de la placette et de "0" pour utiliser le module de
+#'                       recrutement basé sur les arbres de dimension marchande.
+#' @param Data Un dataframe contenant les valeurs de départ pour une liste
+#'             d'arbres à simuler. Les champs: "Placette","NoArbre","Espece",
+#'             "Etat","DHPcm","Vigueur","Nombre","Sup_PE","Annee_Coupe",
+#'             "Latitude","Longitude","Altitude","Pente","Ptot","Tmoy","GrwDays",
+#'             "Reg_Eco","Type_Eco", "MSCR","ntrt" doivent être présents. Si l'information
+#'             sur certains champs n'est pas disponible, on peut le laisser vide.
+#' @param Gaules Un dataframe contenant les valeurs de départ du nombre de gaules
+#'                par espèce et par classe de diamètre. Cette information doit être
+#'                fournie si le paramètre "RecruesGaules=1.
+#'                Les champs: "Placette","Espece","DHPcm",#' "Nombre","Sup_PE"
+#'                doivent être présents.
+#' @return Retourne un dataframe contenant la liste des arbres, leur état, leur DHP,
+#'         leur hauteur et leur volume pour chaque placette, chaque pas de simulation
+#'         et chaque iteration.
+#'
 #' @examples
 
 
@@ -67,12 +84,16 @@ Data<-Data[ColOrdre]
 
 ################Gaules######################
 
+if (RecruesGaules==1){
+
 ColOrdre<-c("Placette","Espece","GrEspece","DHPcm","Nombre","Sup_PE")
 
 Gaules<-Gaules %>%
   inner_join(ListeSp) %>%
   filter(!Espece %in% c("ERE","ERP","PRP","SAL","SOA","SOD","AME","AUR","ERE"))
 Gaules<-Gaules[ColOrdre]
+
+}
 
 #############Sélection des placetes avec Gaules
 
@@ -198,60 +219,4 @@ return(SimulHtVol)
 # #              summarise(Volha=mean(VolIterha))
 # # write_csv(VolumeMoyen,"VolumeMoyenTEM23APC500_150Iter.csv")
 #
-# #################################################################################
-# #############################Billonnage#########################################
-# ################################################################################
-# #Prévoit le volumme par classe pétro (variable VolBillonM3) en m3 pour un arbre entier
-# #(ne tient pas compte du nombre d'arbres')
-# #basé sur Petro 2014
-#
-# SimulHtVolBillon<-Billonnage(arbres=SimulHtVol)
-#
-#
-#
-#
-# # VolumeMoyenBillon<-SimulHtVolBillon %>%
-# #   filter(Etat=="vivant") %>%
-# #   group_by(Placette,Iter,Annee,Produit) %>%
-# #   summarise(VolIterha=sum(VolBillonM3)/2500*10000) %>%
-# #   group_by(Placette, Annee,Produit) %>%
-# #   summarise(Volha=mean(VolIterha))
-# # write_csv(VolumeMoyenBillon,"VolumeMoyenBillonTEM23APC500_150Iter.csv")
-#
-# #################################################################################
-# ####################Distribution DHP moyenne######################
-# ###############################################################################
-#
-# SommaireClassesDHPSp<-SimulHtVol %>%
-#   filter(Etat!="mort") %>%
-#   mutate(Stm2ha=pi*(DHPcm/200)^2/Sup_PE,      #Calcul surface terrière par ha
-#          DHPcm2=DHPcm^2,
-#          Nb=Nombre/Sup_PE,                   #Nb tige ha
-#          vol_dm3=ifelse(is.na(vol_dm3)==TRUE,0,vol_dm3/Sup_PE),#volume par ha en dm3 a mettre en m3
-#          DHP_cl=round(DHPcm/2)*2) %>%
-#   group_by(Placette,GrEspece,DHP_cl,Annee,Iter) %>%
-#   summarise(StM2Ha=sum(Stm2ha), NbHa=sum(Nb), DQM=(mean(DHPcm2,na.rm=TRUE))^0.5,
-#             VolM3Ha=sum(vol_dm3)/1000, .groups="drop") %>%
-#   group_by(Placette,Annee,GrEspece,DHP_cl) %>%
-#   summarise(NbHa=sum(NbHa)/NbIter, StM2Ha=sum(StM2Ha)/NbIter,
-#             VolM3Ha=sum(VolM3Ha)/NbIter, .groups="drop") %>%
-#   arrange(Placette,Annee,GrEspece,DHP_cl)
-#
-# SommaireClassesDHP<-SommaireClassesDHPSp %>%
-#   group_by(Placette,Annee,DHP_cl) %>%
-#   summarise(NbHa=sum(NbHa), StM2Ha=sum(StM2Ha),VolM3Ha=sum(VolM3Ha)) %>%
-#   mutate(GrEspece="TOT") %>%
-#   rbind(SommaireClassesDHPSp) %>%
-#   arrange(Placette,Annee,GrEspece,DHP_cl)
-#
-#
-#
-# #################################################################################
-# ################################Enregistrement du fichier final#################
-# ###############################################################################
-#
-# #write.csv(SommaireClassesDHP,"Resultats/SommaireClassesdhp.csv")
-#
-#
-#
-#
+

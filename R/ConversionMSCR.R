@@ -1,9 +1,11 @@
-
-
-
-#' @param Data
-#' @param Para.ConvMSCRVig
-#' @return
+#' Fonction qui permet de convertir le classement MSCR Boulet-2007 en vigueur
+#' selon le classement de Majcen-1990.
+#' @param Data Un dataframe contenant une ligne par arbre avec un champ MSCR
+#'             copntenant le classement MSCR de l'arbre. Les classements acceptés
+#'             sont M, S, C, MS ou CR.
+#' @param Para.ConvMSCRVig Un dataframe  contenant les paramettres des équations
+#'                         de conversion du classement MSCR en vigueur.
+#' @return Retourne un vecteur de probabilité que l'arbre soit vigoureux.
 #' @examples
 #'
 
@@ -40,6 +42,15 @@ ConvMSCRVig<-function(Data,Para.ConvMSCRVig){
   return(pred)
 
 }
+
+#' Fonction qui permet de convertir le classement MSCR Boulet-2007 en produits pour les arbres feuillus de
+#' 9,1 à 23,0 cm de diamètre selon le classement de Majcen-1990
+#' @param Data Un dataframe contenant une ligne par arbre avec un champ MSCR copntenant le classement
+#'             MSCR de l'arbre. Les classements acceptés sont M, S, C, MS ou CR
+#' @param Para.ConvMSCRProd1024 Un dataframe  contenant les paramettres des équations de conversion du classement MSCR en vigueur
+#' @return Retourne un vecteur de probabilité que l'arbre soit de classe de produit sciage
+#' @examples
+#'
 
 ConvMSCRProd1024<-function(Data,Para.ConvMSCRProd1024){
 
@@ -93,6 +104,15 @@ ConvMSCRProd1024<-function(Data,Para.ConvMSCRProd1024){
   return(pred)
 
 }
+
+#' Fonction qui permet de convertir le classement MSCR Boulet-2007 en produits pour les arbres feuillus de
+#' plus de 23,0 cm de diamètre selon le classement de Majcen-1990
+#' @param Data Un dataframe contenant une ligne par arbre avec un champ MSCR copntenant le classement
+#'             MSCR de l'arbre. Les classements acceptés sont M, S, C, MS ou CR
+#' @param Para.ConvMSCRProd1024 Un dataframe  contenant les paramettres des équations de conversion du classement MSCR en vigueur
+#' @return Retourne un vecteur de probabilité que l'arbre soit de classe de produit sciage
+#' @examples
+#'
 
 
 ConvMSCRProd24<-function(Data,Para.ConvMSCRProd24){

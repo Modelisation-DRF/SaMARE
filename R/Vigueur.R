@@ -1,14 +1,20 @@
+#' Fonction qui prévoit l'évolution de la classe de vigueur des arbres.
+#'La vigueur peut prendre 2 valeurs soit "vigoureux" ou "non-vigoureux".
 
 
 
 
-
-#' @param Vig
-#' @param type_pe_Plac
-#' @param Iterj
-#' @param rid1
-#' @param Para.vig
-#' @return
+#' @param Vig Un dataframe qui contient les arbres pour lesquels on veut
+#'             prévoir l'évolution de la classe de vigueur des arbres.
+#' @param type_pe_Plac Variable indicatrice de la taille de la placette soit
+#'                      400 m2, soit entre 2500 et 5000 m2 inclusivement ou
+#'                      une autre dimension.
+#' @param Iterj Itération en cours.
+#' @param rid1 variable de groupement de variables écologiques.
+#' @param Para.vig Un dataframe  contenant les parametres du module d'évolution
+#'                 de la vigueur des arbres.
+#' @return  Retourne le prédicteur linéaire de l'équation de la probabilité que
+#'         l'arbre soit de classe "vigoureux".
 #' @examples
 #'
 

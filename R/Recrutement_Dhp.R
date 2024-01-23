@@ -1,14 +1,19 @@
-
+#'Fonction qui prévoit le prédicteur linéaire de l'équation du DHP des recrues
 #'
 #'
-#' @param RecSelect
-#' @param dens_tot0
-#' @param t
-#' @param ntrt
-#' @param Iterj  l'iteration souhaité
-#' @param st_tot0
-#' @param Para.rec_dhp
-#' @return
+#' @param RecSelect Dataframe qui contient les préviions du nomobre de recrues par
+#'                  groupe d'espèces.
+#' @param dens_tot0 Densitée totale de la placette en nb de tiges marchandes
+#'                   (>9.0cm) par hectare au début du pas de simulation.
+#' @param t La longueur du pas de simulation en annees (en annees).
+#' @param ntrt  Nombre de traitements de coupes partielles précédement
+#'               effectuées sur la placette.
+#' @param Iterj  Itération en cours.
+#' @param st_tot0  La surface terrière marchande de la placette en m2/ha au
+#'                 début du pas de simulation.
+#' @param Para.rec_dhp  Un dataframe  contenant les paramettres du module
+#'                      de prévision du DHP des recrues.
+#' @return  Retourne le prédicteur linéaire de l'équation du DHP des recrues
 #' @examples
 
 

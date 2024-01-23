@@ -1,14 +1,24 @@
 
-#' calcule de la mortalité
+#' Fonction qui prévoit la probabilité de mortalité de chacun des arbres
+#' durant un pas de simulation.
 #'
-#' @param Mort liste des mort
-#' @param trt  Variable du peuplement residuel avec condition que si St >26 = TEM
-#' @param temp     temperature Variables climatiques de la placette
-#' @param type_pe_Plac Type de placette ex: type0, type1, ou type2
-#' @param fact_red  facteur de Réduction de la mortalité
-#' @param Iterj  Iteration choisie
-#' @param Para.mort Parametres de mortalité
-#' @return
+#' @param Mort Un dataframe qui contient la liste des arbres pour lesquels
+#'            la probabilité de mortalité doit être évaluée ainsi que les
+#'            caractéristiques de ses arbres qui seront utilisées
+#'            pour en prévoir le risque de mortalité.
+#' @param trt  Variable distinguant les peuplements traités des témoins, si St >26 = TEM.
+#' @param temp  Température annuelle moyenne de la placette.
+#' @param type_pe_Plac Variable indicatrice de la taille de la placette soit
+#'                     400 m2, entre 2500 et 5000 m2 inclusivement ou
+#'                     une autre dimension.
+#' @param fact_red  Facteur de correction appliqué lorsqu'une coupe partielle a
+#'                   été effectuée 3 ans ou moins avant la prévision.
+#' @param Iterj  Itération en cours.
+#' @param Para.mort Un dataframe  contenant les paramettres du module de mortalité.
+#' @return Retourne le prédicteur linéaire de l'équation de la prévision du
+#'         risque de mortalité. Les valeurs présites sont faites sans effets
+#'         aléatoires, ceux-ci sont ajoutés dans la fonction SaMARE avant
+#'         de convertir le prédicteur linéaire en probabilité de mortalité.
 #' @examples
 
 mort<-function(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,Para.mort){

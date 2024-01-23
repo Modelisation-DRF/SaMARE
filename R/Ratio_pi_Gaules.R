@@ -1,17 +1,27 @@
-
+#'Fonction qui qui prévoit la proportion du nombre de gaules par espèce pour la période
+#'de simulation suivante. Cette fonction est la première partie du modèle zero-inflated
+#'de Rijal et al. 2023 et prévoit une probabilité d'absence de gaules par
+#'groupe d'espèce.
 #'
 #'
-#' @param RecGaules Recrutement Gaules
-#' @param t
-#' @param Rec    Nombre de  Recrues
-#' @param Iterj  l'iteration souhaité
-#' @param RandomPlacGaules  placette de RandomGaules choisie
-#' @param st_tot0
-#' @param latitude
-#' @param longitude
-#' @param Ratio
-#' @param Para.ratio_gaules
-#' @return
+#' @param RecGaules Dataframe qui contient les informations sur la distribution
+#'                 des gaules dans la placette.
+#' @param t La longueur du pas de simulation en annees (en annees).
+#' @param Rec   Un dataframe qui contient la prévision du nombre de recrues
+#'               par groupes d'espèces.
+#' @param Iterj  Itération en cours.
+#' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à
+#'                          l'échelle de la placette du module de
+#'                          recrutement basé sur les gaules et du module d'évolution des gaules.
+#' @param st_tot0 Surface terrière marchande de la placette au début du pas
+#'                de simulation.
+#' @param latitude Latitude de la placette en degrés décimal.
+#' @param longitude Longitude de la placette en degrés décimal.
+#' @param Ratio Dataframe qui possède une ligne par groupe d'espèces dans lequel
+#'             les prévisions de ratios seront rapportées.
+#' @param Para.ratio_gaules Paramètres de l'équation de la prévision du ratio du
+#'                         nombre de gaules par espèce.
+#' @return  Retourne une probabilité d'absence de gaules par groupe d'espèces.
 #' @examples
 
 

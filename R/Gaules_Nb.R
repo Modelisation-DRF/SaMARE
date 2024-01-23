@@ -1,22 +1,28 @@
-
-
+#' Fonction qui prévoit le nombre total de gaules à la fin du pas de simulation.
+#' Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière
 #'
 #'
-#' @param RecGaules Recrutement Gaules
-#' @param t
-#' @param Rec    Nombre de  Recrues
-#' @param trt  Variable du peuplement residuel avec condition que si St >26 = TEM
-#' @param t0_aj_     Temps depuis coupe
-#' @param altitude l'altitude une Variables de classification écologiques
-#' @param Iterj  l'iteration souhaité
-#' @param RandomPlacGaules  placette de RandomGaules choisie
-#' @param st_tot0
-#' @param latitude
-#' @param longitude
-#' @param temp
-#' @param pente
-#' @param Para.nb_gaules
-#' @return
+#' @param RecGaules Dataframe qui contient les information sur la distribution
+#'                 des gaules dans la placette.
+#' @param t La longueur du pas de simulation en annees (en annees).
+#' @param Rec  Un dataframe qui contient la prévision du nombre de recrues par
+#'             groupes d'espèces.
+#' @param trt  Variable distinguant les peuplements traités des témoins, si St >26 = TEM
+#' @param t0_aj_  Temps écoulé depuis la dernière coupe partielle
+#' @param altitude Altitude de la placette.
+#' @param Iterj  Itération en cours.
+#' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à
+#'                            l'échelle de la placette du module de
+#'                            recrutement basé sur les gaules et du module
+#'                           d'évolution des gaules.
+#' @param st_tot0 Surface terrière marchande (DHP >9.0cm) de la placette
+#'                 au début du pas de simulation.
+#' @param latitude Latitude de la placette en degrés décimaux.
+#' @param longitude Longitude de la placette en degrés décimaux.
+#' @param temp Température annuelle moyenne de la placette.
+#' @param pente Inclinaison de la pente  en %.
+#' @param Para.nb_gaules Paramètres de l'équation de la prévision du nombre total de gaules.
+#' @return Retourne une prévision du nombre total de gaules à la fin du pas de simulation.
 #' @examples
 
 

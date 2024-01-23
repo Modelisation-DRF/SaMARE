@@ -1,8 +1,10 @@
+#' Fonction qui reconstruit la matrice de variance-covariance à partir du
+#' fichier Omega où chaque ligne correspond à une valeur de la matrice
 
-#' @param m_lower
-#' @param diag
-#' @param symmetric
-#' @return
+#' @param m_lower Vecteur de valeures de la matrice de variance-covariance
+#' @param diag Champ TRUE/FALSE qui indique si on doit reconstruire la diagonale de la matrice
+#' @param symmetric Champ TRUE/FALSE qui indique si la matrice est symetrique
+#' @return Retourne une matrice de variance-covariance symetrique
 #' @examples
 #'
 
@@ -19,14 +21,15 @@ reconstruct <- function(m_lower, diag = TRUE, symmetric = TRUE) {
               }
                return(m)
 }
-#' Parametres par modules
+#' Fonction qui ajuste les paramètre des chaque itération en fonction de leur
+#' variance-covariance.
 #'
-#' @param ModuleID
-#' @param ParaOri
-#' @param ParaIter
-#' @param Omega
-#' @param NbIter
-#' @return
+#' @param ModuleID Numéro du module pour lequel on veut simuler les paramètres.
+#' @param ParaOri Dataframe qui contient les paramètres de base que l'on veut simuler.
+#' @param ParaIter Copie du dataframe ParaOri répliqué n=NbIter fois.
+#' @param Omega Dataframe qui contient les valeurs des matrices de variance-covariance.
+#' @param NbIter Nombre d'iterations, corespond au nombre de version des
+#'               paramètres que l'on veut obtenir.
 #' @examples
 #'
 ParaOmega<-function(ModuleID,ParaOri,ParaIter,Omega,NbIter){
@@ -49,40 +52,5 @@ ParaOmega<-function(ModuleID,ParaOri,ParaIter,Omega,NbIter){
           ParaMod<-left_join(ParaMod,ParaModSans0) %>%
                    mutate(ParameterEstimate=ifelse(is.na(ParaRandom==TRUE),ParameterEstimate,ParaRandom)) %>%
                    select(-ParaRandom))
-
-}
-#' Parametres par modules
-#'
-#' @param ModuleID
-#' @param ParaOri
-#' @param ParaIter
-#' @param Omega
-#' @param NbIter
-#' @return
-#' @examples
-#'
-ParaOmega1<-function(ModuleID,ParaOri,ParaIter,Omega,NbIter){
-  ModuleID = 16;ParaOri=ParaGaules;ParaIter=ParaTotGaules;Omega=OmegaGaules;NbIter=NbIter
-  Omega = data.table(Omega)
-  OmegaMod <- Omega[SubModuleID == ModuleID, ParameterEstimate]
-  OmegaMat<-reconstruct(OmegaMod)
-
-  ParaOri = data.table(ParaOri)
-  ParaMod <- ParaOri[SubModuleID==ModuleID & ParameterEstimate!=0, ParameterEstimate]
-
-  beta<-rmvnorm(n=NbIter, mean=ParaMod, sigma=OmegaMat, method="chol")
-  beta<-as.vector(t(beta))
-
-  ParaIter = data.table(ParaIter)
-  ParaMod<-ParaIter[SubModuleID==ModuleID]
-
-  ParaModSans0 <- ParaMod[ParameterEstimate != 0, ParaRandom :=beta]
-  ParaModSans0$ ParameterEstimate = NULL
-
-
-  suppressMessages(
-    ParaMod<-left_join(ParaMod,ParaModSans0) %>%
-      mutate(ParameterEstimate=ifelse(is.na(ParaRandom==TRUE),ParameterEstimate,ParaRandom)) %>%
-      select(-ParaRandom))
 
 }

@@ -1,6 +1,8 @@
 
-#'list de ^paramettre de base pour la simulation
-#' @return
+#'Fonction qui lit les paramètres nécessaire au simulateur SaMARE
+
+#' @return Retourne une liste de dataframes qui contiennent les paramètres
+#'         nécessaires à la simulation
 #' @examples
 #'
 

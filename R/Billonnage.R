@@ -1,8 +1,18 @@
 
-#' calcule du billonnage
+#' Fonction de billonnage basé sur le module Petro 2014. La fonction calcul la
+#' répartition des volumes entre des bille de différents grade de qualité soit
+#' Deroulage, Sciage (F1, F2, F3 et F4) et Pate. La fonction effectue le
+#' billonnage pour l'érable à sucre, le bouleau jaune, le bouleau à papier,
+#' le chêne rouge, l'érable rouge et le hêtre à grandes feuilles.
 #'
-#' @param arbres  data frame liste des arbes a billoner
-#' @return
+#' @param arbres  Un data frame où chaque ligne représente un arbre ou un groupe
+#'                d'arbres partageant les mêmes caractéristiques à billonner.
+#'                Le dataframe est généralement une sortie de SaMARE
+#'               où d'Artémis dans lequel le diamètre, la hauteur et le volume
+#'               marchand de l'arbre sont spécifiés.
+#' @return   Retourne un dataframe avec les mêmes informations présente dans le
+#'           dataframe arbre en plus d'une colone produit  et le volume en m3
+#'           de chacun des produits.
 #' @examples Billonnage(arbres)
 
 

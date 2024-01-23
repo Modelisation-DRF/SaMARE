@@ -1,8 +1,11 @@
+#' Fonction qui structure un dataframe de sortie pour lequels on rapporte en format colone
+#' pour les essences feuillues le volume prévu pour chacune des classe de produits
+#' issues de la classification Petro.
 
-#' cette function prend en parametre un dafra qui a déja simuller et billoner
-
-#' @param SimulHtVolBillon
-#' @return
+#' @param SimulHtVolBillon Un dataframe de sortie de la fonction de billonnage.
+#' @return Retourne un dataframe contenant une ligne par arbre, placette, annee,
+#'         iteration, incluant en colone le volume en dm3 de chacune des classes
+#'         de produit Petro des arbres de groupe d'essence feuillus.
 #' @examples
 
 SortieBillesSamareColone <- function(SimulHtVolBillon){

@@ -1,15 +1,25 @@
-#' calcule l'Accroissement
+#' Fonction qui calcule de l'Accroissement du diamètre en mm pour une période de temps
+#'  égale au pas de simulation 't'.
 #'
-#' @param Accrois Data frame   contient les placette
-#' @param st_tot0  Nombre variable echelle placette
-#' @param t    Nombre  période de temps entre chaque simulation
-#' @param fact_red  Nombre  facteur de Réduction de la mortalité
-#' @param ntrt     Nombre  le nombre de traitements
-#' @param type_pe_Plac Character  Type de placette
-#' @param Iterj Nombre Iteration
-#' @param Para.acc  Data frame  paramettres d'accroissement
-#' @return
-#' @examples   accrois(Accrois,21.09462,5,0,0,"type1",1,Para.acc)
+#' @param Accrois Un dataframe qui contient la liste des arbres à simuler ainsi
+#'                que les informations à l'échelle de l'arbre qui sont
+#'                utilisées pour prévoir l'accroissement en diamètre.
+#' @param st_tot0  La surface terrière marchande de la placette en m2/ha au
+#'                 début du pas de simulation.
+#' @param t    La longueur du pas de simulation en annee (en annees).
+#' @param fact_red  Facteur de correction appliqué lorsqu'une coupe partielle a
+#'                  été effectuée 3 ans ou moins avant la prévision.
+#' @param ntrt     Nombre de traitements de coupes partielles précédement
+#'                 effectuées sur la placette.
+#' @param type_pe_Plac Variable indicatrice de la taille de la placette soit
+#'                      400 m2, soit entre 2500 et 5000 m2 inclusivement ou
+#'                      soit une autre dimension.
+#' @param Iterj Itération en cours.
+#' @param Para.acc  Un dataframe  contenant les paramettres du module d'accroissement.
+#' @return Retourne la prévision d'accroissement diamétral en mm pour un pas de simulation.
+#'         Les    valeurs prédites sont faites sans effets aléatoires,
+#'         ceux-ci sont ajoutés dans la fonction SaMARE.
+#' @examples
 
 
 accrois<-function(Accrois ,st_tot0, t, fact_red, ntrt, type_pe_Plac, Iterj, Para.acc){
