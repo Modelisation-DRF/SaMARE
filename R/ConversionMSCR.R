@@ -16,7 +16,7 @@ ConvMSCRVig<-function(Data,Para.ConvMSCRVig){
   Data$GrEspeceMSCR<-ifelse(Data$GrEspece=="AUT","FIN",ifelse(
                             Data$GrEspece=="EPX","RES",Data$GrEspece))
 
-  listeMSCR<-c(rep("M",n),rep("S",n),rep("C",n),rep("R",n),rep("MS",n),rep("CR",n))
+  listeMSCR<-c(rep("R",n),rep("C",n),rep("S",n),rep("M",n),rep("CR",n),rep("MS",n))
   listeEss<-c(rep("BOJ",n),rep("ERR",n),rep("ERS",n),rep("FEN",n),rep("FIN",n),
               rep("HEG",n),rep("RES",n),rep("SAB",n))
 

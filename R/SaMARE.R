@@ -258,62 +258,88 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
       ##################Atribution de vigueur et de produit##############
 
-      if (any(is.na(Plac$Vigueur)==FALSE)){
 
-        Placa <- Plac[which(is.na(Plac$Vigueur)==FALSE),] %>%
-          mutate(vigu0=ifelse(Vigueur %in% c(1,2,5),"ViG",ifelse(is.na(Vigueur)==FALSE,"NONVIG",NA))) %>%
-          mutate(prod0=ifelse(Vigueur %in% c(1,3),"sciage",
-                              ifelse(Vigueur %in% c(2,4),"pate","resineux")))
-      }else{Placa=NULL}
+     ParaViglist=list(Para.ConvMSCRVig)
 
 
-      if (any(is.na(Plac$Vigueur)==TRUE & is.na(Plac$MSCR)==FALSE)){
+      Vigu0<-Plac %>%
+        group_by(Placette,NoArbre) %>%
+        nest() %>%
+        mutate(vigu0 = mapply(AttribVigu0,data,MoreArgs=ParaViglist)) %>%
+        unnest(vigu0) %>%
+        select(-data)
 
 
-        predvigu0<-ConvMSCRVig(Plac[which(is.na(Plac$MSCR)==FALSE & is.na(Plac$Vigueur)==TRUE),],Para.ConvMSCRVig)
+      ParaProdlist=list(Para.ConvMSCRProd1024,Para.ConvMSCRProd24)
 
-        Placb<-Plac[which(is.na(Plac$MSCR)==FALSE & is.na(Plac$Vigueur)==TRUE),] %>%
-          mutate(vigu0=predvigu0,Alea=runif(n()),
-                 vigu0=ifelse(vigu0>=Alea,"vig","NONVIG")) %>%
-          select(-Alea)
+      Prod0<-Plac %>%
+        group_by(Placette,NoArbre) %>%
+        nest() %>%
+        mutate(prod0 = mapply(AttribProd0,data,MoreArgs=ParaProdlist)) %>%
+        unnest(prod0) %>%
+        select(-data)
 
-        if (any(Placb$DHPcm <= 23.0)){
+     suppressMessages(
+       Plac<-Plac %>%
+            left_join(Vigu0) %>%
+             left_join(Prod0))
 
-          predprod1024<-ConvMSCRProd1024(Placb[which(Placb$DHPcm<23.1),],Para.ConvMSCRProd1024)
-
-          Placc<-Placb[which(Placb$DHPcm<23.1),] %>%
-            mutate(prod0=predprod1024,Alea=runif(n()),
-                   prod0=ifelse(GrEspece %in% c("EPX","RES","SAB"),"resineux",
-                                ifelse(prod0>=Alea,"sciage","pate")))%>%
-            select(-Alea)
-
-        }else{Placc<-NULL}
-
-        if (any(Placb$DHPcm > 23.0)){
-
-          predprod024<-ConvMSCRProd24(Placb[which(Placb$DHPcm>=23.1),],Para.ConvMSCRProd24)
-
-          Placd<-Placb[which(Placb$DHPcm>=23.1),] %>%
-            mutate(prod0=predprod024,Alea=runif(n()),
-                   prod0=ifelse(GrEspece %in% c("EPX","RES","SAB"),"resineux",
-                                ifelse(prod0>=Alea,"sciage","pate"))) %>%
-            select(-Alea)
-
-        }else{Placd<-NULL}
-
-        Place<-rbind(Placc,Placd)
-        rm(Placb,Placc,Placd)
-
-      }else{Place<-NULL}
-
-      if (any(is.na(Plac$Vigueur)==TRUE & is.na(Plac$MSCR)==TRUE)){
-
-        Placf<-Plac[which(is.na(Plac$MSCR)==TRUE & is.na(Plac$Vigueur)==TRUE),] %>%
-          mutate(vigu0="vig",prod0="pate")
-      }else{Placf<-NULL}
-
-      Plac<-rbind(Placa,Place,Placf)
-      rm(Placa,Place,Placf)
+      # if (any(is.na(Plac$Vigueur)==FALSE)){
+      #
+      #   Placa <- Plac[which(is.na(Plac$Vigueur)==FALSE),] %>%
+      #     mutate(vigu0=ifelse(Vigueur %in% c(1,2,5),"ViG",ifelse(is.na(Vigueur)==FALSE,"NONVIG",NA))) %>%
+      #     mutate(prod0=ifelse(Vigueur %in% c(1,3),"sciage",
+      #                         ifelse(Vigueur %in% c(2,4),"pate","resineux")))
+      # }else{Placa=NULL}
+      #
+      #
+      # if (any(is.na(Plac$Vigueur)==TRUE & is.na(Plac$MSCR)==FALSE)){
+      #
+      #
+      #   predvigu0<-ConvMSCRVig(Plac[which(is.na(Plac$MSCR)==FALSE & is.na(Plac$Vigueur)==TRUE),],Para.ConvMSCRVig)
+      #
+      #   Placb<-Plac[which(is.na(Plac$MSCR)==FALSE & is.na(Plac$Vigueur)==TRUE),] %>%
+      #     mutate(vigu0=predvigu0,Alea=runif(n()),
+      #            vigu0=ifelse(vigu0>=Alea,"vig","NONVIG")) %>%
+      #     select(-Alea)
+      #
+      #   if (any(Placb$DHPcm <= 23.0)){
+      #
+      #     predprod1024<-ConvMSCRProd1024(Placb[which(Placb$DHPcm<23.1),],Para.ConvMSCRProd1024)
+      #
+      #     Placc<-Placb[which(Placb$DHPcm<23.1),] %>%
+      #       mutate(prod0=predprod1024,Alea=runif(n()),
+      #              prod0=ifelse(GrEspece %in% c("EPX","RES","SAB"),"resineux",
+      #                           ifelse(prod0>=Alea,"sciage","pate")))%>%
+      #       select(-Alea)
+      #
+      #   }else{Placc<-NULL}
+      #
+      #   if (any(Placb$DHPcm > 23.0)){
+      #
+      #     predprod024<-ConvMSCRProd24(Placb[which(Placb$DHPcm>=23.1),],Para.ConvMSCRProd24)
+      #
+      #     Placd<-Placb[which(Placb$DHPcm>=23.1),] %>%
+      #       mutate(prod0=predprod024,Alea=runif(n()),
+      #              prod0=ifelse(GrEspece %in% c("EPX","RES","SAB"),"resineux",
+      #                           ifelse(prod0>=Alea,"sciage","pate"))) %>%
+      #       select(-Alea)
+      #
+      #   }else{Placd<-NULL}
+      #
+      #   Place<-rbind(Placc,Placd)
+      #   rm(Placb,Placc,Placd)
+      #
+      # }else{Place<-NULL}
+      #
+      # if (any(is.na(Plac$Vigueur)==TRUE & is.na(Plac$MSCR)==TRUE)){
+      #
+      #   Placf<-Plac[which(is.na(Plac$MSCR)==TRUE & is.na(Plac$Vigueur)==TRUE),] %>%
+      #     mutate(vigu0="vig",prod0="pate")
+      # }else{Placf<-NULL}
+      #
+      # Plac<-rbind(Placa,Place,Placf)
+      # rm(Placa,Place,Placf)
 
       # if (any(is.na(Plac$Vigueur) & !is.na(Plac$MSCR))){
       #   predvigu0<-ConvMSCRVig(Plac,Para.ConvMSCRVig)
