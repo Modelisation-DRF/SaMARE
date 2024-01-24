@@ -207,8 +207,9 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   ################## Effets Aleatoires placette Gaules############################
 
-  RandomPlacGaules<-RandomGaules %>% filter(Placette==PlacOri$Placette[1] & Iter==PlacOri$Iter[1])
-
+  if(RecruesGaules==1){
+    RandomPlacGaules<-RandomGaules %>% filter(Placette==PlacOri$Placette[1] & Iter==PlacOri$Iter[1])
+  }
   ######################## Résidus de l'arbre####################################
 
   Periodes<-c("ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
@@ -645,10 +646,10 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
       RandomRec<-RandPlacetteStep %>% filter(SubModuleID==5)
 
-      Rec$predPi<-(exp(rec_pi(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj)+RandomRec$RandomPlac))/
-        (1+exp(rec_pi(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj)+RandomRec$RandomPlac))
+      Rec$predPi<-(exp(rec_pi(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n)+RandomRec$RandomPlac))/
+        (1+exp(rec_pi(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n)+RandomRec$RandomPlac))
 
-      Rec$predDelta<-exp(rec_delta(Rec,st_tot0,type_pe_Plac,ntrt,t0_aj_,Iterj))
+      Rec$predDelta<-exp(rec_delta(Rec,st_tot0,type_pe_Plac,ntrt,t0_aj_,Iterj,Para.rec_n))
 
       Rec$predLambda<-exp(rec_lambda(Rec,type_pe_Plac,st_tot0,t,Iterj,Para.rec_n))
 

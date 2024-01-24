@@ -19,7 +19,7 @@
 #'          de la présence de recrues par groupe d'espèce.
 #' @examples
 
-rec_pi<-function(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj){
+rec_pi<-function(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n){
 
   n<-nrow(Rec)
 
