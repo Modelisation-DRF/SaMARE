@@ -28,7 +28,7 @@
 #' @examples
 
 
-SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules){
+SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
 
 ################################ Lecture des fichiers de placette et de parametres ###################
 
