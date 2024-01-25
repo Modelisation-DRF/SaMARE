@@ -2,30 +2,41 @@
 % Please edit documentation in R/Accroissement.R
 \name{accrois}
 \alias{accrois}
-\title{calcule l'Accroissement}
+\title{Fonction qui calcule de l'Accroissement du diamètre en mm pour une période de temps
+ égale au pas de simulation 't'.}
 \usage{
 accrois(Accrois, st_tot0, t, fact_red, ntrt, type_pe_Plac, Iterj, Para.acc)
 }
 \arguments{
-\item{Accrois}{Data frame   contient les placette}
+\item{Accrois}{Un dataframe qui contient la liste des arbres à simuler ainsi
+que les informations à l'échelle de l'arbre qui sont
+utilisées pour prévoir l'accroissement en diamètre.}
 
-\item{st_tot0}{Nombre variable echelle placette}
+\item{st_tot0}{La surface terrière marchande de la placette en m2/ha au
+début du pas de simulation.}
 
-\item{t}{Nombre  période de temps entre chaque simulation}
+\item{t}{La longueur du pas de simulation en annee (en annees).}
 
-\item{fact_red}{Nombre  facteur de Réduction de la mortalité}
+\item{fact_red}{Facteur de correction appliqué lorsqu'une coupe partielle a
+été effectuée 3 ans ou moins avant la prévision.}
 
-\item{ntrt}{Nombre  le nombre de traitements}
+\item{ntrt}{Nombre de traitements de coupes partielles précédement
+effectuées sur la placette.}
 
-\item{type_pe_Plac}{Character  Type de placette}
+\item{type_pe_Plac}{Variable indicatrice de la taille de la placette soit
+400 m2, soit entre 2500 et 5000 m2 inclusivement ou
+soit une autre dimension.}
 
-\item{Iterj}{Nombre Iteration}
+\item{Iterj}{Itération en cours.}
 
-\item{Para.acc}{Data frame  paramettres d'accroissement}
+\item{Para.acc}{Un dataframe  contenant les paramettres du module d'accroissement.}
+}
+\value{
+Retourne la prévision d'accroissement diamétral en mm pour un pas de simulation.
+        Les    valeurs prédites sont faites sans effets aléatoires,
+        ceux-ci sont ajoutés dans la fonction SaMARE.
 }
 \description{
-calcule l'Accroissement
-}
-\examples{
-  accrois(Accrois,21.09462,5,0,0,"type1",1,Para.acc)
+Fonction qui calcule de l'Accroissement du diamètre en mm pour une période de temps
+ égale au pas de simulation 't'.
 }
