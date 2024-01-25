@@ -2,10 +2,24 @@
 % Please edit documentation in R/OmegaPara.R
 \name{ParaOmega}
 \alias{ParaOmega}
-\title{Parametres par modules}
+\title{Fonction qui ajuste les paramètre des chaque itération en fonction de leur
+variance-covariance.}
 \usage{
 ParaOmega(ModuleID, ParaOri, ParaIter, Omega, NbIter)
 }
+\arguments{
+\item{ModuleID}{Numéro du module pour lequel on veut simuler les paramètres.}
+
+\item{ParaOri}{Dataframe qui contient les paramètres de base que l'on veut simuler.}
+
+\item{ParaIter}{Copie du dataframe ParaOri répliqué n=NbIter fois.}
+
+\item{Omega}{Dataframe qui contient les valeurs des matrices de variance-covariance.}
+
+\item{NbIter}{Nombre d'iterations, corespond au nombre de version des
+paramètres que l'on veut obtenir.}
+}
 \description{
-Parametres par modules
+Fonction qui ajuste les paramètre des chaque itération en fonction de leur
+variance-covariance.
 }

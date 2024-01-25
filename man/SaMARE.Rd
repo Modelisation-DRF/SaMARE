@@ -2,7 +2,10 @@
 % Please edit documentation in R/SaMARE.R
 \name{SaMARE}
 \alias{SaMARE}
-\title{la simultation a l'échelle de placette}
+\title{Fonction qui effectue la simulation de l'évolution des arbres d'une placette
+du simulateur SaMARE. Cette fonction effectue la simulation et
+appele chacune des fonction permettant de prévoir la mortalité, l'accroissement,
+le recrutement et l'évolution des paramètres de simulation.}
 \usage{
 SaMARE(
   Random,
@@ -22,26 +25,62 @@ SaMARE(
 )
 }
 \arguments{
-\item{Random}{Résultat de la fonction RandomPlacStep pour obtenir un effet aléatoire.}
+\item{Random}{Un dataframe contenant des effets aléatoires à l'échelle de
+la placette et de la période de simulation pour les modules
+de SaMARE qui n'utilisent pas les gaules.}
 
-\item{RandomGaules}{Résultat de la fonction RandPlacStepGaules pour obtenir un effet aléatoire pour les gaules .}
+\item{RandomGaules}{Un dataframe contenant des effets aléatoires à l'échelle de
+la placette et de la période de simulation pour les modules
+de SaMARE qui utilisent les gaules.}
 
-\item{Data}{Donne des arbres à simuler.}
+\item{Data}{Un dataframe contenant une liste des arbres de dimenssion marchande
+d'une placette à simuler ainsi que des variables nécessaire à
+la simulation.}
 
-\item{Gaules}{Donne des Gaules}
+\item{Gaules}{Un dataframe contenant la distribution du nombre de gaules par
+classe de diamètre et par groupe d'essence d'une placette à
+simuler ainsi que des variables nécessaire à la simulation.}
 
-\item{ListeIter}{l'itération choisie}
+\item{ListeIter}{Un dataframe contenant le numéro de la placette à simuler
+et le numéro de l'iteration à effecuer.}
 
-\item{AnneeDep}{l'année de depart}
+\item{AnneeDep}{Année de départ de la simulation.}
 
-\item{Horizon}{Nombre de cycles de 5 ans souhaité}
+\item{Horizon}{Nombre de pas de 5 ans de simulation à effectuer.}
 
-\item{RecruesGaules}{Liste des nouvelles recrues}
+\item{RecruesGaules}{Variable prenant la valeur de "1" pour utiliser les
+paramètres de recrutement basé sur l'inventaire des gaules
+de la placette et de "0" pour utiliser le module de
+recrutement basé sur les arbres de dimension marchande.}
 
-\item{CovParms}{Paramètre pour un effet aléatoire}
+\item{CovParms}{Un dataframe contenant la variance des effets aléatoires des
+équations des modules de base de SaMARE (modules 1 à 9 et 17 à 19).}
 
-\item{CovParmsGaules}{Paramètre pour un effet aléatoire pour gaules}
+\item{CovParmsGaules}{Un dataframe contenant la variance des effets aléatoires des
+équations des modules de SaMARE basés sur l'information
+provenant des gaules (modules 10 à 16).}
+
+\item{Para}{Un dataframe contenant les paramètres des modules de 1 à 9 et 17 à 19
+(modules de base) de SaMARE.}
+
+\item{ParaGaules}{Un dataframe contenant les paramètres des modules 17à 19
+(modules basés sur les gaules) de SaMARE.}
+
+\item{Omega}{Un dataframe contenant pour chaque module de base de SaMARE
+(modules 1 à 9 17 à 19) le éléments du triangle inférieur de
+ la matrice de variance-covariance.}
+
+\item{OmegaGaules}{Un dataframe contenant pour chaque module basé sur les gaules
+de SaMARE (modules 10 à 16) les éléments du triangle inférieur de
+la matrice de variance-covariance.}
+}
+\value{
+Retourne un dataframe avec une liste d'arbres vivants et mort ainsi que
+       leur DHP pour chaque étape de 5 ans de l'horizon de simulation.
 }
 \description{
-la simultation a l'échelle de placette
+Fonction qui effectue la simulation de l'évolution des arbres d'une placette
+du simulateur SaMARE. Cette fonction effectue la simulation et
+appele chacune des fonction permettant de prévoir la mortalité, l'accroissement,
+le recrutement et l'évolution des paramètres de simulation.
 }

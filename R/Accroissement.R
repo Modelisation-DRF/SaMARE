@@ -24,6 +24,8 @@
 
 accrois<-function(Accrois ,st_tot0, t, fact_red, ntrt, type_pe_Plac, Iterj, Para.acc){
 
+  select=dplyr::select
+
   n<-nrow(Accrois)
 
   #Liste des effets

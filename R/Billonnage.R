@@ -17,7 +17,7 @@
 
 
 Billonnage<-function (arbres){
-
+  select=dplyr::select
 ####################Préparation des paramètres###########################
 ########################################################################
 

@@ -46,7 +46,7 @@
 
 SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horizon,
                   RecruesGaules,CovParms,CovParmsGaules,Para,ParaGaules,Omega,OmegaGaules){
-
+  select=dplyr::select
   t<-5
 
   ################## convertion MSCR #################################

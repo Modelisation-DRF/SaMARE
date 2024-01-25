@@ -2,25 +2,39 @@
 % Please edit documentation in R/Mortalite.R
 \name{mort}
 \alias{mort}
-\title{calcule de la mortalité}
+\title{Fonction qui prévoit la probabilité de mortalité de chacun des arbres
+durant un pas de simulation.}
 \usage{
 mort(Mort, trt, temp, type_pe_Plac, fact_red, t, Iterj, Para.mort)
 }
 \arguments{
-\item{Mort}{liste des mort}
+\item{Mort}{Un dataframe qui contient la liste des arbres pour lesquels
+la probabilité de mortalité doit être évaluée ainsi que les
+caractéristiques de ses arbres qui seront utilisées
+pour en prévoir le risque de mortalité.}
 
-\item{trt}{Variable du peuplement residuel avec condition que si St >26 = TEM}
+\item{trt}{Variable distinguant les peuplements traités des témoins, si St >26 = TEM.}
 
-\item{temp}{temperature Variables climatiques de la placette}
+\item{temp}{Température annuelle moyenne de la placette.}
 
-\item{type_pe_Plac}{Type de placette ex: type0, type1, ou type2}
+\item{type_pe_Plac}{Variable indicatrice de la taille de la placette soit
+400 m2, entre 2500 et 5000 m2 inclusivement ou
+une autre dimension.}
 
-\item{fact_red}{facteur de Réduction de la mortalité}
+\item{fact_red}{Facteur de correction appliqué lorsqu'une coupe partielle a
+été effectuée 3 ans ou moins avant la prévision.}
 
-\item{Iterj}{Iteration choisie}
+\item{Iterj}{Itération en cours.}
 
-\item{Para.mort}{Parametres de mortalité}
+\item{Para.mort}{Un dataframe  contenant les paramettres du module de mortalité.}
+}
+\value{
+Retourne le prédicteur linéaire de l'équation de la prévision du
+        risque de mortalité. Les valeurs présites sont faites sans effets
+        aléatoires, ceux-ci sont ajoutés dans la fonction SaMARE avant
+        de convertir le prédicteur linéaire en probabilité de mortalité.
 }
 \description{
-calcule de la mortalité
+Fonction qui prévoit la probabilité de mortalité de chacun des arbres
+durant un pas de simulation.
 }

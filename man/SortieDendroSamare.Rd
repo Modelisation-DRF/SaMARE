@@ -2,10 +2,26 @@
 % Please edit documentation in R/Sortie_Dendro_Samare.R
 \name{SortieDendroSamare}
 \alias{SortieDendroSamare}
-\title{cette function prend en parametre un dafra qui a déja simuller et billoner}
+\title{Fonction qui structure un dataframe de sortie pour lequels on rapporte pour chaque
+placette, annee, groupe d'espèce et itération le diamètre quadratique moyen,
+la surface terrière, le volume et la hauteur dominante.
+cette function prend en parametre un dafra qui a déja simuller et billoner}
 \usage{
-SortieDendroSamare(Simul)
+SortieDendroSamare(SimulHVol)
+}
+\arguments{
+\item{SimulHtVol}{Un dataframe contenant les résultats de simulation pour chacune des
+iterations du simulateur SaMARE. Typiquement un résultat retourné
+par la fonction "SimulSaMARE".}
+}
+\value{
+Retourne un dataframe contenant par placette, groupe d'espèce, année
+         et iteration la surface terrière le volume marchand brut, le diamètre
+         moyen quadratique et la hauteur dominante.
 }
 \description{
+Fonction qui structure un dataframe de sortie pour lequels on rapporte pour chaque
+placette, annee, groupe d'espèce et itération le diamètre quadratique moyen,
+la surface terrière, le volume et la hauteur dominante.
 cette function prend en parametre un dafra qui a déja simuller et billoner
 }

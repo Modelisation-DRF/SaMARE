@@ -2,10 +2,14 @@
 % Please edit documentation in R/Parametres_Simul_SaMARE.R
 \name{ParametresSimulSaMARE}
 \alias{ParametresSimulSaMARE}
-\title{list de ^paramettre de base pour la simulation}
+\title{Fonction qui lit les paramètres nécessaire au simulateur SaMARE}
 \usage{
 ParametresSimulSaMARE()
 }
+\value{
+Retourne une liste de dataframes qui contiennent les paramètres
+        nécessaires à la simulation
+}
 \description{
-list de ^paramettre de base pour la simulation
+Fonction qui lit les paramètres nécessaire au simulateur SaMARE
 }

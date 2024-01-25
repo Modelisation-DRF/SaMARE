@@ -2,23 +2,44 @@
 % Please edit documentation in R/SimulateurSaMARE.R
 \name{SimulSaMARE}
 \alias{SimulSaMARE}
-\title{fonction pour faire une simulation}
+\title{Fonction qui sert à appeler le simulateur SaMARE et qui fournit les données
+initiales ainsi qu'un choix de paramètres pour la simulation.}
 \usage{
-SimulSaMARE(NbIter, AnneeDep, Horizon, RecruesGaules, Data, Gaules)
+SimulSaMARE(NbIter, AnneeDep, Horizon, RecruesGaules, Data, Gaules = NA)
 }
 \arguments{
-\item{NbIter}{le nombre d'iteration}
+\item{NbIter}{Valuere numérique du nombre d'iterations à effectuer (ex: 300).}
 
-\item{AnneeDep}{année de départ}
+\item{AnneeDep}{Année de départ de la simulation, cette valeure sera ajustée de
+5 ans pour à chaque pas de simulation (ex: 2023).}
 
-\item{Horizon}{le nombre de periode de 5 ans}
+\item{Horizon}{Valeure numérique du nombre de période de 5 ans sur lesquelles
+le simulateur effectuera ses simulations (ex: 6 pour 30 ans de simulations).}
 
-\item{RecruesGaules}{nombre de recrue}
+\item{RecruesGaules}{Variable prenant la valeur de "1" pour utiliser les
+paramètres de recrutement basé sur l'inventaire des gaules
+de la placette et de "0" pour utiliser le module de
+recrutement basé sur les arbres de dimension marchande.}
 
-\item{Data}{donnée de départ}
+\item{Data}{Un dataframe contenant les valeurs de départ pour une liste
+d'arbres à simuler. Les champs: "Placette","NoArbre","Espece",
+"Etat","DHPcm","Vigueur","Nombre","Sup_PE","Annee_Coupe",
+"Latitude","Longitude","Altitude","Pente","Ptot","Tmoy","GrwDays",
+"Reg_Eco","Type_Eco", "MSCR","ntrt" doivent être présents. Si l'information
+sur certains champs n'est pas disponible, on peut le laisser vide.}
 
-\item{Gaules}{donnée de départ pour les gaules}
+\item{Gaules}{Un dataframe contenant les valeurs de départ du nombre de gaules
+par espèce et par classe de diamètre. Cette information doit être
+fournie si le paramètre "RecruesGaules=1.
+Les champs: "Placette","Espece","DHPcm",#' "Nombre","Sup_PE"
+doivent être présents.}
+}
+\value{
+Retourne un dataframe contenant la liste des arbres, leur état, leur DHP,
+        leur hauteur et leur volume pour chaque placette, chaque pas de simulation
+        et chaque iteration.
 }
 \description{
-fonction pour faire une simulation
+Fonction qui sert à appeler le simulateur SaMARE et qui fournit les données
+initiales ainsi qu'un choix de paramètres pour la simulation.
 }

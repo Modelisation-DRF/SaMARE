@@ -2,10 +2,27 @@
 % Please edit documentation in R/Sommaire_Classes_DHP.R
 \name{Sommaire_Classes_DHP}
 \alias{Sommaire_Classes_DHP}
-\title{sortie Sommaire Classes DHP}
+\title{Fonction qui structure un dataframe de sortie dont chaque ligne correspond
+à la moyenne des itérations du nombre d'arbres par placette, groupe d'espèce,
+classe de DHP et année. La sortie présente donc un sommaire de la table de peuplement simulée
+pour chacune des placettes.}
 \usage{
 Sommaire_Classes_DHP(SimulHtVol, NbIter)
 }
+\arguments{
+\item{SimulHtVol}{Un dataframe contenant les résultats de simulation pour chacune des
+iterations du simulateur SaMARE. Typiquement un résultat retourné
+par la fonction "SimulSaMARE".}
+
+\item{NbIter}{Nombre d'iterations utilisées pour créer le dataframe "SimulHtVol"}
+}
+\value{
+Retourne un dataframe contenant le sommaire des itérations par placette,
+         groupe d'espèce, classe de DHP et année.
+}
 \description{
-sortie Sommaire Classes DHP
+Fonction qui structure un dataframe de sortie dont chaque ligne correspond
+à la moyenne des itérations du nombre d'arbres par placette, groupe d'espèce,
+classe de DHP et année. La sortie présente donc un sommaire de la table de peuplement simulée
+pour chacune des placettes.
 }

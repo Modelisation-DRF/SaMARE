@@ -2,21 +2,37 @@
 % Please edit documentation in R/Gaules_68_ERS.R
 \name{pi68ERS}
 \alias{pi68ERS}
-\title{Parametres nombre de gaules de 6 et 8 cm ERS}
+\title{Fonction qui calcul la probabilité d'absence de Gaules d'érable à sucre classes de 6 ou 8 cm de diamètre.
+Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière
+Les prévisions sont basées sur un modèle de type Zero inflated}
 \usage{
 pi68ERS(RecGaules, Ratio, Iterj, RandomPlacGaules, Para.68_ERS)
 }
 \arguments{
-\item{RecGaules}{Recrutement Gaules}
+\item{RecGaules}{Dataframe qui contient les information sur la distribution des gaules dans la placette}
 
-\item{Ratio}{Ratio Gaules}
+\item{Ratio}{Un dataframe qui contient la répartition du nombre de gaule prédit entre les groupes d'espèces}
 
-\item{Iterj}{l'iteration souhaité}
+\item{Iterj}{Itération en cours}
 
-\item{RandomPlacGaules}{placette de RandomGaules choisie}
+\item{RandomPlacGaules}{Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
+recrutement basé sur les gaules et du module d'évolution des gaules}
 
-\item{Para.68_ERS}{nombre de gaules de 6 et 8 cm ERS}
+\item{Rec}{Un dataframe qui contient la prévision du nombre de recrues par groupes d'espèces}
+
+\item{trt}{Variable distinguant les peuplements traités des témoins, si St >26 = TEM}
+
+\item{t0_aj_}{Temps écoulé depuis la dernière coupe partielle}
+
+\item{altitude}{Altitude de la placette}
+
+\item{Para.68_BOJ}{Paramètres de l'équation de prévision du nombre de gaules de bouleau jaune de 6 et 8 cm de diamètre}
+}
+\value{
+Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de bouleau jaune
 }
 \description{
-Parametres nombre de gaules de 6 et 8 cm ERS
+Fonction qui calcul la probabilité d'absence de Gaules d'érable à sucre classes de 6 ou 8 cm de diamètre.
+Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière
+Les prévisions sont basées sur un modèle de type Zero inflated
 }

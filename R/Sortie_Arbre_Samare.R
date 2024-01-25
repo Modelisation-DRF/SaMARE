@@ -11,10 +11,18 @@
 SortieArbreSamare <- function(SimulHtVol){
 
   ArbreSamare <- SimulHtVol %>%
-    mutate (Stm2ha=pi*(DHPcm/200)^2) %>%
+    mutate (Stm2ha=pi*(DHPcm/200)^2,
+
+            Vigueur = case_when(
+              vigu0 == "ViG" & prod0 == "sciage" ~ 1,
+              vigu0 == "ViG" & prod0 == "pate" ~ 2,
+              vigu0 == "NONVIG" & prod0 == "sciage" ~ 3,
+              vigu0 == "NONVIG" & prod0 == "pate" ~ 4,
+              TRUE ~ NA_integer_
+            )) %>%
     group_by(Placette,Annee,GrEspece,Iter,Residuel) %>%
     select( c(Placette, Annee, Residuel, ArbreID, NoArbre, Nombre, GrEspece, Espece,
-              Etat, DHPcm, Iter, hauteur_pred, vol_dm3, PlacetteID, Stm2ha,vigu0,prod0)) %>%
+              Etat, DHPcm, Iter, hauteur_pred, vol_dm3, PlacetteID, Stm2ha,Vigueur)) %>%
     relocate(c(Placette,Annee,Iter,PlacetteID, Residuel,ArbreID,NoArbre, Espece,GrEspece, Etat, Nombre,DHPcm,hauteur_pred,
                Stm2ha,vol_dm3 ))
 
@@ -22,8 +30,21 @@ SortieArbreSamare <- function(SimulHtVol){
   #           nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(DHPcm[1:100],na.rm = TRUE),mean(DHPcm)), .groups="drop")%>%
 
 
-
-
+  #
+  # if(ArbreSamare$vigu0=="ViG"&&ArbreSamare$prod0=="sciage"){
+  #   ArbreSamare$Vigueur = 1
+  #
+  # }else if(ArbreSamare$vigu0=="ViG"&&ArbreSamare$prod0=="pate"){
+  #   ArbreSamare$Vigueur = 2
+  #
+  # }else if(ArbreSamare$vigu0=="NONVIG"&&ArbreSamare$prod0=="sciage"){
+  #   ArbreSamare$Vigueur = 3
+  #
+  # }else if(ArbreSamare$vigu0=="NONVIG"&&ArbreSamare$prod0=="pate"){
+  #   ArbreSamare$Vigueur = 4
+  #
+  # }
+  #
 
 
 

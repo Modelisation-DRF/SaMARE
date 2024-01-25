@@ -2,23 +2,37 @@
 % Please edit documentation in R/Gaules_68_SAB.R
 \name{pi68SAB}
 \alias{pi68SAB}
-\title{Parametres nombre de gaules de 6 et 8 cm SAB}
+\title{Fonction qui calcul la probabilité d'absence de Gaules de sapin baumier classes de 6 ou 8 cm de diamètre.
+Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière
+Les prévisions sont basées sur un modèle de type Zero inflated}
 \usage{
 pi68SAB(RecGaules, Ratio, dens_tot0, Iterj, RandomPlacGaules, Para.68_SAB)
 }
 \arguments{
-\item{RecGaules}{Recrutement Gaules}
+\item{RecGaules}{Dataframe qui contient les information sur la distribution des gaules dans la placette}
 
-\item{Ratio}{Ratio Gaules}
+\item{Ratio}{Un dataframe qui contient la répartition du nombre de gaule prédit entre les groupes d'espèces}
 
-\item{dens_tot0}{densité total}
+\item{Iterj}{Itération en cours}
 
-\item{Iterj}{l'iteration souhaité}
+\item{RandomPlacGaules}{Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
+recrutement basé sur les gaules et du module d'évolution des gaules}
 
-\item{RandomPlacGaules}{placette de RandomGaules choisie}
+\item{Rec}{Un dataframe qui contient la prévision du nombre de recrues par groupes d'espèces}
 
-\item{Para.68_BOJ}{nombre de gaules de 6 et 8 cm SAB}
+\item{trt}{Variable distinguant les peuplements traités des témoins, si St >26 = TEM}
+
+\item{t0_aj_}{Temps écoulé depuis la dernière coupe partielle}
+
+\item{altitude}{Altitude de la placette}
+
+\item{Para.68_BOJ}{Paramètres de l'équation de prévision du nombre de gaules de bouleau jaune de 6 et 8 cm de diamètre}
+}
+\value{
+Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de bouleau jaune
 }
 \description{
-Parametres nombre de gaules de 6 et 8 cm SAB
+Fonction qui calcul la probabilité d'absence de Gaules de sapin baumier classes de 6 ou 8 cm de diamètre.
+Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière
+Les prévisions sont basées sur un modèle de type Zero inflated
 }

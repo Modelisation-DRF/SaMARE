@@ -13,7 +13,7 @@
 #'
 
 SIMBillonnageABCD_DHP<- function (data, ligne){
-
+  select=dplyr::select
                           ##### ABCD#####
 
   if(!"eco" %in% colnames(data)){

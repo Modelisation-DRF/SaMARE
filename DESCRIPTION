@@ -10,18 +10,22 @@ Description: Le simulateur SaMARE est un modèle de croissance à l'échelle de 
              des dispositifs de recherche de la Direction de la recherche forestière du Ministère des Ressources
              naturelles et des Forêts du Québec ainsi que sur le suivi des effets réels des coupes de jardinage.    L'utilisation
              du simulateur est indiqué pour les peuplements feuillus et mixtes de la forêt tempérée du Québec.
-             
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Depends: mvtnorm,
-         tidyverse,
-         doFuture,
-         doRNG,
-         readxl,
-         sas7bdat,
-         miceadds,
-         TarifQC,
-         data.table,
-         dplyr
+Depends: 
+    mvtnorm,
+    tidyverse,
+    doFuture,
+    doRNG,
+    readxl,
+    sas7bdat,
+    miceadds,
+    TarifQC,
+    data.table,
+    dplyr,
+    R (>= 2.10)
 RoxygenNote: 7.2.3
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

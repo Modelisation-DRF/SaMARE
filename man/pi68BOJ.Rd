@@ -2,7 +2,10 @@
 % Please edit documentation in R/Gaules_68_BOJ.R
 \name{pi68BOJ}
 \alias{pi68BOJ}
-\title{Parametres nombre de gaules de 6 et 8 cm BOJ}
+\title{Fonction qui calcul la probabilité d'absence de Gaules de bouleau jaune classes
+de 6 ou 8 cm de diamètre. Cette fonction utilise une variante des paramètre
+publiée par Rijal et al. 2023 Journal canadien de la recherche forestière.
+Les prévisions sont basées sur un modèle de type Zero inflated.}
 \usage{
 pi68BOJ(
   RecGaules,
@@ -17,24 +20,38 @@ pi68BOJ(
 )
 }
 \arguments{
-\item{RecGaules}{Recrutement Gaules}
+\item{RecGaules}{Dataframe qui contient les informations sur la distribution
+des gaules dans la placette.}
 
-\item{Ratio}{Ratio Gaules}
+\item{Ratio}{Un dataframe qui contient la répartition du nombre de gaules
+prédit entre les groupes d'espèces.}
 
-\item{Rec}{Nombre de  Recrues}
+\item{Rec}{Un dataframe qui contient la prévision du nombre de recrues par
+groupes d'espèces.}
 
-\item{trt}{Variable du peuplement residuel avec condition que si St >26 = TEM}
+\item{trt}{Variable distinguant les peuplements traités des témoins, si
+St >26 = TEM.}
 
-\item{t0_aj_}{Temps depuis coupe}
+\item{t0_aj_}{Temps écoulé depuis la dernière coupe partielle.}
 
-\item{altitude}{l'altitude une Variables de classification écologiques}
+\item{altitude}{Altitude de la placette.}
 
-\item{Iterj}{l'iteration souhaité}
+\item{Iterj}{Itération en cours.}
 
-\item{RandomPlacGaules}{placette de RandomGaules choisie}
+\item{RandomPlacGaules}{Un dataframe contenant les effets aléatoires à l'échelle
+de la placette du module de recrutement basé sur
+les gaules et du module d'évolution des gaules.}
 
-\item{Para.68_BOJ}{nombre de gaules de 6 et 8 cm BOJ}
+\item{Para.68_BOJ}{Paramètres de l'équation de prévision du nombre de gaules
+de bouleau jaune de 6 et 8 cm de diamètre.}
+}
+\value{
+Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de
+        bouleau jaune.
 }
 \description{
-Parametres nombre de gaules de 6 et 8 cm BOJ
+Fonction qui calcul la probabilité d'absence de Gaules de bouleau jaune classes
+de 6 ou 8 cm de diamètre. Cette fonction utilise une variante des paramètre
+publiée par Rijal et al. 2023 Journal canadien de la recherche forestière.
+Les prévisions sont basées sur un modèle de type Zero inflated.
 }
