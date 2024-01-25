@@ -15,7 +15,7 @@
 
 
 RandomPlacStep<-function (CovParms, Data, NbIter, NbPeriodes) {
-
+  select=dplyr::select
   Placettes<-unique(Data$Placette)
 
   CovPlac<-CovParms %>%
@@ -103,7 +103,7 @@ return(Random)
 #' @examples
 #'
 RandomPlacStepGaules<-function (CovParms, Data, NbIter) {
-
+  select=dplyr::select
   Placettes<-unique(Data$Placette)
 
   CovPlac<-CovParms %>%
