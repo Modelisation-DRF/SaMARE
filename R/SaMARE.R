@@ -802,8 +802,20 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   }  # fin de la boucle des simulations
 
+  ParaConvVigMSCRlist=list(Para)
+
+
+  MSCR<-outputTot %>%
+    group_by(Placette,Annee,ArbreID,Iter) %>%
+    nest() %>%
+    mutate(MSCR = mapply(AttribMSCR,data,MoreArgs=ParaConvVigMSCRlist)) %>%
+    unnest(MSCR) %>%
+    select(-data)
+
+  suppressMessages(
   outputTot <- outputTot %>%
-    mutate(Residuel= ifelse(trt=="cp",1,0))
+               left_join(MSCR) %>%
+               mutate(Residuel= ifelse(trt=="cp",1,0)))
 
 
   return(outputTot)
