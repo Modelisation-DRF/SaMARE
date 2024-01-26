@@ -9,7 +9,7 @@
 ParametresSimulSaMARE <- function() {
 
   CovParms<-MatchModuleCovparms
-  EfCovParms<-EffetCovparms
+  EfCovParms<-EffetCovParms
 
   CovParmsGaules<-CovparmGaules
 
@@ -20,7 +20,7 @@ ParametresSimulSaMARE <- function() {
 
 
   # Fichier des especes
-  Sp<-Species.csv
+  Sp<-Species
   SpGroups<-SpeciesGroups
   # Fichier des especes dans chacun des groupes d'especes
   MatchSpGroups<-MatchSpeciesGroups

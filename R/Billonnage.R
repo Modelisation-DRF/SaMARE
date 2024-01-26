@@ -21,13 +21,13 @@ Billonnage<-function (arbres){
 ####################Préparation des paramètres###########################
 ########################################################################
 
-suppressMessages(
-  Para<-read_delim("Parametres/ParaPetroFinal.csv", delim = ";"))
 
-suppressMessages(
-  CovParms<-read_delim("Parametres/CovParmPetro.csv", delim = ";") %>%
+  Para<-ParaPetroFinal
+
+
+  CovParms<-CovParmPetro %>%
     filter(Cov>0)
-)
+
 
 
 Vol_Billon<-Para %>%

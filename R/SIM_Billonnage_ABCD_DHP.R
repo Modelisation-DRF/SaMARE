@@ -23,8 +23,8 @@ SIMBillonnageABCD_DHP<- function (data, ligne){
 
   if ("QualiteABCD" %in% colnames(data) && !all(is.na(data$QualiteABCD))){
 
-    Para<-read_delim("Parametres/ParaPetroFinal_New.csv", delim = ";")
-    CovParms<-read_delim("Parametres/CovParmPetroABCD.csv", delim = ";")
+    Para<-ParaPetroFinal_New
+    CovParms<-CovParmPetroABCD
 
     CovParms <- CovParms %>% filter(Cov>0)
 
@@ -100,8 +100,8 @@ SIMBillonnageABCD_DHP<- function (data, ligne){
   }else{      ######## DHP ##########
 
 
-    Para<-read_delim("Parametres/ParaPetroFinal_dhp.csv", delim = ";")
-    CovParms<-read_delim("Parametres/CovParmPetro_DHP.csv", delim = ";")
+    Para<-ParaPetroFinal_dhp
+    CovParms<-CovParmPetro_DHP
 
     CovParms <- CovParms %>% filter(Cov>0)
 

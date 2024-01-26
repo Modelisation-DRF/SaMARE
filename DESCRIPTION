@@ -1,4 +1,4 @@
-Package: SimulateurSaMARE
+Package: SimulateurSaMARE 
 Type: Package
 Title: Simulateur de l'accroissement, de la mortalité et du recrutement pour les forêts feuillues et mixtes du Québec (SaMARE)
 Version: 2.1.0
@@ -13,19 +13,22 @@ Description: Le simulateur SaMARE est un modèle de croissance à l'échelle de 
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Depends: 
-    mvtnorm,
-    tidyverse,
-    doFuture,
-    doRNG,
-    readxl,
-    sas7bdat,
-    miceadds,
-    TarifQC,
-    data.table,
-    dplyr,
-    R (>= 2.10)
 RoxygenNote: 7.2.3
-Suggests: 
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
+Depends: mvtnorm,
+        tidyverse,
+        iterators,
+        doFuture,
+        doRNG,
+        readxl,
+        sas7bdat,
+        miceadds,
+        TarifQC,
+        dplyr,
+        data.table,
+        R (>= 2.10)
+      
+    
+   
+    
+   
+    

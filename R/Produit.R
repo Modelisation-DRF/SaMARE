@@ -15,7 +15,7 @@
 #' @examples
 #'
 
-prod<-function(Prod,type_pe_Plac,rid1,Iterj,Para.prod){
+produit<-function(Prod,type_pe_Plac,rid1,Iterj,Para.prod){
 
   n<-nrow(Prod)
 
