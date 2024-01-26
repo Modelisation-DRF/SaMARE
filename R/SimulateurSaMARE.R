@@ -147,7 +147,49 @@ Simul<- bind_rows(
 )
 
 
-return(Simul)
+VarEco<-Data %>%
+  group_by(Placette) %>%
+  summarise(Sup_PE=first(Sup_PE),reg_eco=first(Reg_Eco),Type_Eco=first(Type_Eco),
+            Altitude=first(Altitude),Ptot=first(Ptot),Tmoy=first(Tmoy)) %>%
+  mutate(veg_pot=substr(Type_Eco,1,3),milieu=substr(Type_Eco,4,4))
+
+Simul<-Simul %>%
+  inner_join(VarEco, relationship="many-to-many") %>%
+  mutate(nb_tige=Nombre*Sup_PE/25) %>%   #Conversion pour relation HD
+  rename(id_pe=Placette, dhpcm=DHPcm, essence=GrEspece,no_arbre=ArbreID,
+         altitude=Altitude,p_tot=Ptot,t_ma=Tmoy, iter=Iter)
+
+
+nb_iter <- length(unique(Simul$iter))
+nb_periodes <- Horizon+1
+listeAnnee<-unique(Simul$Annee)
+parametre_ht <- param_ht(fic_arbres=Simul, mode_simul='STO', nb_iter=nb_iter, nb_step=(nb_periodes)) ###Nombre plus 1 pour tenir compte de l'année initiale
+para_volume<-param_vol(Simul,mode_simul="STO", nb_iter=nb_iter)
+# ouverture de session en parralèle
+registerDoFuture()
+plan(multisession)
+SimulHtVol1 <- bind_rows(
+  foreach (i = 1:(nb_iter)) %:%
+    foreach (k = 1:(nb_periodes)) %dopar%{
+      ht <- relation_h_d(fic_arbres=Simul[Simul$iter==i & Simul$Annee==listeAnnee[k] & Simul$Etat!="mort",], mode_simul='STO',
+                         iteration=i, step=k, parametre_ht=parametre_ht, reg_eco=TRUE)
+      ht<-  cubage(ht, mode_simul="STO", iteration=i, parametre_vol=para_volume)
+    }
+)
+
+
+SimulHtVol1<-SimulHtVol1[,c("id_pe","Annee","iter","no_arbre","hauteur_pred","vol_dm3")] ###Garde juste les variables de hauteur et volume pour
+###joindre avec Simul pour garder les morts
+
+SimulHtVol<-Simul %>%
+  left_join(SimulHtVol1, by=c("id_pe","Annee","no_arbre","iter")) %>%
+  rename(Placette=id_pe, DHPcm=dhpcm, GrEspece=essence,ArbreID=no_arbre,
+         Altitude=altitude,Ptot=p_tot,Tmoy=t_ma, Iter=iter) %>%
+  mutate(PlacetteID=paste(Placette,"_",Iter, sep=""))
+
+
+return(SimulHtVol)
 
 }
+
 
