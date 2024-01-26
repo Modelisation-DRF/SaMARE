@@ -46,7 +46,7 @@ au début du pas de simulation.}
 
 \item{temp}{Température annuelle moyenne de la placette.}
 
-\item{pente}{Inclinaison de la pente  en %.}
+\item{pente}{Inclinaison de la pente  en pourcent.}
 
 \item{Iterj}{Itération en cours.}
 

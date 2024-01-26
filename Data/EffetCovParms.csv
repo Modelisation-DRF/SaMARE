@@ -1,7 +1,0 @@
-CovParm;Subject;CovParmEffet
-Intercept;no_mes(placette);1
-Intercept;ess_groupe(placette);2
-Intercept;placette;3
-Residual;;4
-SP(LINL);;5
-SP(POW);;6

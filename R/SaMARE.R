@@ -49,6 +49,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   select=dplyr::select
   t<-5
 
+
+
   ################## convertion MSCR #################################
 
   # Para.ConvMSCRVig<-Para %>%
@@ -96,7 +98,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   # 8;recrutement_product
   # 9;MSCR n'est pas actuellement programmé
   Para.mort<-ParaOmega(ModuleID = 1,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  Para.acc<-ParaOmega(ModuleID = 2,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
+   Para.acc<-ParaOmega(ModuleID = 2,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.vig<-ParaOmega(ModuleID = 3,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.prod<-ParaOmega(ModuleID = 4,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.rec_n<-ParaOmega(ModuleID = 5,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
@@ -108,16 +110,15 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   Para.ConvMSCRProd1024<-ParaOmega(ModuleID = 18,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.ConvMSCRProd24<-ParaOmega(ModuleID = 19,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
 
-
-
-  #########Gaules
-  # 10;recrutement
-  # 11;nombre total de gaules
-  # 12;ratio especes nombre de gaules
-  # 13;nombre de gaules de 6 et 8 cm ERS
-  # 14;nombre de gaules de 6 et 8 cm HEG
-  # 15;nombre de gaules de 6 et 8 cm BOJ
-  # 16;nombre de gaules de 6 et 8 cm SAB
+    #
+  # #########Gaules
+  # # 10;recrutement
+  # # 11;nombre total de gaules
+  # # 12;ratio especes nombre de gaules
+  # # 13;nombre de gaules de 6 et 8 cm ERS
+  # # 14;nombre de gaules de 6 et 8 cm HEG
+  # # 15;nombre de gaules de 6 et 8 cm BOJ
+  # # 16;nombre de gaules de 6 et 8 cm SAB
   Para.rec_gaules<-ParaOmega(ModuleID = 10,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.nb_gaules<-ParaOmega(ModuleID = 11,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.ratio_gaules<-ParaOmega(ModuleID = 12,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
@@ -129,12 +130,15 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
 
 
+
   #Création de la placette de simulation
   Plac<-PlacOri %>%
     filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
     mutate(Etat="vivant",ArbreID=seq(1:n())) %>%
     select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
            DHPcm,Nombre,Vigueur,Iter,MSCR)
+
+
 
   #Placette Gaules de simulation
   if (RecruesGaules==1){
@@ -506,7 +510,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
     # Application de la fonction de produit
 
-    pred<-prod(Prod,type_pe_Plac,rid1,Iterj,Para.prod)
+    pred<-produit(Prod,type_pe_Plac,rid1,Iterj,Para.prod)
 
     RandomProd<-RandPlacetteStep %>% filter(SubModuleID==4)
 
@@ -801,7 +805,9 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   outputTot <- outputTot %>%
     mutate(Residuel= ifelse(trt=="cp",1,0))
 
+
   return(outputTot)
 
 
 }
+
