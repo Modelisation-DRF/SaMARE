@@ -10,7 +10,7 @@
 #'
 
 ConvMSCRVig<-function(Data,Para.ConvMSCRVig){
-
+  select=dplyr::select
   n<-nrow(Data)
 
   Data$GrEspeceMSCR<-ifelse(Data$GrEspece=="AUT","FIN",ifelse(

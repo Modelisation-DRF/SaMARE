@@ -12,6 +12,8 @@
 
 AttribMSCR<-function(Data,Para.ConvVigMSCR){
 
+  select=dplyr::select
+
           if (Data$GrEspece %in% c("BOJ","ERR","ERS","FEN","FIN","HEG")){
 
               n<-nrow(Data)

@@ -15,6 +15,8 @@
 
 AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
 
+  select=dplyr::select
+
   if(Data$GrEspece %in% c("EPX","RES","SAB")){
 
   prod0<-"resineux"

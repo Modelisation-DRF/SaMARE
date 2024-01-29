@@ -18,7 +18,7 @@
 #'
 
 rec_prod<-function(RecSelect,type_pe_Plac,rid1,Iterj,Para.rec_prod){
-
+  select=dplyr::select
   n<-nrow(RecSelect)
 
   #Liste des effets

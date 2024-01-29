@@ -22,7 +22,7 @@
 #' @examples
 
 mort<-function(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,Para.mort){
-
+  select=dplyr::select
   n<-nrow(Mort)
 
   #Liste des effets

@@ -79,23 +79,24 @@ SIMBillonnageABCD_DHP<- function (data, ligne){
              Pres=exp(BetaPres)/(1+exp(BetaPres)),
              Vol=exp(BetaVol+0.5*Cov),
              VolBillonM3=Pres*Vol)
-
     sim_ABCD_DHP <- sim_ABCD_DHP %>%
-      mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE) %>%
-      select(-c("Essence_billon", "eco", "Presclassepetro_eco", "Volclassepetro_eco", "Presclassepetro_qual", "Volclassepetro_qual",
-                "Presdhpcm_classepetro", "Presdhpcm2_classepetro", "Voldhpcm_classepetro", "Voldhpcm2_classepetro", "Cov",
-                "BetaPres", "BetaVol", "Pres" ,"Vol", "vigu0" , "prod0", "Nb_Gaules_Ha", "Nb_Gaules_ERS",
-                "Nb_Gaules_BOJ","Nb_Gaules_SAB" , "Nb_Gaules_68_ERS", "Nb_Gaules_68_HEG","Nb_Gaules_68_BOJ","Nb_Gaules_68_SAB",
-                "Nb_Gaules_68_Ha" , "Nb_Gaules_HEG", "Sup_PE" , "reg_eco", "Type_Eco", "Altitude", "Ptot", "Tmoy",
-                "veg_pot", "milieu", "nb_tige", "eco" )) %>%
-      relocate(Annee, PlacetteID,Residuel,ArbreID,NoArbre)
+      mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE)
+
 
 
     if(ligne==FALSE){
-    sim_ABCD_DHP <- sim_ABCD_DHP %>%
-                    pivot_wider(names_from = Produit, values_from = VolBillonM3, names_prefix = "vm3_")
+      sim_ABCD_DHP <- sim_ABCD_DHP %>%
+        pivot_wider(names_from = Produit, values_from = VolBillonM3) %>%
+        select(c(Placette,Annee,Iter,PlacetteID, Residuel,ArbreID,NoArbre,Espece,GrEspece,Etat
+                 , Nombre,DHPcm,hauteur_pred,Stm2ha,vol_dm3, F1,F2,F3,F4,P))
 
-    }
+    }else{
+
+    sim_ABCD_DHP <- sim_ABCD_DHP %>%
+      select(c(Placette,Annee,Iter,PlacetteID, Residuel,ArbreID,NoArbre,Espece,GrEspece,Etat
+               , Nombre,DHPcm,hauteur_pred,Stm2ha,vol_dm3,Produit,VolBillonM3))
+}
+
 
   }else{      ######## DHP ##########
 
@@ -154,22 +155,23 @@ SIMBillonnageABCD_DHP<- function (data, ligne){
 
 
   sim_ABCD_DHP <- sim_ABCD_DHP %>%
-    mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE) %>%
-    select(-c("Essence_billon", "Presclassepetro_eco", "Volclassepetro_eco", "Presdhpcm__classepetro", "Presdhpcm2__classepetro",
-              "Voldhpcm_classepetro", "Voldhpcm2_classepetro", "Cov", "BetaPres", "BetaVol", "Pres" ,"Vol","vigu0" , "prod0", "Nb_Gaules_Ha", "Nb_Gaules_ERS",
-              "Nb_Gaules_BOJ","Nb_Gaules_SAB" , "Nb_Gaules_68_ERS", "Nb_Gaules_68_HEG","Nb_Gaules_68_BOJ","Nb_Gaules_68_SAB",
-              "Nb_Gaules_68_Ha" , "Nb_Gaules_HEG", "Sup_PE" , "reg_eco", "Type_Eco", "Altitude", "Ptot", "Tmoy",
-              "veg_pot", "milieu", "nb_tige", "eco")) %>%
-    relocate(Annee, PlacetteID,Residuel,ArbreID,NoArbre)
-    #rename( "F1" = "vm3_F1")
+    mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE)
+
 
 
   if(ligne==FALSE){
   sim_ABCD_DHP <- sim_ABCD_DHP %>%
-  pivot_wider(names_from = Produit, values_from = VolBillonM3, names_prefix = "vm3_")
+  pivot_wider(names_from = Produit, values_from = VolBillonM3) %>%
+    select(c(Placette,Annee,Iter,PlacetteID, Residuel,ArbreID,NoArbre,Espece,GrEspece,Etat
+             , Nombre,DHPcm,hauteur_pred,Stm2ha,vol_dm3, F1,F2,F3,F4,P))
 
-  }
+  }else{
 
+  sim_ABCD_DHP <- sim_ABCD_DHP %>%
+    select(c(Placette,Annee,Iter,PlacetteID, Residuel,ArbreID,NoArbre,Espece,GrEspece,Etat
+             , Nombre,DHPcm,hauteur_pred,Stm2ha,vol_dm3,Produit,VolBillonM3))
+
+}
   }
 
 

@@ -18,7 +18,7 @@
 
 
 rec_dhp<-function(RecSelect,st_tot0,dens_tot0,t,ntrt,Iterj,Para.rec_dhp){
-
+  select=dplyr::select
   n<-nrow(RecSelect)
 
   #Liste des effets

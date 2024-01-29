@@ -18,7 +18,7 @@
 
 
 rec_lambda<-function(Rec,type_pe_Plac,st_tot0,t,Iterj,Para.rec_n){
-
+  select=dplyr::select
   n<-nrow(Rec)
 
   #Liste des effets

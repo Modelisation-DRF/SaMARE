@@ -17,6 +17,7 @@
 
 pi68ERS<-function(RecGaules,Ratio,Iterj,RandomPlacGaules,Para.68_ERS){
 
+  select=dplyr::select
 
   # Construction matrice X
   X68ERS_pi<-matrix(0,ncol=4,nrow=1)

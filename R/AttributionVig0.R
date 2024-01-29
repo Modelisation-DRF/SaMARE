@@ -12,6 +12,7 @@
 #'
 
 AttribVigu0<-function(Data,Para.ConvMSCRVig){
+  select=dplyr::select
 
   if (is.na(Data$Vigueur)==FALSE){
 

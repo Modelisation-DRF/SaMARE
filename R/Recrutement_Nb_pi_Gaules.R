@@ -23,7 +23,7 @@
 
 
 rec_pi_Gaules<-function(Rec,RecGaules,t,st_tot0,Iterj,RandomPlacGaules,Para.rec_gaules){
-
+  select=dplyr::select
   n<-nrow(Rec)
 
   #Liste des effets
