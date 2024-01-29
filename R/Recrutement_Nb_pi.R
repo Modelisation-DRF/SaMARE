@@ -20,7 +20,7 @@
 #' @examples
 
 rec_pi<-function(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n){
-
+  select=dplyr::select
   n<-nrow(Rec)
 
   #Liste des effets

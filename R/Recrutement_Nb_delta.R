@@ -21,7 +21,7 @@
 #' @examples
 
 rec_delta<-function(Rec,st_tot0,type_pe_Plac,ntrt,t0_aj_,Iterj,Para.rec_n){
-
+  select=dplyr::select
   n<-nrow(Rec)
 
   #Liste des effets

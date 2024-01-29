@@ -28,6 +28,7 @@
 nb_Gaules<-function(Rec,RecGaules,t,st_tot0,altitude,latitude,trt,t0_aj_,
                     longitude,temp,pente,Iterj,RandomPlacGaules,Para.nb_gaules){
 
+  select=dplyr::select
 
   # Construction matrice X
   XNb_Gaules<-matrix(0,ncol=10,nrow=1)

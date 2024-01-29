@@ -15,6 +15,8 @@
 
 ConvertisseurEco<- function (data){
 
+  select=dplyr::select
+
   data$eco <- ifelse(data$Espece == "BOJ",
                      ifelse(data$reg_eco %in% c("1a", "2a", "2b", "2c", "3a", "3b", "SV"), "3O",
                             ifelse(data$reg_eco %in% c("3c", "3d"), "3E",

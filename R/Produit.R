@@ -16,6 +16,7 @@
 #'
 
 produit<-function(Prod,type_pe_Plac,rid1,Iterj,Para.prod){
+  select=dplyr::select
 
   n<-nrow(Prod)
 

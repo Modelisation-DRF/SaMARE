@@ -17,6 +17,7 @@
 
 pi68SAB<-function(RecGaules,Ratio,dens_tot0,Iterj,RandomPlacGaules,Para.68_SAB){
 
+  select=dplyr::select
 
   # Construction matrice X
   X68SAB_pi<-matrix(0,ncol=4,nrow=1)

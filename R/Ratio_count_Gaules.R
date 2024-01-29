@@ -32,6 +32,7 @@
 
 ratio_count_Gaules<-function(Ratio,Rec,RecGaules,t,st_tot0,latitude,longitude,
                           prec,trt,t0_aj_,Iterj,RandomPlacGaules,Para.ratio_gaules){
+  select=dplyr::select
 
   n<-nrow(Ratio)
 

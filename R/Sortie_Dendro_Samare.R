@@ -14,7 +14,7 @@
 #'
 
 SortieDendroSamare <- function(SimulHVol){
-
+  select=dplyr::select
   DendroSamaresp <- SimulHtVol %>%
                     filter(Etat=="vivant") %>%
                     mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE,

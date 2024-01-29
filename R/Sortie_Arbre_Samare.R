@@ -9,7 +9,7 @@
 #' @examples
 
 SortieArbreSamare <- function(SimulHtVol){
-
+  select=dplyr::select
   ArbreSamare <- SimulHtVol %>%
     mutate (Stm2ha=pi*(DHPcm/200)^2,
 
