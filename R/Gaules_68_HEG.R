@@ -17,6 +17,7 @@
 
 pi68HEG<-function(RecGaules,Ratio,Rec,Iterj,RandomPlacGaules,Para.68_HEG){
 
+  select=dplyr::select
 
   # Construction matrice X
   X68HEG_pi<-matrix(0,ncol=3,nrow=1)

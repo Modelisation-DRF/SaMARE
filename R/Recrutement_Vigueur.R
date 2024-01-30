@@ -15,7 +15,7 @@
 
 
 rec_vig<-function(RecSelect,latitude,Iterj,Para.rec_vig){
-
+  select=dplyr::select
   n<-nrow(RecSelect)
 
   #Liste des effets

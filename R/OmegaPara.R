@@ -9,6 +9,9 @@
 #'
 
 reconstruct <- function(m_lower, diag = TRUE, symmetric = TRUE) {
+
+  select=dplyr::select
+
                l <- length(m_lower)
                n <- (sqrt(1 + 8*l) + ifelse(diag, -1, 1))/2  # Solve n*(n + 1) = l for n
                m <- matrix(NA, n, n)

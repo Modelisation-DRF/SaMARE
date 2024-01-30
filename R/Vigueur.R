@@ -19,6 +19,7 @@
 #'
 
 vig<-function(Vig,type_pe_Plac,rid1,Iterj,Para.vig){
+  select=dplyr::select
 
   n<-nrow(Vig)
 

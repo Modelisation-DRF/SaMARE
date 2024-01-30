@@ -27,6 +27,7 @@
 
 ratio_pi_Gaules<-function(Ratio,Rec,RecGaules,t,st_tot0,latitude,longitude,
                           Iterj,RandomPlacGaules,Para.ratio_gaules){
+  select=dplyr::select
 
   n<-nrow(Ratio)
 

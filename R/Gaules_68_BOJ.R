@@ -27,6 +27,7 @@
 
 pi68BOJ<-function(RecGaules,Ratio,Rec,trt,t0_aj_,altitude,Iterj,RandomPlacGaules,Para.68_BOJ){
 
+  select=dplyr::select
 
   # Construction matrice X
   X68BOJ_pi<-matrix(0,ncol=8,nrow=1)

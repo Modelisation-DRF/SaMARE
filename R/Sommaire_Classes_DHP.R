@@ -13,7 +13,7 @@
 
 Sommaire_Classes_DHP <- function(SimulHtVol,NbIter){
 
-
+  select=dplyr::select
   SommaireClassesDHPSp<-SimulHtVol %>%
     filter(Etat!="mort") %>%
     mutate(Stm2ha=pi*(DHPcm/200)^2/Sup_PE,      #Calcul surface terrière par ha

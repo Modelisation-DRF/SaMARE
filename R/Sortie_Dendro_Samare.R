@@ -13,8 +13,13 @@
 #' @examples
 #'
 
+<<<<<<< HEAD
 SortieDendroSamare <- function(SimulHtVol){
 
+=======
+SortieDendroSamare <- function(SimulHVol){
+  select=dplyr::select
+>>>>>>> b94f2e0b27c75aca56b5a71f6751dc8b5bcebc0f
   DendroSamaresp <- SimulHtVol %>%
                     mutate(Etat=ifelse(Etat=="mort","mort","vivant")) %>%
                     filter(Etat=="vivant") %>%
