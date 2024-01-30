@@ -10,6 +10,8 @@
 
 SortieArbreSamare <- function(SimulHtVol){
 
+  select=dplyr::select
+
   ArbreSamare <- SimulHtVol %>%
     mutate (Stm2ha=pi*(DHPcm/200)^2,
 
@@ -20,11 +22,11 @@ SortieArbreSamare <- function(SimulHtVol){
               vigu0 == "NONVIG" & prod0 == "pate" ~ 4,
               TRUE ~ NA_integer_
             )) %>%
-    group_by(Placette,Annee,GrEspece,Iter,Residuel) %>%
-    select( c(Placette, Annee, Residuel, ArbreID, NoArbre, Nombre, GrEspece, Espece,
-              Etat, DHPcm, Iter, hauteur_pred, vol_dm3, PlacetteID, Stm2ha,Vigueur)) %>%
-    relocate(c(Placette,Annee,Iter,PlacetteID, Residuel,ArbreID,NoArbre, Espece,GrEspece, Etat, Nombre,DHPcm,hauteur_pred,
-               Stm2ha,vol_dm3 ))
+    select(Placette, Annee, Residuel, ArbreID, NoArbre, Nombre, GrEspece, Espece,
+              Etat, DHPcm, Iter, hauteur_pred, vol_dm3, Stm2ha,Vigueur, MSCR) %>%
+    rename(PlacetteID=Placette, origTreeID=NoArbre, ST_m2ha=Stm2ha, Vol_dm3=vol_dm3, Hautm=hauteur_pred) %>%
+    relocate(PlacetteID,Annee,Iter,Residuel,ArbreID,origTreeID, Espece,GrEspece, Etat, Nombre,DHPcm,Hautm,
+               ST_m2ha,Vol_dm3, MSCR, Vigueur)
 
   # summarise(DQM=(mean(DHPcm^2,na.rm=TRUE))^0.5,ST_HA=sum(Stm2ha),VolM3Ha=sum(vol_dm3)/1000,
   #           nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(DHPcm[1:100],na.rm = TRUE),mean(DHPcm)), .groups="drop")%>%
