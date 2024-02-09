@@ -131,9 +131,9 @@ ListeIter<-Data %>%
   arrange(PlacetteID)
 
 
-# La fonction DoFuture permet de parraléliser les simulations
-# ListeIterBck<-ListeIter
-#
+
+ListeIterBck<-ListeIter
+
 registerDoFuture()
 list_plot <- unique(ListeIter$PlacetteID)
 plan(multisession)
@@ -145,6 +145,36 @@ Simul<- bind_rows(
             CovParms=CovParms,CovParmsGaules=CovParmsGaules,
             Para=Para,ParaGaules=ParaGaules,Omega=Omega, OmegaGaules=OmegaGaules)}
 )
+
+
+
+
+#
+# plan(multisession) # Vous pouvez spécifier le nombre de workers si nécessaire, par exemple, plan(multisession, workers = 4)
+#
+# # Unique list of PlacetteID
+# list_plot <- unique(ListeIter$PlacetteID)
+#
+# # Définition de la fonction pour être utilisée dans lapply pour traiter chaque PlacetteID
+# processPlacetteID <- function(x, RandPlacStep, RandPlacStepGaules, Data, Gaules, ListeIter, AnneeDep, Horizon, RecruesGaules, CovParms, CovParmsGaules, Para, ParaGaules, Omega, OmegaGaules) {
+#   filteredListeIter <- ListeIter[ListeIter$PlacetteID == x, ]
+#   SaMARE(Random = RandPlacStep, RandomGaules = RandPlacStepGaules, Data = Data,
+#          Gaules = Gaules, ListeIter = filteredListeIter,
+#          AnneeDep = AnneeDep, Horizon = Horizon, RecruesGaules = RecruesGaules,
+#          CovParms = CovParms, CovParmsGaules = CovParmsGaules,
+#          Para = Para, ParaGaules = ParaGaules, Omega = Omega, OmegaGaules = OmegaGaules)
+# }
+#
+# # Utilisation de future_lapply pour exécuter la fonction en parallèle
+# Simul <- future_lapply(list_plot, processPlacetteID, RandPlacStep, RandPlacStepGaules, Data, Gaules, ListeIter, AnneeDep, Horizon, RecruesGaules, CovParms, CovParmsGaules, Para, ParaGaules, Omega, OmegaGaules, future.seed = TRUE)
+#
+# # Combinaison des résultats en un seul dataframe
+# Simul <- bind_rows(Simul)
+#
+#
+#
+
+
 
 
 VarEco<-Data %>%

@@ -15,6 +15,7 @@
 
 
 RandomPlacStep<-function (CovParms, Data, NbIter, NbPeriodes) {
+
   select=dplyr::select
   Placettes<-unique(Data$Placette)
 
@@ -86,6 +87,8 @@ RandomPlacStep<-function (CovParms, Data, NbIter, NbPeriodes) {
   suppressMessages(
   Random<-left_join(PredRandPlac,PredRandStep))
 
+
+
 return(Random)
 
 }
@@ -103,6 +106,7 @@ return(Random)
 #' @examples
 #'
 RandomPlacStepGaules<-function (CovParms, Data, NbIter) {
+
   select=dplyr::select
   Placettes<-unique(Data$Placette)
 
@@ -138,6 +142,8 @@ RandomPlacStepGaules<-function (CovParms, Data, NbIter) {
     select(-data,-ID))
 
   PredRandPlac<-PredRandPlac %>% slice(rep(1:n()))
+
+
 }
 
 
