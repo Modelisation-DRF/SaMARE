@@ -10,9 +10,9 @@
 #'         valeures nulles de produits et de volume de produits.
 #' @examples
 #'
-SortieBillesSamareLigne <- function(SimulHtVolBillon){
+SortieBillesSamareLigne <- function(SimulHtVol){
   select=dplyr::select
-  BillesSamareLigne <- SimulHtVolBillon %>%  mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE)  %>%
+  BillesSamareLigne <- SimulHtVol %>%  mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE)  %>%
     select(c(Placette,Annee,Iter,PlacetteID, Residuel,ArbreID,NoArbre,Espece,GrEspece,Etat
              , Nombre,DHPcm,hauteur_pred,Stm2ha,vol_dm3))
 

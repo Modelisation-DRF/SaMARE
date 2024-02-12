@@ -31,5 +31,7 @@ ParametresSimulSaMARE <- function() {
   OmegaGaules<-OmegaGaulesFormat
 
   List_Para <- list(CovParms,EfCovParms, CovParmsGaules, Para, ParaGaules, Sp, SpGroups, MatchSpGroups, Omega, OmegaGaules )
+
   return(List_Para)
+
 }

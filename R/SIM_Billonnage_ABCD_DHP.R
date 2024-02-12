@@ -12,189 +12,57 @@
 #' @examples
 #'
 
-SIMBillonnageABCD_DHP<- function (data, ligne){
-  select=dplyr::select
-                          ##### ABCD#####
+SIMBillonnageABCD_DHP<- function (data , type){
 
+  select=dplyr::select
+
+  data<- data %>% filter(DHPcm >23)
+                          ##### ABCD#####
   if(!"eco" %in% colnames(data)){
     data <-ConvertisseurEco(data)
   }
 
+  if(type %in% c("ABCD","DHP")){
 
-  if ("QualiteABCD" %in% colnames(data) && !all(is.na(data$QualiteABCD))){
+    regional <- data %>% filter(Espece %in% c("ERS", "BOJ"))
+    regional_result <-ABCD_DHP_regio(data=regional, type =type )
 
-    Para<-ParaPetroFinal_New
-    CovParms<-CovParmPetroABCD
-
-    CovParms <- CovParms %>% filter(Cov>0)
-
-
-    Vol_Billon<-Para %>%
-      filter(Module=="Vol") %>%
-      mutate(betaVol=ParameterEstimate) %>%
-      select(-Module,-ParameterEstimate) %>%
-      group_by(Essence_billon, Produit) %>%
-      pivot_wider(names_from = Effet, values_from  = betaVol, names_prefix = "Vol")
-
-    Pres_Billon <- Para %>%
-      filter(Module=="Pres") %>%
-      mutate(betaPres=ParameterEstimate) %>%
-      select(-Module,-ParameterEstimate) %>%
-      group_by(Essence_billon, Produit) %>%
-      pivot_wider(names_from = Effet, values_from  = betaPres, names_prefix = "Pres") %>%
-      full_join(Vol_Billon, by=c("Essence_billon","Produit", "QualiteABCD", "eco")) %>%
-      mutate(Presdhpcm2_classepetro=ifelse(is.na(Presdhpcm2_classepetro)==TRUE,0,Presdhpcm2_classepetro),
-             Voldhpcm2_classepetro=ifelse(is.na(Voldhpcm2_classepetro)==TRUE,0,Voldhpcm2_classepetro))
-    names(Pres_Billon)
-
-    par_qual <- Pres_Billon %>%
-      filter(!is.na(QualiteABCD)) %>%
-      select(c(Essence_billon, Produit, QualiteABCD, Presclassepetro_qual, Volclassepetro_qual))
-
-    par_eco <- Pres_Billon %>%
-      filter(!is.na(eco)) %>%
-      select(c(Essence_billon, Produit, eco, Presclassepetro_eco, Volclassepetro_eco))
-
-    par_num <- Pres_Billon %>%
-      filter(is.na(eco) & is.na(QualiteABCD)) %>%
-      select(c(Essence_billon, Produit, Presdhpcm_classepetro, Presdhpcm2_classepetro, Voldhpcm_classepetro, Voldhpcm2_classepetro))
-
-
-    sim_ABCD_DHP <- data %>%
-      mutate(Essence_billon=Espece) %>% #ajout
-      filter(Essence_billon %in% c("ERS", "BOJ")) %>%
-      left_join(par_eco, by=c("Essence_billon", "eco"), relationship="many-to-many") %>%
-      left_join(par_qual, by=c("Essence_billon", "QualiteABCD", "Produit"), relationship="many-to-many") %>%
-      left_join(par_num, by=c("Essence_billon", "Produit"), relationship="many-to-many") %>%
-      inner_join(CovParms, by=c("Essence_billon", "Produit")) %>%
-      mutate(Cov=ifelse(is.na(Cov)==TRUE,0,Cov)) %>%
-      mutate(BetaPres= Presclassepetro_eco+
-               Presclassepetro_qual+
-               DHPcm*Presdhpcm_classepetro+
-               DHPcm^2*Presdhpcm2_classepetro,
-             BetaVol=  Volclassepetro_eco+
-               Volclassepetro_qual+
-               DHPcm*Voldhpcm_classepetro+
-               DHPcm^2*Voldhpcm2_classepetro,
-             Pres=exp(BetaPres)/(1+exp(BetaPres)),
-             Vol=exp(BetaVol+0.5*Cov),
-             VolBillonM3=Pres*Vol)
-    sim_ABCD_DHP <- sim_ABCD_DHP %>%
-<<<<<<< HEAD
-      mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE) %>%
-      select(Annee,Residuel,ArbreID,NoArbre,Placette,Nombre,GrEspece,Espece,
-             Etat,DHPcm,Iter,MSCR,hauteur_pred,vol_dm3,Produit,VolBillonM3,Stm2ha,Sup_PE) %>%
-      relocate(Annee, PlacetteID,Residuel,ArbreID,NoArbre)
-
-
-    if(ligne==0){
-    sim_ABCD_DHP <- sim_ABCD_DHP %>%
-                    pivot_wider(names_from = Produit, values_from = VolBillonM3, names_prefix = "vm3_")
-=======
-      mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE)
-
-
-
-    if(ligne==FALSE){
-      sim_ABCD_DHP <- sim_ABCD_DHP %>%
-        pivot_wider(names_from = Produit, values_from = VolBillonM3) %>%
-        select(c(Placette,Annee,Iter,PlacetteID, Residuel,ArbreID,NoArbre,Espece,GrEspece,Etat
-                 , Nombre,DHPcm,hauteur_pred,Stm2ha,vol_dm3, F1,F2,F3,F4,P))
-
-    }else{
-
-    sim_ABCD_DHP <- sim_ABCD_DHP %>%
-      select(c(Placette,Annee,Iter,PlacetteID, Residuel,ArbreID,NoArbre,Espece,GrEspece,Etat
-               , Nombre,DHPcm,hauteur_pred,Stm2ha,vol_dm3,Produit,VolBillonM3))
-}
->>>>>>> b94f2e0b27c75aca56b5a71f6751dc8b5bcebc0f
-
-
-  }else{      ######## DHP ##########
-
-
-    Para<-ParaPetroFinal_dhp
-    CovParms<-CovParmPetro_DHP
-
-    CovParms <- CovParms %>% filter(Cov>0)
-
-  Vol_Billon<-Para %>%
-    filter(Module=="Vol") %>%
-    mutate(betaVol=ParameterEstimate) %>%
-    select(-Module,-ParameterEstimate) %>%
-    group_by(Essence_billon, Produit) %>%
-    pivot_wider(names_from = Effet, values_from  = betaVol, names_prefix = "Vol")
-
-  Pres_Billon <- Para %>%
-    filter(Module=="Pres") %>%
-    mutate(betaPres=ParameterEstimate) %>%
-    select(-Module,-ParameterEstimate) %>%
-    group_by(Essence_billon, Produit) %>%
-    pivot_wider(names_from = Effet, values_from  = betaPres, names_prefix = "Pres") %>%
-    full_join(Vol_Billon, by=c("Essence_billon","Produit", "eco"),relationship = "many-to-many") %>%
-    mutate(Presdhpcm2__classepetro=ifelse(is.na(Presdhpcm2__classepetro)==TRUE,0,Presdhpcm2__classepetro),
-           Voldhpcm2_classepetro=ifelse(is.na(Voldhpcm2_classepetro)==TRUE,0,Voldhpcm2_classepetro))
-  names(Pres_Billon)
-
-  par_eco <- Pres_Billon %>%
-    filter(!is.na(eco)) %>%
-    select(c(Essence_billon, Produit, eco, Presclassepetro_eco, Volclassepetro_eco))
-
-  par_num <- Pres_Billon %>%
-    filter(is.na(eco)) %>%
-    select(c(Essence_billon, Produit, Presdhpcm__classepetro, Presdhpcm2__classepetro, Voldhpcm_classepetro, Voldhpcm2_classepetro))
-
-
-
-  sim_ABCD_DHP <- data %>%
-
-    mutate(Essence_billon=Espece) %>% #ajout
-    filter(Essence_billon %in% c("ERS", "BOJ")) %>%
-    left_join(par_eco, by=c("Essence_billon", "eco"), relationship = "many-to-many") %>%
-    #left_join(par_qual, by=c("Essence_billon", "CLASSE_DE_"="QualiteABCD", "Produit")) %>%
-    left_join(par_num, by=c("Essence_billon", "Produit")) %>%
-    inner_join(CovParms, by=c("Essence_billon", "Produit")) %>%
-    mutate(Cov=ifelse(is.na(Cov)==TRUE,0,Cov)) %>%
-    mutate(BetaPres= Presclassepetro_eco+
-             (DHPcm/10)*Presdhpcm__classepetro+ #mise a l'echelle du dhp
-             (DHPcm/10)^2*Presdhpcm2__classepetro, #mise a l'echelle du dhp
-           BetaVol=  Volclassepetro_eco+
-             DHPcm*Voldhpcm_classepetro+
-             DHPcm^2*Voldhpcm2_classepetro,
-           Pres=exp(BetaPres)/(1+exp(BetaPres)),
-           Vol=exp(BetaVol+0.5*Cov),
-           VolBillonM3=Pres*Vol)
-
-
-  sim_ABCD_DHP <- sim_ABCD_DHP %>%
-<<<<<<< HEAD
-    mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE) %>%
-    select(Annee,Residuel,ArbreID,NoArbre,Placette,Nombre,GrEspece,Espece,
-           Etat,DHPcm,Iter,MSCR,hauteur_pred,vol_dm3,Produit,VolBillonM3,Stm2ha,Sup_PE) %>%
-    relocate(Annee, PlacetteID,Residuel,ArbreID,NoArbre)
-    #rename( "F1" = "vm3_F1")
-=======
-    mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE)
-
->>>>>>> b94f2e0b27c75aca56b5a71f6751dc8b5bcebc0f
-
-
-  if(ligne==0){
-  sim_ABCD_DHP <- sim_ABCD_DHP %>%
-  pivot_wider(names_from = Produit, values_from = VolBillonM3) %>%
-    select(c(Placette,Annee,Iter,PlacetteID, Residuel,ArbreID,NoArbre,Espece,GrEspece,Etat
-             , Nombre,DHPcm,hauteur_pred,Stm2ha,vol_dm3, F1,F2,F3,F4,P))
+    non_regional_2015 <- data %>% filter(!Espece %in% c("ERS", "BOJ"))
+    non_regional_2015_result <- ABCD_DHP215(data=regional, type =type)
+    final <-merge(regional_result,regional_result)
 
   }else{
 
-  sim_ABCD_DHP <- sim_ABCD_DHP %>%
-    select(c(Placette,Annee,Iter,PlacetteID, Residuel,ArbreID,NoArbre,Espece,GrEspece,Etat
-             , Nombre,DHPcm,hauteur_pred,Stm2ha,vol_dm3,Produit,VolBillonM3))
-
-}
+    final <- ABCD_DHP215(data=data, type =type)
   }
 
 
-  return (sim_ABCD_DHP )
+
+  # filtrer <23 cm DHP
+  # data<- data %>% filter(DHPcm >23)
+  #
+  # if(!"eco" %in% colnames(data)){
+  #   data <-ConvertisseurEco(data)
+  # }
+  #
+  # registerDoFuture()
+  #
+  # batch_size <- 10  # Taille de chaque lot
+  # n <- nrow(data)
+  # batch_indices <- split(1:n, ceiling(seq_along(1:n) / batch_size))
+  #
+  # sim_ABCD_DHPt <- future_sapply(batch_indices, function(indices) {
+  #   batch_df <- data[indices, , drop = FALSE]
+  #   ABCD_DHP(data = batch_df)
+  # }, simplify = FALSE)
+  #
+  # resultbionage <- do.call(rbind, sim_ABCD_DHPt)
+
+
+
+
+
+  return (final )
+
 
 }
