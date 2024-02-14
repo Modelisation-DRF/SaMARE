@@ -1,4 +1,4 @@
-Placette;NoArbre;Espece;Vigueur;Nombre;DHPcm;Etat;Annee_Coupe;Latitude;Longitude;Altitude;Ptot;Tmoy;Reg_Eco;Type_Eco;ntrt;Sup_PE;Pente;GrwDays;MSCR
+PlacettE;NoArBre;EsPecE;VigueuR;NombrE;DHPcm;Etat;Annee_Coupe;Latitude;Longitude;Altitude;Ptot;Tmoy;Reg_Eco;Type_Eco;ntrt;Sup_PE;Pente;GrwDays;MSCR
 TEM23APC5000;1;ERS;4;0.906;18.70000076;10;2021;46.7;-75;360;1145;2.3;3b;FE32;1;0.04;5;100;
 TEM23APC5000;2;HEG;2;0.918;22.10000038;10;2021;46.7;-75;360;1145;2.3;3b;FE32;1;0.04;5;100;
 TEM23APC5000;3;ERS;4;0.918;21;10;2021;46.7;-75;360;1145;2.3;3b;FE32;1;0.04;5;100;
