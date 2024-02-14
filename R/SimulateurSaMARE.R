@@ -28,7 +28,7 @@
 #' @examples
 
 
-SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
+SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA, Evolution_Qualite){
   select=dplyr::select
 ################################ Lecture des fichiers de placette et de parametres ###################
 
@@ -143,7 +143,7 @@ Simul<- bind_rows(
             Gaules=Gaules, ListeIter=ListeIter[ListeIter$PlacetteID==x,],
             AnneeDep=AnneeDep,Horizon=Horizon,RecruesGaules=RecruesGaules,
             CovParms=CovParms,CovParmsGaules=CovParmsGaules,
-            Para=Para,ParaGaules=ParaGaules,Omega=Omega, OmegaGaules=OmegaGaules)}
+            Para=Para,ParaGaules=ParaGaules,Omega=Omega, OmegaGaules=OmegaGaules, Evolution_Qualite = Evolution_Qualite)}
 )
 
 
