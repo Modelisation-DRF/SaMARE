@@ -167,25 +167,14 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   #Création de la placette de simulation
 
-  if (Evolution_Qualite==1){
-  Plac<-PlacOri %>%
+   Plac<-PlacOri %>%
     filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
     mutate(Etat="vivant",ArbreID=seq(1:n())) %>%
     select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
            DHPcm,Nombre,Vigueur,Iter,MSCR,ABCD)
-  }
-
-  if (Evolution_Qualite==0){
-    Plac<-PlacOri %>%
-      filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
-      mutate(Etat="vivant",ArbreID=seq(1:n())) %>%
-      select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
-             DHPcm,Nombre,Vigueur,Iter,MSCR)
-  }
 
 
-
-  #Placette Gaules de simulation
+   #Placette Gaules de simulation
   if (RecruesGaules==1){
 
     PlacGaules<-Gaules %>%
@@ -427,19 +416,11 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
       # Initialisation du fichier qui contiendra les résultats de simulation de la placette
       #  et les données au début de la simulation
 
-     if (Evolution_Qualite==1){
+
       outputTot<-Plac %>%
         mutate(Annee=AnneeDep) %>%
         select(Placette, Annee, ArbreID, NoArbre, Nombre, GrEspece,
                Espece, Etat, DHPcm, vigu0, prod0, ABCD,Iter)
-     }
-
-     if (Evolution_Qualite==0){
-       outputTot<-Plac %>%
-         mutate(Annee=AnneeDep) %>%
-         select(Placette, Annee, ArbreID, NoArbre, Nombre, GrEspece,
-                Espece, Etat, DHPcm, vigu0, prod0, Iter)
-     }
 
 
       # Mise en forme des statistiques de gaules qui seront mises à jour par la suite
@@ -754,15 +735,10 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
     }
 
 
-    if (Evolution_Qualite==1){
+
     Plac<-Plac %>%
       select(Placette,Annee,ArbreID,NoArbre,Nombre,GrEspece,Espece,Etat1,DHPcm1,
              vigu1,prod1,ABCD,Iter) ######Mise en forme de Plac pour fusion avec recrues
-    }else{
-      Plac<-Plac %>%
-        select(Placette,Annee,ArbreID,NoArbre,Nombre,GrEspece,Espece,Etat1,DHPcm1,
-               vigu1,prod1,Iter)
-    }
 
 
 
