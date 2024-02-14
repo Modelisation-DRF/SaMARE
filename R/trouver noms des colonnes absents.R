@@ -3,7 +3,7 @@ trouver_noms_absents <- function(Data) {
 
   ColOrdre<-c("Placette","NoArbre","Espece","Etat","DHPcm","Vigueur","Nombre",
               "Sup_PE","Annee_Coupe","Latitude","Longitude","Altitude","Pente","Ptot","Tmoy",
-              "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt")
+              "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt","ABCD")
 
   names(Data) <- tolower(names(Data))
 
@@ -12,6 +12,7 @@ trouver_noms_absents <- function(Data) {
   noms_absents <- setdiff(colone_minuscule, names(Data))
 
   return(noms_absents)
+
 }
 
 
@@ -19,7 +20,7 @@ renommer_les_colonnes <- function(data){
 
   ColOrdre<-c("Placette","NoArbre","Espece","Etat","DHPcm","Vigueur","Nombre",
               "Sup_PE","Annee_Coupe","Latitude","Longitude","Altitude","Pente","Ptot","Tmoy",
-              "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt")
+              "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt","ABCD")
 
   noms_colonnes_existants <- tolower(names(data))
   noms_colonnes_desires <- tolower(ColOrdre)
