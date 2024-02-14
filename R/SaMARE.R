@@ -45,7 +45,7 @@
 
 
 SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horizon,
-                  RecruesGaules,CovParms,CovParmsGaules,Para,ParaGaules,Omega,OmegaGaules){
+                  RecruesGaules,CovParms,CovParmsGaules,Para,ParaGaules,Omega,OmegaGaules,Evolution_Qualite){
   select=dplyr::select
   t<-5
 
@@ -87,16 +87,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
     mutate(Iter=1)
 
 
-  ########################Parametres par modules
-  # 1;mort
-  # 2;accroissement
-  # 3;vigeur
-  # 4;produit
-  # 5;recrutement_n
-  # 6;recrutement_dbh
-  # 7;recrutement_vigor
-  # 8;recrutement_product
-  # 9;MSCR n'est pas actuellement programmé
+  ########################Calcul des parametres des modules
+
   Para.mort<-ParaOmega(ModuleID = 1,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
    Para.acc<-ParaOmega(ModuleID = 2,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.vig<-ParaOmega(ModuleID = 3,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
@@ -105,20 +97,12 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   Para.rec_dhp<-ParaOmega(ModuleID = 6,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.rec_vig<-ParaOmega(ModuleID = 7,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.rec_prod<-ParaOmega(ModuleID = 8,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  #Para.mscr<-ParaOmega(ModuleID = 9,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=NbIter)
   Para.ConvMSCRVig<-ParaOmega(ModuleID = 17,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.ConvMSCRProd1024<-ParaOmega(ModuleID = 18,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.ConvMSCRProd24<-ParaOmega(ModuleID = 19,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
 
-    #
-  # #########Gaules
-  # # 10;recrutement
-  # # 11;nombre total de gaules
-  # # 12;ratio especes nombre de gaules
-  # # 13;nombre de gaules de 6 et 8 cm ERS
-  # # 14;nombre de gaules de 6 et 8 cm HEG
-  # # 15;nombre de gaules de 6 et 8 cm BOJ
-  # # 16;nombre de gaules de 6 et 8 cm SAB
+  ###################Calcul des parametres des gaules
+
   Para.rec_gaules<-ParaOmega(ModuleID = 10,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.nb_gaules<-ParaOmega(ModuleID = 11,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.ratio_gaules<-ParaOmega(ModuleID = 12,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
@@ -127,16 +111,77 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   Para.68_BOJ<-ParaOmega(ModuleID = 15,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.68_SAB<-ParaOmega(ModuleID = 16,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
 
+  ###################Calcul des parametres d'es'evolution de la qualite
+
+  if (Evolution_Qualite==1){
+
+    ParaBOJ<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="BOJ"),]
+    ParaERR<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="ERR"),]
+    ParaERS<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="ERS"),]
+    ParaFEN<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="FEN"),]
+    ParaHEG<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="HEG"),]
+
+    OmegaBOJ<-OmegaEvolQual[which(OmegaEvolQual$Ess_groupe=="BOJ"),]
+    OmegaERR<-OmegaEvolQual[which(OmegaEvolQual$Ess_groupe=="ERR"),]
+    OmegaERS<-OmegaEvolQual[which(OmegaEvolQual$Ess_groupe=="ERS"),]
+    OmegaFEN<-OmegaEvolQual[which(OmegaEvolQual$Ess_groupe=="FEN"),]
+    OmegaHEG<-OmegaEvolQual[which(OmegaEvolQual$Ess_groupe=="HEG"),]
+
+
+    Para.EvolQualBOJ1<-ParaOmega(ModuleID = 1,ParaOri=ParaBOJ, ParaIter=ParaBOJ,Omega=OmegaBOJ,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualBOJ2<-ParaOmega(ModuleID = 2,ParaOri=ParaBOJ, ParaIter=ParaBOJ,Omega=OmegaBOJ,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualBOJ3<-ParaOmega(ModuleID = 3,ParaOri=ParaBOJ, ParaIter=ParaBOJ,Omega=OmegaBOJ,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualERR1<-ParaOmega(ModuleID = 1,ParaOri=ParaERR, ParaIter=ParaERR,Omega=OmegaERR,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualERR2<-ParaOmega(ModuleID = 2,ParaOri=ParaERR, ParaIter=ParaERR,Omega=OmegaERR,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualERS1<-ParaOmega(ModuleID = 1,ParaOri=ParaERS, ParaIter=ParaERS,Omega=OmegaERS,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualERS2<-ParaOmega(ModuleID = 2,ParaOri=ParaERS, ParaIter=ParaERS,Omega=OmegaERS,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualERS3<-ParaOmega(ModuleID = 3,ParaOri=ParaERS, ParaIter=ParaERS,Omega=OmegaERS,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualFEN1<-ParaOmega(ModuleID = 1,ParaOri=ParaFEN, ParaIter=ParaFEN,Omega=OmegaFEN,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualFEN2<-ParaOmega(ModuleID = 2,ParaOri=ParaFEN, ParaIter=ParaFEN,Omega=OmegaFEN,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualHEG1<-ParaOmega(ModuleID = 1,ParaOri=ParaHEG, ParaIter=ParaHEG,Omega=OmegaHEG,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualHEG2<-ParaOmega(ModuleID = 2,ParaOri=ParaHEG, ParaIter=ParaHEG,Omega=OmegaHEG,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualHEG3<-ParaOmega(ModuleID = 3,ParaOri=ParaHEG, ParaIter=ParaHEG,Omega=OmegaHEG,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+
+    Para.EvolQual<-list(Para.EvolQualBOJ1,Para.EvolQualBOJ2,Para.EvolQualBOJ3,Para.EvolQualERR1,Para.EvolQualERR2,Para.EvolQualERS1,
+                        Para.EvolQualERS2,Para.EvolQualERS3,Para.EvolQualFEN1,Para.EvolQualFEN2,Para.EvolQualHEG1,Para.EvolQualHEG2,
+                        Para.EvolQualHEG3)
+   Para.EvolQualTot<-c()
+
+  for(i in 1:13){
+
+    Parai<-Para.EvolQual[[i]][,3]
+    Parai<-Parai[which(Parai$ParameterEstimate!=0),]
+    Para.EvolQualTot<- rbind(Para.EvolQualTot,Parai)
+
+  }
+
+   rm(ParaBOJ,ParaERR,ParaERS,ParaFEN,ParaHEG,OmegaBOJ,OmegaERR,OmegaERS,OmegaFEN,OmegaHEG,Para.EvolQualBOJ1,Para.EvolQualBOJ2,
+      Para.EvolQualBOJ3,Para.EvolQualERR1,Para.EvolQualERR2,Para.EvolQualERS1,Para.EvolQualERS2,Para.EvolQualERS3,Para.EvolQualFEN1,
+      Para.EvolQualFEN2,Para.EvolQualHEG1,Para.EvolQualHEG2,Para.EvolQualHEG3,Para.EvolQual)
+
+
+  }
 
 
 
 
   #Création de la placette de simulation
+
+  if (Evolution_Qualite==1){
   Plac<-PlacOri %>%
     filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
     mutate(Etat="vivant",ArbreID=seq(1:n())) %>%
     select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
-           DHPcm,Nombre,Vigueur,Iter,MSCR)
+           DHPcm,Nombre,Vigueur,Iter,MSCR,ABCD)
+  }
+
+  if (Evolution_Qualite==0){
+    Plac<-PlacOri %>%
+      filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
+      mutate(Etat="vivant",ArbreID=seq(1:n())) %>%
+      select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
+             DHPcm,Nombre,Vigueur,Iter,MSCR)
+  }
 
 
 
@@ -192,7 +237,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   rid1<-ifelse(reg %in% c("2a","2b","2c"),"2o",ifelse(reg %in% c("4a","4b","4c"),"4o",
                                                       ifelse(reg %in% c("4d","4e","4f","4g","4h"),"4e",reg))) %>%
-    ifelse(!. %in% c("2o","3a","3b","3c","3d","4e","4o"),NA,.)
+    ifelse(!. %in% c("2o","3a","3b","3c","3d","4e","4o","DU","SV"),NA,.)  #Ajouté DU et SV qui manquaient
   teco<-PlacOri$Type_Eco[1]
 
   vegp<-substr(PlacOri$Type_Eco[1],1,3)
@@ -382,10 +427,20 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
       # Initialisation du fichier qui contiendra les résultats de simulation de la placette
       #  et les données au début de la simulation
 
+     if (Evolution_Qualite==1){
       outputTot<-Plac %>%
         mutate(Annee=AnneeDep) %>%
         select(Placette, Annee, ArbreID, NoArbre, Nombre, GrEspece,
-               Espece, Etat, DHPcm, vigu0, prod0, Iter)
+               Espece, Etat, DHPcm, vigu0, prod0, ABCD,Iter)
+     }
+
+     if (Evolution_Qualite==0){
+       outputTot<-Plac %>%
+         mutate(Annee=AnneeDep) %>%
+         select(Placette, Annee, ArbreID, NoArbre, Nombre, GrEspece,
+                Espece, Etat, DHPcm, vigu0, prod0, Iter)
+     }
+
 
       # Mise en forme des statistiques de gaules qui seront mises à jour par la suite
 
@@ -526,6 +581,22 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
         right_join(Plac) %>%
         mutate(prod1=as.character(ifelse(prod0=="resineux","resineux",prod1))) %>%
         arrange(ArbreID))
+
+
+    #############################Evolution Qualite##############################
+
+    if (Evolution_Qualite==1){
+
+      TigesQual<-EvolQual(Plac,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot)
+
+      suppressMessages(
+      Plac<-Plac %>%
+            left_join(TigesQual) %>%
+            mutate(ABCD=ABCD1) %>%
+            select(-ABCD1))
+
+}
+
 
     ##################RECRUTEMENT##################################################
 
@@ -683,9 +754,16 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
     }
 
 
+    if (Evolution_Qualite==1){
     Plac<-Plac %>%
       select(Placette,Annee,ArbreID,NoArbre,Nombre,GrEspece,Espece,Etat1,DHPcm1,
-             vigu1,prod1,Iter) ######Mise en forme de Plac pour fusion avec recrues
+             vigu1,prod1,ABCD,Iter) ######Mise en forme de Plac pour fusion avec recrues
+    }else{
+      Plac<-Plac %>%
+        select(Placette,Annee,ArbreID,NoArbre,Nombre,GrEspece,Espece,Etat1,DHPcm1,
+               vigu1,prod1,Iter)
+    }
+
 
 
 
@@ -714,7 +792,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
                eijk=rnorm(n(),mean=0,sd=sqrt(varRecDhp*pred_dhp^theta)),
                DHPcm1=((pred_dhp+RandomRecDhp$RandomPlac+RandomRecDhp$RandomStep+eijk)^2+90)/10) %>%
         select(ArbreID,GrEspece,DHPcm1)
-
+       RecSelect$DHPcm1<-RecSelect$DHPcm1[,1]
 
       ########################Vigueur des recrues#####################################
       RandomRecVig<-RandPlacetteStep %>% filter(SubModuleID==7)
@@ -726,6 +804,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
                  (1+exp(pred_vig+RandomRecVig$RandomPlac+RandomRecVig$RandomStep)),
                vigu1=ifelse(AleaVig<=predVigRand,"ViG","NONVIG")) %>%
         select(ArbreID,GrEspece,DHPcm1,vigu1)
+      RecSelect$vigu1<-RecSelect$vigu1[,1]
 
 
       #######################Produit des recrues#####################################
@@ -764,7 +843,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
                Etat1="recrue", Nombre=Sup_PE/0.25, Iter=PlacOri$Iter[1])
 
       Plac<-Plac %>%
-        rbind(RecSelect)
+       bind_rows(RecSelect)
 
     }  #######Fin du recrutement
 
