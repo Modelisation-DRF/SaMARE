@@ -6,7 +6,7 @@
 
 
 
-#' @param Plac Un dataframe qui contient les arbres pour lesquels on veut
+#' @param PlacQual Un dataframe qui contient les arbres pour lesquels on veut
 #'             prévoir l'évolution de la classe de qualité des arbres.
 #' @param type_pe_Plac Variable indicatrice de la taille de la placette soit
 #'                      400 m2, soit entre 2500 et 5000 m2 inclusivement ou
@@ -21,17 +21,16 @@
 #' @examples
 #'
 
-EvolQual<-function(Plac,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot){
+EvolQual<-function(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot){
   select=dplyr::select
 
-  PlacQual<-Plac %>%
-            filter(ABCD %in% c("A","B","C","D") & Etat=="vivant") %>%
-            mutate(GrDHP=ifelse(DHPcm1<31.1,"C",ifelse(DHPcm1>=39.1 & GrEspece %in% c("BOJ","ERS","HEG"),"A","B"))) %>%
-            mutate(dtr=ifelse((DHPcm<31.1 & DHPcm1>=31.1) | (DHPcm<39.1 & DHPcm1>=39.1 & GrEspece %in% c("BOJ","ERS","HEG")),1,0),
+  PlacQual<-PlacQual %>%
+            mutate(GrDHP=ifelse(DHPcm1<33.1,"C",ifelse(DHPcm1>=39.1 & GrEspece %in% c("BOJ","ERS","HEG"),"A","B"))) %>%
+            mutate(dtr=ifelse((DHPcm<33.1 & DHPcm1>=33.1) | (DHPcm<39.1 & DHPcm1>=39.1 & GrEspece %in% c("BOJ","ERS","HEG")),1,0),
                    Intercept=1) %>%
             mutate(ABCD=ifelse(GrEspece %in% c("ERR","FIN","FEN") & ABCD=="A","B",ABCD))
 
-  PlacQualB<-PlacQual %>% filter(DHPcm1>=31.1) %>% mutate(Intercept=2)
+  PlacQualB<-PlacQual %>% filter(DHPcm1>=33.1) %>% mutate(Intercept=2)
   PlacQualA<-PlacQual %>% filter(DHPcm1>=39.1 & GrEspece %in% c("BOJ","ERS","HEG")) %>% mutate(Intercept=3)
   PlacQual=rbind(PlacQual,PlacQualB,PlacQualA) %>% arrange(ArbreID,Intercept)
 
