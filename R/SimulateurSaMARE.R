@@ -28,7 +28,7 @@
 #' @examples
 
 
-SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA, Evolution_Qualite){
+SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
   select=dplyr::select
 ################################ Lecture des fichiers de placette et de parametres ###################
 
@@ -75,7 +75,7 @@ ListeSp<- merge(MatchSpGroups,SpGroups, by="SpeciesGroupID") %>%
 # Fichier des arbres
 ColOrdre<-c("Placette","NoArbre","Espece","GrEspece","Etat","DHPcm","Vigueur","Nombre",
             "Sup_PE","Annee_Coupe","Latitude","Longitude","Altitude","Pente","Ptot","Tmoy",
-            "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt")
+            "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt","ABCD")
 
 Data<-Data %>%
   left_join(ListeSp)
@@ -143,7 +143,7 @@ Simul<- bind_rows(
             Gaules=Gaules, ListeIter=ListeIter[ListeIter$PlacetteID==x,],
             AnneeDep=AnneeDep,Horizon=Horizon,RecruesGaules=RecruesGaules,
             CovParms=CovParms,CovParmsGaules=CovParmsGaules,
-            Para=Para,ParaGaules=ParaGaules,Omega=Omega, OmegaGaules=OmegaGaules, Evolution_Qualite = Evolution_Qualite)}
+            Para=Para,ParaGaules=ParaGaules,Omega=Omega, OmegaGaules=OmegaGaules)}
 )
 
 

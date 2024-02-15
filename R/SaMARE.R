@@ -45,7 +45,7 @@
 
 
 SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horizon,
-                  RecruesGaules,CovParms,CovParmsGaules,Para,ParaGaules,Omega,OmegaGaules,Evolution_Qualite){
+                  RecruesGaules,CovParms,CovParmsGaules,Para,ParaGaules,Omega,OmegaGaules){
   select=dplyr::select
   t<-5
 
@@ -111,9 +111,22 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   Para.68_BOJ<-ParaOmega(ModuleID = 15,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.68_SAB<-ParaOmega(ModuleID = 16,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
 
-  ###################Calcul des parametres d'es'evolution de la qualite
+ ##########################Création de la placette de simulation
 
-  if (Evolution_Qualite==1){
+  Plac<-PlacOri %>%
+    filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
+    mutate(Etat="vivant",ArbreID=seq(1:n())) %>%
+    select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
+           DHPcm,Nombre,Vigueur,Iter,MSCR,ABCD)
+
+
+
+   ###################Calcul des parametres d'es'evolution de la qualite
+
+  PlacQual<-Plac %>%
+    filter(ABCD %in% c("A","B","C","D") & Etat=="vivant")
+
+  if (nrow(PlacQual)>1){
 
     ParaBOJ<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="BOJ"),]
     ParaERR<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="ERR"),]
@@ -162,16 +175,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   }
 
-
-
-
-  #Création de la placette de simulation
-
-   Plac<-PlacOri %>%
-    filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
-    mutate(Etat="vivant",ArbreID=seq(1:n())) %>%
-    select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
-           DHPcm,Nombre,Vigueur,Iter,MSCR,ABCD)
+  rm(PlacQual)
 
 
    #Placette Gaules de simulation
@@ -566,18 +570,21 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
     #############################Evolution Qualite##############################
 
-    if (Evolution_Qualite==1){
+    PlacQual<-Plac %>%
+      filter(ABCD %in% c("A","B","C","D") & Etat=="vivant")
 
-      TigesQual<-EvolQual(Plac,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot)
+    if (nrow(PlacQual)>0){
 
+      TigesQual<-EvolQual(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot)
       suppressMessages(
-      Plac<-Plac %>%
-            left_join(TigesQual) %>%
-            mutate(ABCD=ABCD1) %>%
-            select(-ABCD1))
+        Plac<-Plac %>%
+          left_join(TigesQual) %>%
+          mutate(ABCD=ABCD1) %>%
+          select(-ABCD1))
 
-}
+    }
 
+    rm(PlacQual)
 
     ##################RECRUTEMENT##################################################
 
