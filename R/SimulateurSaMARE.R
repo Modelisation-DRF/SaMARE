@@ -32,7 +32,7 @@ SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
   select=dplyr::select
 ################################ Lecture des fichiers de placette et de parametres ###################
 
-Parametres_SimulSaMARE <-ParametresSimulSaMARE()
+# Parametres_SimulSaMARE <-ParametresSimulSaMARE()
 
 # Fichier des effets aleatoires
 CovParms<-MatchModuleCovparms
