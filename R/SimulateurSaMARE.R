@@ -35,32 +35,32 @@ SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
 Parametres_SimulSaMARE <-ParametresSimulSaMARE()
 
 # Fichier des effets aleatoires
-CovParms<-Parametres_SimulSaMARE[[1]]
-EfCovParms<-Parametres_SimulSaMARE[[2]]
+CovParms<-MatchModuleCovparms
+EfCovParms<-EffetCovParms
 
-CovParmsGaules<-Parametres_SimulSaMARE[[3]]
+CovParmsGaules<-CovparmGaules
 
 ####### Fichier des parametres
-Para<-Parametres_SimulSaMARE[[4]]
+Para<-MatchModuleParameters
 
 Para <- Para %>%
   mutate(Effect = str_to_lower(Effect)) %>%
   rename(GrEspece=Ess_groupe) %>%
    select(-VegPotID,-Veg_Pot)
 
-ParaGaules<-Parametres_SimulSaMARE[[5]] %>%
+ParaGaules<-ParametresGaules %>%
   rename(GrEspece=Ess_groupe)
 
 # Fichier des especes
-Sp<-Parametres_SimulSaMARE[[6]]
-SpGroups<-Parametres_SimulSaMARE[[7]]
+Sp<-Species
+SpGroups<-SpeciesGroups
 # Fichier des especes dans chacun des groupes d'especes
-MatchSpGroups<-Parametres_SimulSaMARE[[8]]
+MatchSpGroups<-MatchSpeciesGroups
 
 #Omega
-Omega<-Parametres_SimulSaMARE[[9]]
-OmegaGaules<-Parametres_SimulSaMARE[[10]]
+Omega<-MatchModuleOmega
 
+OmegaGaules<-OmegaGaulesFormat
 
 ############################# Construction de vecteurs pour simulation ##############################
 
