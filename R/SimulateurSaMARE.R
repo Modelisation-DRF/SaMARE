@@ -32,8 +32,6 @@ SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
   select=dplyr::select
 ################################ Lecture des fichiers de placette et de parametres ###################
 
-# Parametres_SimulSaMARE <-ParametresSimulSaMARE()
-
 # Fichier des effets aleatoires
 CovParms<-MatchModuleCovparms
 EfCovParms<-EffetCovParms
@@ -132,8 +130,6 @@ ListeIter<-Data %>%
 
 
 
-ListeIterBck<-ListeIter
-
 registerDoFuture()
 list_plot <- unique(ListeIter$PlacetteID)
 plan(multisession)
@@ -175,8 +171,6 @@ Simul<- bind_rows(
 #
 
 
-
-
 VarEco<-Data %>%
   group_by(Placette) %>%
   summarise(Sup_PE=first(Sup_PE),reg_eco=first(Reg_Eco),Type_Eco=first(Type_Eco),
@@ -190,29 +184,30 @@ Simul<-Simul %>%
          altitude=Altitude,p_tot=Ptot,t_ma=Tmoy, iter=Iter)
 
 
-nb_iter <- length(unique(Simul$iter))
+SimulHtVol1<-Simul[which(Simul$Residuel==0),]
+nb_iter <- length(unique(SimulHtVol1$iter))
 nb_periodes <- Horizon+1
-listeAnnee<-unique(Simul$Annee)
-parametre_ht <- param_ht(fic_arbres=Simul, mode_simul='STO', nb_iter=nb_iter, nb_step=(nb_periodes)) ###Nombre plus 1 pour tenir compte de l'année initiale
-para_volume<-param_vol(Simul,mode_simul="STO", nb_iter=nb_iter)
+listeAnnee<-unique(SimulHtVol1$Annee)
+parametre_ht <- param_ht(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=(nb_periodes)) ###Nombre plus 1 pour tenir compte de l'année initiale
+para_volume<-param_vol(SimulHtVol1,mode_simul="STO", nb_iter=nb_iter)
 # ouverture de session en parralèle
 registerDoFuture()
 plan(multisession)
-SimulHtVol1 <- bind_rows(
+SimulHtVol2 <- bind_rows(
   foreach (i = 1:(nb_iter)) %:%
     foreach (k = 1:(nb_periodes)) %dopar%{
-      ht <- relation_h_d(fic_arbres=Simul[Simul$iter==i & Simul$Annee==listeAnnee[k] & Simul$Etat!="mort",], mode_simul='STO',
+      ht <- relation_h_d(fic_arbres=SimulHtVol1[SimulHtVol1$iter==i & SimulHtVol1$Annee==listeAnnee[k] & SimulHtVol1$Etat!="mort",], mode_simul='STO',
                          iteration=i, step=k, parametre_ht=parametre_ht, reg_eco=TRUE)
       ht<-  cubage(ht, mode_simul="STO", iteration=i, parametre_vol=para_volume)
     }
 )
 
-
-SimulHtVol1<-SimulHtVol1[,c("id_pe","Annee","iter","no_arbre","hauteur_pred","vol_dm3")] ###Garde juste les variables de hauteur et volume pour
+rm(SimulHtVol1)
+SimulHtVol2<-SimulHtVol2[,c("id_pe","Annee","iter","no_arbre","hauteur_pred","vol_dm3")] ###Garde juste les variables de hauteur et volume pour
 ###joindre avec Simul pour garder les morts
 
 SimulHtVol<-Simul %>%
-  left_join(SimulHtVol1, by=c("id_pe","Annee","no_arbre","iter")) %>%
+  left_join(SimulHtVol2, by=c("id_pe","Annee","no_arbre","iter")) %>%
   rename(Placette=id_pe, DHPcm=dhpcm, GrEspece=essence,ArbreID=no_arbre,
          Altitude=altitude,Ptot=p_tot,Tmoy=t_ma, Iter=iter) %>%
   mutate(PlacetteID=paste(Placette,"_",Iter, sep=""))

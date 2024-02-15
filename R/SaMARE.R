@@ -126,7 +126,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   PlacQual<-Plac %>%
     filter(ABCD %in% c("A","B","C","D") & Etat=="vivant")
 
-  if (nrow(PlacQual)>1){
+  if (nrow(PlacQual)>=1){
 
     ParaBOJ<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="BOJ"),]
     ParaERR<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="ERR"),]
