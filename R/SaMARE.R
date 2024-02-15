@@ -114,10 +114,10 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
  ##########################Création de la placette de simulation
 
   Plac<-PlacOri %>%
-    filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
-    mutate(Etat="vivant",ArbreID=seq(1:n())) %>%
-    select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
-           DHPcm,Nombre,Vigueur,Iter,MSCR,ABCD)
+        filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
+        mutate(Etat=ifelse(Etat==11,"martelé","vivant"),ArbreID=seq(1:n())) %>%
+        select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
+                DHPcm,Nombre,Vigueur,Iter,MSCR,ABCD)
 
 
 
@@ -126,7 +126,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   PlacQual<-Plac %>%
     filter(ABCD %in% c("A","B","C","D") & Etat=="vivant")
 
-  if (nrow(PlacQual)>1){
+  if (nrow(PlacQual)>=1){
 
     ParaBOJ<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="BOJ"),]
     ParaERR<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="ERR"),]
@@ -203,12 +203,14 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   t0<-PlacOri$Annee_Coupe[1]
 
   #Variable du peuplement residuel avec condition que si St >26 = TEM
-  trt<-ifelse(is.na(PlacOri$Annee_Coupe[1])==TRUE,"TEM",
-              ifelse(AnneeDep-PlacOri$Annee_Coupe[1]<5 &
-                       (sum((Plac$DHPcm/200)^2*3.1416*Plac$Nombre)/Sup_PE)>26,"TEM","CP"))
+  trt<-ifelse(!is.null(length(Plac$Etat=="martelé")),"CP",
+                       ifelse(is.na(PlacOri$Annee_Coupe[1])==TRUE,"TEM",
+                               ifelse(AnneeDep-PlacOri$Annee_Coupe[1]<5 &
+                                       (sum((Plac$DHPcm/200)^2*3.1416*Plac$Nombre)/Sup_PE)>26,"TEM","CP")))
 
   #Nombre de traitements
-  ntrt=ifelse(trt=="CP",PlacOri$ntrt[1],0)
+  ntrt=ifelse(trt=="CP" & !is.null(length(Plac$Etat=="martelé")),PlacOri$ntrt[1]+1,
+              ifelse(trt=="CP",PlacOri$ntrt[1],0))
 
   #Type de placette
   type_pe_Plac<-ifelse(PlacOri$Sup_PE[1]==0.04,"type0",
@@ -252,26 +254,6 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   if(RecruesGaules==1){
     RandomPlacGaules<-RandomGaules %>% filter(Placette==PlacOri$Placette[1] & Iter==PlacOri$Iter[1])
   }
-  ######################## Résidus de l'arbre####################################
-
-  Periodes<-c("ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
-
-  Residus<-matrix(0,nrow=nrow(Plac),ncol=Horizon+1)
-
-  colnames(Residus)<-Periodes
-
-  Residus[,1]<-Plac$ArbreID
-
-  Residual<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Residual")]
-
-  Rho<-CovParms$ParameterEstimate[which(CovParms$CovParm=="RHO")]
-
-  Gamma<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Gamma")]
-
-  for (i in 1:Horizon){
-
-    Residus[,i+1]<-rnorm(nrow(Residus),mean=0,sqrt(Residual*Gamma*(Rho^(i-1))))
-  }
 
 
   ###############################################################################
@@ -297,7 +279,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
     if   (k==1){
 
       Plac <- Plac %>%
-        mutate(Annee=AnneeDep+k*t)
+        mutate(Annee=AnneeDep+t)
 
       ##################Atribution de vigueur et de produit##############
 
@@ -327,104 +309,54 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
             left_join(Vigu0) %>%
              left_join(Prod0))
 
-      # if (any(is.na(Plac$Vigueur)==FALSE)){
-      #
-      #   Placa <- Plac[which(is.na(Plac$Vigueur)==FALSE),] %>%
-      #     mutate(vigu0=ifelse(Vigueur %in% c(1,2,5),"ViG",ifelse(is.na(Vigueur)==FALSE,"NONVIG",NA))) %>%
-      #     mutate(prod0=ifelse(Vigueur %in% c(1,3),"sciage",
-      #                         ifelse(Vigueur %in% c(2,4),"pate","resineux")))
-      # }else{Placa=NULL}
-      #
-      #
-      # if (any(is.na(Plac$Vigueur)==TRUE & is.na(Plac$MSCR)==FALSE)){
-      #
-      #
-      #   predvigu0<-ConvMSCRVig(Plac[which(is.na(Plac$MSCR)==FALSE & is.na(Plac$Vigueur)==TRUE),],Para.ConvMSCRVig)
-      #
-      #   Placb<-Plac[which(is.na(Plac$MSCR)==FALSE & is.na(Plac$Vigueur)==TRUE),] %>%
-      #     mutate(vigu0=predvigu0,Alea=runif(n()),
-      #            vigu0=ifelse(vigu0>=Alea,"vig","NONVIG")) %>%
-      #     select(-Alea)
-      #
-      #   if (any(Placb$DHPcm <= 23.0)){
-      #
-      #     predprod1024<-ConvMSCRProd1024(Placb[which(Placb$DHPcm<23.1),],Para.ConvMSCRProd1024)
-      #
-      #     Placc<-Placb[which(Placb$DHPcm<23.1),] %>%
-      #       mutate(prod0=predprod1024,Alea=runif(n()),
-      #              prod0=ifelse(GrEspece %in% c("EPX","RES","SAB"),"resineux",
-      #                           ifelse(prod0>=Alea,"sciage","pate")))%>%
-      #       select(-Alea)
-      #
-      #   }else{Placc<-NULL}
-      #
-      #   if (any(Placb$DHPcm > 23.0)){
-      #
-      #     predprod024<-ConvMSCRProd24(Placb[which(Placb$DHPcm>=23.1),],Para.ConvMSCRProd24)
-      #
-      #     Placd<-Placb[which(Placb$DHPcm>=23.1),] %>%
-      #       mutate(prod0=predprod024,Alea=runif(n()),
-      #              prod0=ifelse(GrEspece %in% c("EPX","RES","SAB"),"resineux",
-      #                           ifelse(prod0>=Alea,"sciage","pate"))) %>%
-      #       select(-Alea)
-      #
-      #   }else{Placd<-NULL}
-      #
-      #   Place<-rbind(Placc,Placd)
-      #   rm(Placb,Placc,Placd)
-      #
-      # }else{Place<-NULL}
-      #
-      # if (any(is.na(Plac$Vigueur)==TRUE & is.na(Plac$MSCR)==TRUE)){
-      #
-      #   Placf<-Plac[which(is.na(Plac$MSCR)==TRUE & is.na(Plac$Vigueur)==TRUE),] %>%
-      #     mutate(vigu0="vig",prod0="pate")
-      # }else{Placf<-NULL}
-      #
-      # Plac<-rbind(Placa,Place,Placf)
-      # rm(Placa,Place,Placf)
 
-      # if (any(is.na(Plac$Vigueur) & !is.na(Plac$MSCR))){
-      #   predvigu0<-ConvMSCRVig(Plac,Para.ConvMSCRVig)
-      #
-      #   Plac<-Plac %>%
-      #     mutate(vigu0=predvigu0,Alea=runif(n()),
-      #            vigu0=ifelse(vigu0>=Alea,"vig","NONVIG")) %>%
-      #     select(-Alea)
-      #
-      #   if (any(Plac$DHPcm <= 23.0)){
-      #
-      #     predprod0<-ConvMSCRProd1024(Plac,Para.ConvMSCRProd1024)
-      #   }else {
-      #     predprod0<-ConvMSCRProd24(Plac,Para.ConvMSCRProd24)
-      #   }
-      #
-      #   Plac<-Plac %>%
-      #     mutate(prod0=predprod0,Alea=runif(n()),
-      #            prod0=ifelse(GrEspece %in% c("EPX","RES","SAB"),"resineux",
-      #                         ifelse(prod0>=Alea,"sciage","pate"))) %>%
-      #     select(-Alea)
-      #
-      # }else if (any(is.na(Plac$Vigueur) & is.na(Plac$MSCR))){
-      #   Plac$Vigueur =2
-      # }
-      #
-      #
-      # Plac <- Plac %>%
-      #    #Fixe à vigoureux sans sciage les arbres sans vigueur initiale majoritairement des Non commerciaux
-      #   mutate(vigu0=ifelse(Vigueur %in% c(1,2,5),"ViG","NONVIG")) %>%
-      #   mutate(prod0=ifelse(Vigueur %in% c(1,3),"sciage",
-      #                       ifelse(Vigueur %in% c(2,4),"pate","resineux"))) %>%
-      #   select(-Vigueur)
+########Dataframe avec les conditions initiales de la placette##############
 
-      # Initialisation du fichier qui contiendra les résultats de simulation de la placette
-      #  et les données au début de la simulation
-
-
-      outputTot<-Plac %>%
-        mutate(Annee=AnneeDep) %>%
+      outputInitial<-Plac %>%
+        mutate(Annee=AnneeDep,Residuel=0) %>%
         select(Placette, Annee, ArbreID, NoArbre, Nombre, GrEspece,
-               Espece, Etat, DHPcm, vigu0, prod0, ABCD,Iter)
+               Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter)
+
+     #######Modification placette et création de la mesure résiduelle si martelage
+
+         if ("martelé" %in% Plac$Etat){
+
+           outputInitial<-Plac %>%
+                          filter(Etat=="vivant") %>%
+                          mutate(Annee=AnneeDep,Residuel=1) %>%
+                          select(Placette, Annee, ArbreID, NoArbre, Nombre, GrEspece,
+                                  Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter) %>%
+                          rbind(outputInitial,.)
+
+       Plac<-Plac %>%
+              filter(Etat=="vivant") %>%
+              select(-MSCR)
+
+       t0=AnneeDep
+
+        }
+
+
+     ######################## Résidus de l'arbre####################################
+
+     Periodes<-c("ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
+
+     Residus<-matrix(0,nrow=nrow(Plac),ncol=Horizon+1)
+
+     colnames(Residus)<-Periodes
+
+     Residus[,1]<-Plac$ArbreID
+
+     Residual<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Residual")]
+
+     Rho<-CovParms$ParameterEstimate[which(CovParms$CovParm=="RHO")]
+
+     Gamma<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Gamma")]
+
+     for (i in 1:Horizon){
+
+       Residus[,i+1]<-rnorm(nrow(Residus),mean=0,sqrt(Residual*Gamma*(Rho^(i-1))))
+     }
 
 
       # Mise en forme des statistiques de gaules qui seront mises à jour par la suite
@@ -877,7 +809,9 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   suppressMessages(
   outputTot <- outputTot %>%
                left_join(MSCR) %>%
-               mutate(Residuel= ifelse(trt=="cp",1,0)))
+               mutate(Residuel=0) %>%
+              bind_rows(outputInitial,.))
+
 
 
   return(outputTot)
