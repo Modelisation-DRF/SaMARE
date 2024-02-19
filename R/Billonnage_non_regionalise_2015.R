@@ -103,8 +103,10 @@ ABCD_DHP215<- function (data, type){
     par_vig <- Pres_Billon %>%
       filter(!is.na(Vigueur1234) & Vigueur1234 %in% c("vigour", "nonvig")) %>%
       select(c(Essence_billon, Produit, Vigueur1234, Presclassepetro_vig, Volclassepetro_vig)) %>%
-      rename(Vig1234=Vigueur1234) %>%
-      mutate(Volclassepetro_vig = ifelse(is.na(Volclassepetro_vig) |  Volclassepetro_vig == "NULL", 0, Volclassepetro_vig)) #ajout
+      mutate(Vig1234=ifelse(Vigueur1234=="vigour","ViG","NONVIG")) %>%
+      mutate(Volclassepetro_vig = ifelse(is.na(Volclassepetro_vig) |  Volclassepetro_vig == "NULL", 0, Volclassepetro_vig)) %>%
+      select(-Vigueur1234)
+      #ajout
 
     par_prod <- Pres_Billon %>%
       filter(!is.na(Vigueur1234) & Vigueur1234 %in% c("sciage", "pate")) %>%
@@ -125,14 +127,14 @@ ABCD_DHP215<- function (data, type){
 
 
     Sim_biol_2015 <- data %>%
-      mutate(Essence_billon=ifelse(Espece=="CHR", "CHX", Espece), Vigueur1234=as.character(Vigueur)) %>% #ajout
+      mutate(Essence_billon=ifelse(Espece=="CHR", "CHX", Espece)) %>% #ajout
       filter(Essence_billon %in% c("ERS", "BOJ", "ERR", "BOP", "HEG", "CHX")) %>%
-      mutate(Vig1234 = ifelse(Vigueur1234 %in% c("1","2"), "vigour", "nonvig" ),
-             Prod1234 = ifelse(Vigueur1234 %in% c("1","3"), "sciage", "pate" )) %>%
+      rename(Vig1234 = vigu0,
+             Prod1234 = prod0) %>%
       left_join(par_vig, by=c("Essence_billon", "Vig1234"), relationship="many-to-many") %>%
       left_join(par_prod, by=c("Essence_billon", "Prod1234", "Produit"), relationship="many-to-many") %>%
       left_join(par_num, by=c("Essence_billon", "Produit"), relationship="many-to-many") %>%
-      inner_join(CovParaPetro_1234, by=c("Essence_billon", "Produit")) %>%
+      inner_join(CovParaPetro_1234, by=c("Essence_billon", "Produit"),relationship="many-to-many") %>%
       mutate(Cov=ifelse(is.na(Cov)==TRUE,0,Cov),
              Presclassepetro_prod=ifelse(is.na(Presclassepetro_prod)==TRUE,0,Presclassepetro_prod),
              Volclassepetro_prod=ifelse(is.na(Volclassepetro_prod)==TRUE,0,Volclassepetro_prod))%>%

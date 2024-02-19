@@ -6,7 +6,7 @@ test_that("simulateur SaMARE return the expected data with Gaules", {
 
   set.seed(NULL)
 
-  expect_equal(Result, expect_for_Simulateur_Samare )
+  expect_equal(Result, expect_for_Simulateur_Samare_test )
 })
 
 
