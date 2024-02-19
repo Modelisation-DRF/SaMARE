@@ -148,7 +148,8 @@ EvolQual<-function(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot){
             select(ArbreID,GrEspece,GrDHP,Intercept,pred,ABCD,vigu0,prod0,dtr) %>%
             pivot_wider(id_cols=c("ArbreID","GrEspece","GrDHP","ABCD","vigu0","prod0","dtr"), values_from=pred, names_from=Intercept,names_prefix="Intercept")
 
-  PlacQualb<-PlacQualb %>%
+ if("A" %in% PlacQualb$GrDHP){
+   PlacQualb<-PlacQualb %>%
              mutate(Alea=runif(n=nrow(PlacQualb))) %>%
              mutate(ABCD1=ifelse(Alea<=Intercept1, "D",
                                     ifelse(GrDHP=="C","C",
@@ -156,6 +157,24 @@ EvolQual<-function(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot){
                                                   ifelse(GrDHP=="B","B",
                                                           ifelse(Alea<=Intercept3,"B","A")))))) %>%
     select(ArbreID,ABCD1)
+ }else{
+
+   if("B" %in% PlacQualb$GrDHP){
+     PlacQualb<-PlacQualb %>%
+                mutate(Alea=runif(n=nrow(PlacQualb))) %>%
+                mutate(ABCD1=ifelse(Alea<=Intercept1, "D",
+                           ifelse(GrDHP=="C","C",
+                                  ifelse(Alea <=Intercept2,"C","B")))) %>%
+       select(ArbreID,ABCD1)
+
+   }else{
+     PlacQualb<-PlacQualb %>%
+       mutate(Alea=runif(n=nrow(PlacQualb))) %>%
+       mutate(ABCD1=ifelse(Alea<=Intercept1, "D","C")) %>%
+       select(ArbreID,ABCD1)
+    }
+
+ }
 
 
 

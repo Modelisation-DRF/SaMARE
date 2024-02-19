@@ -13,20 +13,22 @@ SortieArbreSamare <- function(SimulHtVol){
   select=dplyr::select
 
   ArbreSamare <- SimulHtVol %>%
-    mutate (Stm2ha=pi*(DHPcm/200)^2,
+    mutate (Stm2=pi*(DHPcm/200)^2,
 
             Vigueur = case_when(
               vigu0 == "ViG" & prod0 == "sciage" ~ 1,
               vigu0 == "ViG" & prod0 == "pate" ~ 2,
               vigu0 == "NONVIG" & prod0 == "sciage" ~ 3,
               vigu0 == "NONVIG" & prod0 == "pate" ~ 4,
+              vigu0 == "ViG" & prod0 == "resineux" ~ 5,
+              vigu0 == "NONVIG" & prod0 == "resineux" ~ 6,
               TRUE ~ NA_integer_
             )) %>%
     select(Placette, Annee, Residuel, ArbreID, NoArbre, Nombre, GrEspece, Espece,
-              Etat, DHPcm, Iter, hauteur_pred, vol_dm3, Stm2ha,Vigueur, MSCR) %>%
-    rename(PlacetteID=Placette, origTreeID=NoArbre, ST_m2ha=Stm2ha, Vol_dm3=vol_dm3, Hautm=hauteur_pred) %>%
+              Etat, DHPcm, Iter, hauteur_pred, vol_dm3, Stm2,Vigueur, MSCR, ABCD) %>%
+    rename(PlacetteID=Placette, origTreeID=NoArbre, ST_m2=Stm2, Vol_dm3=vol_dm3, Hautm=hauteur_pred) %>%
     relocate(PlacetteID,Annee,Iter,Residuel,ArbreID,origTreeID, Espece,GrEspece, Etat, Nombre,DHPcm,Hautm,
-               ST_m2ha,Vol_dm3, MSCR, Vigueur)
+               ST_m2,Vol_dm3, MSCR, ABCD, Vigueur)
 
   # summarise(DQM=(mean(DHPcm^2,na.rm=TRUE))^0.5,ST_HA=sum(Stm2ha),VolM3Ha=sum(vol_dm3)/1000,
   #           nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(DHPcm[1:100],na.rm = TRUE),mean(DHPcm)), .groups="drop")%>%
