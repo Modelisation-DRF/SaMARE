@@ -22,13 +22,18 @@ SIMBillonnageABCD_DHP<- function (data , type){
     data <-ConvertisseurEco(data)
   }
 
+  if(type == "ABCD" && all(is.na(data$ABCD))){
+    type="DHP"
+  }
+
+
   if(type %in% c("ABCD","DHP")){
 
     regional <- data %>% filter(Espece %in% c("ERS", "BOJ"))
     regional_result <-ABCD_DHP_regio(data=regional, type =type )
 
     non_regional_2015 <- data %>% filter(!Espece %in% c("ERS", "BOJ"))
-    non_regional_2015_result <- ABCD_DHP215(data=regional, type =type)
+    non_regional_2015_result <- ABCD_DHP215(data=non_regional_2015, type =type)
     final <-merge(regional_result,regional_result)
 
   }else{
