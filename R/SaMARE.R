@@ -203,13 +203,13 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   t0<-PlacOri$Annee_Coupe[1]
 
   #Variable du peuplement residuel avec condition que si St >26 = TEM
-  trt<-ifelse(!is.null(length(Plac$Etat=="martelé")),"CP",
+  trt<-ifelse("martelé" %in% Plac$Etat,"CP",
                        ifelse(is.na(PlacOri$Annee_Coupe[1])==TRUE,"TEM",
                                ifelse(AnneeDep-PlacOri$Annee_Coupe[1]<5 &
                                        (sum((Plac$DHPcm/200)^2*3.1416*Plac$Nombre)/Sup_PE)>26,"TEM","CP")))
 
   #Nombre de traitements
-  ntrt=ifelse(trt=="CP" & !is.null(length(Plac$Etat=="martelé")),PlacOri$ntrt[1]+1,
+  ntrt=ifelse(trt=="CP" & "martelé" %in% Plac$Etat,PlacOri$ntrt[1]+1,
               ifelse(trt=="CP",PlacOri$ntrt[1],0))
 
   #Type de placette
@@ -395,6 +395,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
     # calcul variable echelle placette
     st_tot0 <- sum((Plac$DHPcm/200)^2*3.1416*Plac$Nombre)/Sup_PE
+
 
     dens_tot0 <- sum(Plac$Nombre)/Sup_PE
 
