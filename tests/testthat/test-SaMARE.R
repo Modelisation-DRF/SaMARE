@@ -11,7 +11,7 @@ test_that("SaMARE returns the expected data frame without Gaules", {
                     Para=MatchModuleParameters,ParaGaules=ParametresGaules,Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat)
 
 set.seed(NULL)
-  expect_equal(result_simul2, result_simul_test)
+  expect_equal(result_simul2, result_samare_sans_gaules_test)
 })
 
 
@@ -28,5 +28,5 @@ test_that("SaMARE returns the expected data frame with Gaules", {
                         Para=MatchModuleParameters,ParaGaules=ParametresGaules,Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat)
 
   set.seed(NULL)
-  expect_equal(result_simul, result_simul_gaules_test)
+  expect_equal(result_simul, result_samare_avec_gaules_test)
 })
