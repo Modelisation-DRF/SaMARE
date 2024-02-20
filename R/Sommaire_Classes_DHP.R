@@ -11,10 +11,12 @@
 #'          groupe d'espèce, classe de DHP et année.
 #' @examples
 
-Sommaire_Classes_DHP <- function(SimulHtVol,NbIter){
-
+Sommaire_Classes_DHP <- function(SimulHtVol){
   select=dplyr::select
-  SommaireClassesDHPSp<-SimulHtVol %>%
+
+  NbIter<-length(unique(SimulHtVol$Iter))
+
+    SommaireClassesDHPSp<-SimulHtVol %>%
     filter(Etat!="mort") %>%
     mutate(Stm2ha=pi*(DHPcm/200)^2/Sup_PE,      #Calcul surface terrière par ha
            DHPcm2=DHPcm^2,
@@ -29,12 +31,13 @@ Sommaire_Classes_DHP <- function(SimulHtVol,NbIter){
               VolM3Ha=sum(VolM3Ha)/NbIter, .groups="drop") %>%
     arrange(Placette,Annee,GrEspece,DHP_cl)
 
-  SommaireClassesDHP<-SommaireClassesDHPSp %>%
+suppressMessages(
+SommaireClassesDHP<-SommaireClassesDHPSp %>%
     group_by(Placette,Annee,DHP_cl) %>%
     summarise(NbHa=sum(NbHa), StM2Ha=sum(StM2Ha),VolM3Ha=sum(VolM3Ha)) %>%
     mutate(GrEspece="TOT") %>%
     rbind(SommaireClassesDHPSp) %>%
-    arrange(Placette,Annee,GrEspece,DHP_cl)
+    arrange(Placette,Annee,GrEspece,DHP_cl))
 
   return(SommaireClassesDHP)
 }

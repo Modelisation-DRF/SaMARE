@@ -7,7 +7,7 @@
 classe de DHP et année. La sortie présente donc un sommaire de la table de peuplement simulée
 pour chacune des placettes.}
 \usage{
-Sommaire_Classes_DHP(SimulHtVol, NbIter)
+Sommaire_Classes_DHP(SimulHtVol)
 }
 \arguments{
 \item{SimulHtVol}{Un dataframe contenant les résultats de simulation pour chacune des
