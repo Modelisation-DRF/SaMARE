@@ -5,16 +5,16 @@
 \title{Fonction prévoit la répartition par produits des arbres feuillus à l'aide des nouvelles
 équation de Petro régionalisés issu des travaux du CFFM de Filip Havreljuk.}
 \usage{
-SIMBillonnageABCD_DHP(data, ligne)
+SIMBillonnageABCD_DHP(data, type)
 }
 \arguments{
-\item{ligne}{une valeur binaire égale à 1 lorsque l'on désir avoir la sortie
-qui contient une ligne par produit ou 0 lorsque l'on désir avoir la sortie
-qui contient une colone par produit}
-
 \item{Data}{UUn dataframe qui contient en ligne les arbres dont on veut prévoir
 les rendements en produit à l'aide du module de billonnage Petro
 régionalisé.}
+
+\item{ligne}{une valeur binaire égale à 1 lorsque l'on désir avoir la sortie
+qui contient une ligne par produit ou 0 lorsque l'on désir avoir la sortie
+qui contient une colone par produit}
 }
 \value{
 Retourne un dataframe avec l'estimation du volume par classe de produit

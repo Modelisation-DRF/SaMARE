@@ -52,22 +52,22 @@ SortieDendroSamare <- function(SimulHtVol){
                     arrange(Placette,Annee,Residuel,GrEspece,desc(Etat)) %>%
                     relocate(Placette,Annee,Residuel,GrEspece,Etat,nbTi_HA,ST_HA,DQM,Vol_HA,HDomM,
                              EcartType_nbTi_HA,EcartType_ST_HA,EcartType_DQM,EcartType_Vol_HA,EcartType_HDomM)
-
+suppressMessages(
 Recrutementsp<-SimulHtVol %>%
              filter(Etat=="recrue") %>%
               mutate (Stm2ha=pi*(DHPcm/200)^2*Nombre/Sup_PE) %>%
               group_by(Placette,Iter,Annee,GrEspece,Residuel) %>%
               summarise(AACRecrM2Ha=sum(Stm2ha),nbTi_HARecrues=sum(Nombre/Sup_PE)) %>%
               group_by(Placette,Annee,GrEspece,Residuel) %>%
-              summarise(AACRecrM2HaAn=sum(AACRecrM2Ha)/(5*NbIter),.groups="drop")
-
+              summarise(AACRecrM2HaAn=sum(AACRecrM2Ha)/(5*NbIter),.groups="drop"))
+suppressMessages(
 Recrutement <- Recrutementsp %>%
                 group_by(Placette,Annee,Residuel) %>%
                 summarise(AACRecrM2HaAn=sum(AACRecrM2HaAn)) %>%
                 mutate(GrEspece="TOT") %>%
                 rbind(Recrutementsp) %>%
-                arrange(Placette,Annee,Residuel,GrEspece)
-
+                arrange(Placette,Annee,Residuel,GrEspece))
+suppressMessages(
 Mortalitesp<-SimulHtVol %>%
            group_by(Placette,Iter,ArbreID,GrEspece,Residuel) %>%
            mutate(DHP0=lag(DHPcm))%>%
@@ -76,15 +76,15 @@ Mortalitesp<-SimulHtVol %>%
             group_by(Placette,Iter,Annee,GrEspece,Residuel) %>%
             summarise(AACMortM2Ha=sum(Stm2ha)) %>%
             group_by(Placette,Annee,GrEspece,Residuel) %>%
-            summarise(AACMortM2HaAn=-sum(AACMortM2Ha)/(5*NbIter),.groups="drop")
-
+            summarise(AACMortM2HaAn=-sum(AACMortM2Ha)/(5*NbIter),.groups="drop"))
+suppressMessages(
 Mortalite <-  Mortalitesp %>%
               group_by(Placette,Annee,Residuel) %>%
                summarise(AACMortM2HaAn=sum(AACMortM2HaAn)) %>%
                 mutate(GrEspece="TOT") %>%
                 rbind(Mortalitesp) %>%
-                arrange(Placette,Annee,Residuel,GrEspece)
-
+                arrange(Placette,Annee,Residuel,GrEspece))
+suppressMessages(
 Accroissementsp<-SimulHtVol %>%
                group_by(Placette,Iter,ArbreID,GrEspece,Residuel) %>%
                mutate(DHP0=lag(DHPcm))%>%
@@ -93,15 +93,15 @@ Accroissementsp<-SimulHtVol %>%
                group_by(Placette,Iter,Annee,GrEspece,Residuel) %>%
                summarise(AACAccrM2Ha=sum(AccSt)) %>%
                group_by(Placette,Annee,GrEspece,Residuel) %>%
-               summarise(AACAccrM2HaAn=-sum(AACAccrM2Ha)/(5*NbIter),.groups="drop")
-
+               summarise(AACAccrM2HaAn=-sum(AACAccrM2Ha)/(5*NbIter),.groups="drop"))
+suppressMessages(
 Accroissement <-Accroissementsp %>%
             group_by(Placette,Annee,Residuel) %>%
             summarise(AACAccrM2HaAn=sum(AACAccrM2HaAn)) %>%
             mutate(GrEspece="TOT") %>%
             rbind(Accroissementsp) %>%
-            arrange(Placette,Annee,Residuel,GrEspece)
-
+            arrange(Placette,Annee,Residuel,GrEspece))
+suppressMessages(
 DendroSamare<-DendroSamare %>%
               left_join(Accroissement) %>%
               left_join(Mortalite) %>%
@@ -110,7 +110,7 @@ DendroSamare<-DendroSamare %>%
                      AACMortM2HaAn=ifelse(is.na(AACMortM2HaAn)==TRUE | Etat=="mort",0,AACMortM2HaAn),
                      AACRecrM2HaAn=ifelse(is.na(AACRecrM2HaAn)==TRUE | Etat=="mort",0,AACRecrM2HaAn),
                      AACBrut=AACAccrM2HaAn+AACRecrM2HaAn,
-                     AACNet=AACBrut+AACMortM2HaAn)
+                     AACNet=AACBrut+AACMortM2HaAn))
 
 
 
