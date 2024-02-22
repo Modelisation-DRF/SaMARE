@@ -49,7 +49,7 @@ ABCD_DHP215<- function (data, type){
       left_join(ListeCorresPetro, by = c("Espece"="Essence_billon", "ABCD"="VAL_INIT"))
 
     Sim_biol_2015 <- data %>%
-      mutate(Essence_billon=ifelse(Espece=="CHR", "CHX", Espece), QualiteABCD=VAL_FIN) %>% #ajout
+      mutate(Essence_billon=ifelse(Espece=="CHR", "CHX", Espece), QualiteABCD=VAL_FIN,F1=NA) %>% #ajout
       filter(Essence_billon %in% c("ERS", "BOJ", "ERR", "BOP", "HEG", "CHX")) %>%
       #left_join(par_eco, by=c("Essence_billon"), relationship="many-to-many") %>%
       left_join(par_qual, by=c("Essence_billon", "QualiteABCD"), relationship="many-to-many") %>%
@@ -70,7 +70,10 @@ ABCD_DHP215<- function (data, type){
              Etat,DHPcm,Iter,MSCR,hauteur_pred,vol_dm3,Produit,VolBillonM3,Stm2ha,Sup_PE) %>%
       pivot_wider(names_from = Produit, values_from = VolBillonM3)
 
-
+    if(!"F1" %in% names(Sim_biol_2015)){
+      Sim_biol_2015 <-Sim_biol_2015 %>%
+        mutate(F1=NA)
+    }
 
   }else if (type == "1234"){
 
@@ -127,7 +130,7 @@ ABCD_DHP215<- function (data, type){
 
 
     Sim_biol_2015 <- data %>%
-      mutate(Essence_billon=ifelse(Espece=="CHR", "CHX", Espece)) %>% #ajout
+      mutate(Essence_billon=ifelse(Espece=="CHR", "CHX", Espece),F1=NA) %>% #ajout
       filter(Essence_billon %in% c("ERS", "BOJ", "ERR", "BOP", "HEG", "CHX")) %>%
       rename(Vig1234 = vigu0,
              Prod1234 = prod0) %>%
@@ -152,6 +155,11 @@ ABCD_DHP215<- function (data, type){
       select(Annee,Residuel,ArbreID,NoArbre,Placette,Nombre,GrEspece,Espece,
              Etat,DHPcm,Iter,MSCR,hauteur_pred,vol_dm3,Produit,VolBillonM3,Stm2ha,Sup_PE) %>%
       pivot_wider(names_from = Produit, values_from = VolBillonM3)
+
+    if(!"F1" %in% names(Sim_biol_2015)){
+      Sim_biol_2015 <-Sim_biol_2015 %>%
+        mutate(F1=NA)
+    }
 
   }else if (type == "MSCR"){
 
@@ -199,7 +207,7 @@ ABCD_DHP215<- function (data, type){
       left_join(ListeCorresPetro, by = c("Espece"="Essence_billon", "MSCR"="VAL_INIT"))
 
     Sim_biol_2015 <- data %>%
-      mutate(Essence_billon=ifelse(Espece=="CHR", "CHX", Espece),PrioriteMSCR=VAL_FIN) %>% #ajout
+      mutate(Essence_billon=ifelse(Espece=="CHR", "CHX", Espece),PrioriteMSCR=VAL_FIN,F1=NA) %>% #ajout
       filter(Essence_billon %in% c("ERS", "BOJ", "ERR", "BOP", "HEG", "CHX")) %>%
       left_join(par_qual, by=c("Essence_billon", "PrioriteMSCR"), relationship="many-to-many") %>%
       left_join(par_num, by=c("Essence_billon", "Produit"), relationship="many-to-many") %>%
@@ -218,6 +226,10 @@ ABCD_DHP215<- function (data, type){
              Etat,DHPcm,Iter,MSCR,hauteur_pred,vol_dm3,Produit,VolBillonM3,Stm2ha,Sup_PE) %>%
       pivot_wider(names_from = Produit, values_from = VolBillonM3)
 
+    if(!"F1" %in% names(Sim_biol_2015)){
+      Sim_biol_2015 <-Sim_biol_2015 %>%
+        mutate(F1=NA)
+    }
 
 
   }else if (type == "DHP"){
@@ -252,7 +264,7 @@ ABCD_DHP215<- function (data, type){
     ##########################################################
 
     Sim_biol_2015<-data %>%
-      mutate(Essence_billon=ifelse(is.na(Espece)==TRUE, GrEspece, Espece)) %>%
+      mutate(Essence_billon=ifelse(is.na(Espece)==TRUE, GrEspece, Espece),F1=NA) %>%
       filter(Essence_billon %in% c("BOJ","ERS","BOP","ERR","CHX","HEG")) %>%
       left_join(Pres_Billon, by=c("Essence_billon"), relationship="many-to-many") %>%
       inner_join(CovParms, by=c("Essence_billon", "Produit")) %>%
@@ -267,6 +279,11 @@ ABCD_DHP215<- function (data, type){
       select(Annee,Residuel,ArbreID,NoArbre,Placette,Nombre,GrEspece,Espece,
              Etat,DHPcm,Iter,MSCR,hauteur_pred,vol_dm3,Produit,VolBillonM3,Stm2ha,Sup_PE) %>%
       pivot_wider(names_from = Produit, values_from = VolBillonM3)
+
+    if(!"F1" %in% names(Sim_biol_2015)){
+      Sim_biol_2015 <-Sim_biol_2015 %>%
+      mutate(F1=NA)
+    }
   }
 
 

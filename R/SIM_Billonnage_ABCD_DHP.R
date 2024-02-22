@@ -29,13 +29,48 @@ SIMBillonnageABCD_DHP<- function (data , type){
 
   if(type %in% c("ABCD","DHP")){
 
+    if(type == "ABCD"){
+      # Séparer les arbres possédant la qualité ABCD des autres
+     data_ABCD <- data %>% filter(!is.na(ABCD))
+     data_pas_ABCD <-data %>% filter(is.na(ABCD))
+
+     regional_ABCD <- data_ABCD %>% filter(Espece %in% c("ERS", "BOJ"))
+
+     non_regional_2015_ABCD <- data_ABCD %>% filter(!Espece %in% c("ERS", "BOJ"))
+
+     # Billonnage régionalisé pour les arbres possédant la qualité ABCD
+     regional_result_ABCD <-ABCD_DHP_regio(data=regional_ABCD, type =type )
+
+     #Billonnage non régionalisé pour les arbres possédant la qualité ABCD
+     non_regional_2015_result_ABCD <- ABCD_DHP215(data=non_regional_2015_ABCD, type =type)
+
+
+     regional_pas_ABCD <- data_pas_ABCD %>% filter(Espece %in% c("ERS", "BOJ"))
+     non_regional_2015_pas_ABCD <- data_pas_ABCD %>% filter(!Espece %in% c("ERS", "BOJ"))
+
+     # Billonnage régionalisé pour les arbres ne  possédant pas la qualité ABCD
+     # donc Billonage éffectuer avec DHP
+     regional_result_pas_ABCD <-ABCD_DHP_regio(data=regional_pas_ABCD, type ="DHP" )
+
+     # Billonnage non régionalisé pour les arbres ne  possédant pas la qualité ABCD
+     # donc Billonage éffectuer avec DHP
+
+     non_regional_2015_result_pas_ABCD <- ABCD_DHP215(data=non_regional_2015_pas_ABCD, type ="DHP")
+
+     finl1 <-rbind(regional_result_ABCD,non_regional_2015_result_ABCD)
+     finl2 <-rbind(regional_result_pas_ABCD,non_regional_2015_result_pas_ABCD)
+     final <-rbind(finl2,finl1)
+
+    }else{
+
     regional <- data %>% filter(Espece %in% c("ERS", "BOJ"))
     regional_result <-ABCD_DHP_regio(data=regional, type =type )
 
     non_regional_2015 <- data %>% filter(!Espece %in% c("ERS", "BOJ"))
     non_regional_2015_result <- ABCD_DHP215(data=non_regional_2015, type =type)
-    final <-merge(regional_result,regional_result)
 
+    final <-merge(regional_result,regional_result)
+   }
   }else{
 
     final <- ABCD_DHP215(data=data, type =type)
