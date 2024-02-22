@@ -43,6 +43,7 @@ ABCD_DHP_regio<- function (data, type){
     sim_ABCD_DHP <- data %>%
       mutate(Essence_billon=Espece) %>% #ajout
       filter(Essence_billon %in% c("ERS", "BOJ")) %>%
+      rename(QualiteABCD=ABCD) %>%
       left_join(par_eco, by=c("Essence_billon", "eco"), relationship="many-to-many") %>%
       left_join(par_qual, by=c("Essence_billon", "QualiteABCD", "Produit"), relationship="many-to-many") %>%
       left_join(par_num, by=c("Essence_billon", "Produit"), relationship="many-to-many") %>%

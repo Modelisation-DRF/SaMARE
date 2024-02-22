@@ -187,6 +187,8 @@ SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
 
   SimulHtVol1<-Simul[which(Simul$Residuel==0),]
 
+  #SimulHtVol_Vivant <- SimulHtVol1[which(!SimulHtVol1$Etat=="mort"),]
+
   ht <- relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=NbIter, nb_step=Horizon+1 , dt = 5, reg_eco = T)
   vol <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=NbIter, nb_step=Horizon+1)
 
