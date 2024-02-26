@@ -14,8 +14,11 @@
 #'
 
 
-SortieDendroSamare <- function(SimulHtVol){
+SortieDendroSamare <- function(SimulHtVol,simplifier=FALSE){
   select=dplyr::select
+
+  MinAnnee = min(SimulHtVol$Annee)
+  MaxAnnee = max(SimulHtVol$Annee)
 
   NbIter<-length(unique(SimulHtVol$Iter))
 
@@ -117,7 +120,11 @@ DendroSamare<-DendroSamare %>%
 
 
 
-
+if(simplifier == TRUE){
+  DendroIterSamare_simp_min <-DendroSamare %>% filter(Annee==MinAnnee )
+  DendroIterSamare_simp_max <-DendroSamare %>% filter(Annee==MaxAnnee )
+  DendroSamare <-rbind(DendroIterSamare_simp_min,DendroIterSamare_simp_max)
+}
 
 
   return (DendroSamare)

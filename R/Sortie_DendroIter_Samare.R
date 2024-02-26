@@ -14,8 +14,10 @@
 #'
 
 
-SortieDendroIterSamare <- function(SimulHtVol){
+SortieDendroIterSamare <- function(SimulHtVol,simplifier=FALSE){
   select=dplyr::select
+  MinAnnee = min(SimulHtVol$Annee)
+  MaxAnnee = max(SimulHtVol$Annee)
 
   DendroIterSamaresp <- SimulHtVol %>%
                     mutate(Etat=ifelse(Etat=="mort","mort","vivant")) %>%
@@ -45,7 +47,11 @@ SortieDendroIterSamare <- function(SimulHtVol){
                     arrange(Placette,Annee,Residuel,Iter,GrEspece,desc(Etat)) %>%
                     relocate(Placette,Annee,Iter,Residuel,GrEspece,Etat,nbTi_HA,ST_HA,DQM,Vol_HA,HDomM)
 
-
+if(simplifier == TRUE){
+  DendroIterSamare_simp_min <-DendroIterSamare %>% filter(Annee==MinAnnee )
+  DendroIterSamare_simp_max <-DendroIterSamare %>% filter(Annee==MaxAnnee )
+  DendroIterSamare <-rbind(DendroIterSamare_simp_min,DendroIterSamare_simp_max)
+}
 
   return (DendroIterSamare)
 
