@@ -8,9 +8,12 @@
 #'          placettes, années, itérations.
 #' @examples
 
-SortieArbreSamare <- function(SimulHtVol){
+SortieArbreSamare <- function(SimulHtVol ,simplifier=FALSE){
 
   select=dplyr::select
+
+  MinAnnee = min(SimulHtVol$Annee)
+  MaxAnnee = max(SimulHtVol$Annee)
 
   ArbreSamare <- SimulHtVol %>%
     mutate (Stm2=pi*(DHPcm/200)^2,
@@ -51,7 +54,11 @@ SortieArbreSamare <- function(SimulHtVol){
   #
 
 
-
+  if(simplifier == TRUE){
+    ArbreSamare_simp_min <-ArbreSamare %>% filter(Annee==MinAnnee )
+    ArbreSamare_simp_max <-ArbreSamare %>% filter(Annee==MaxAnnee )
+    ArbreSamare <-rbind(ArbreSamare_simp_min,ArbreSamare_simp_max)
+  }
 
   return (ArbreSamare)
 
