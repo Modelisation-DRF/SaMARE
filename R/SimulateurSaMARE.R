@@ -33,7 +33,7 @@ SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
   ################################ Lecture des fichiers de placette et de parametres ###################
   Data <- renommer_les_colonnes(Data)
 
-  Data <- Data %>% filter(DHP>=9)
+  Data <- Data %>% filter(DHPcm>=9)
 
 
   # Fichier des effets aleatoires
@@ -183,7 +183,7 @@ SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
 
   Simul<-Simul %>%
     inner_join(VarEco, relationship="many-to-many") %>%
-    mutate(nb_tige=Nombre*Sup_PE/25) %>%   #Conversion pour relation HD
+    mutate(nb_tige=Nombre*Sup_PE/25, step= (Annee-AnneeDep)/5 +1) %>%   #Conversion pour relation HD
     rename(id_pe=Placette, dhpcm=DHPcm, essence=GrEspece,no_arbre=ArbreID,
            altitude=Altitude,p_tot=Ptot,t_ma=Tmoy, iter=Iter)
 
@@ -191,20 +191,13 @@ SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
   SimulHtVol1<-Simul[which(Simul$Residuel==0),]
   nb_iter <- length(unique(SimulHtVol1$iter))
   nb_periodes <- Horizon+1
-  listeAnnee<-unique(SimulHtVol1$Annee)
-  parametre_ht <- param_ht(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=(nb_periodes)) ###Nombre plus 1 pour tenir compte de l'année initiale
-  para_volume<-param_vol(SimulHtVol1,mode_simul="STO", nb_iter=nb_iter)
-  # ouverture de session en parralèle
-  registerDoFuture()
-  plan(multisession)
-  SimulHtVol2 <- bind_rows(
-    foreach (i = 1:(nb_iter)) %:%
-      foreach (k = 1:(nb_periodes)) %dopar%{
-        ht <- relation_h_d(fic_arbres=SimulHtVol1[SimulHtVol1$iter==i & SimulHtVol1$Annee==listeAnnee[k] & SimulHtVol1$Etat!="mort",], mode_simul='STO',
-                           iteration=i, step=k, parametre_ht=parametre_ht, reg_eco=TRUE)
-        ht<-  cubage(ht, mode_simul="STO", iteration=i, parametre_vol=para_volume)
-      }
-  )
+
+
+        ht <- relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5)
+        SimulHtVol2 <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes)
+
+
+
 
   rm(SimulHtVol1)
   SimulHtVol2<-SimulHtVol2[,c("id_pe","Annee","iter","no_arbre","hauteur_pred","vol_dm3")] ###Garde juste les variables de hauteur et volume pour
