@@ -1,0 +1,273 @@
+
+valide_data <- function(data) {
+  validations <- list(
+    valide_espece = "Code d'essence non valide",
+    valide_Etat = "Code d'Etat non valide",
+    valide_DHPcm = "Valeurs de DHP non permise",
+    valide_Vigueur = "Code de vigueur non permis",
+    valide_Sup_PE = "Superficie de la placette en ha non valide",
+    valide_Nombre = "valeur de nombre null",
+    valide_Annee_Coupe = "Annee coupe non valide",
+    valide_Latitude = "Latitude non valide",
+    valide_Longitude = "Longitude non valide",
+    valide_Altitude = "Altitude non valide",
+    valide_Ptot = "Ptot non valide",
+    valide_Tmoy = "Tmoy non valide",
+    valide_Type_Eco = "valeur Type_Eco null",
+    valide_MSCR = "MSCR non valide",
+    valide_Reg_Eco = "reg_eco non valide",
+    valide_ABCD = "ABCD non valide",
+    valide_Pente = "Pente non valide",
+    valide_GrwDays = "GrwDays non valide"
+  )
+
+  # Initialiser la liste des erreurs
+  erreurs <-list()
+
+  # Itérer sur chaque validation
+  for (nom_validation in names(validations)) {
+    # Appeler dynamiquement la fonction de validation en utilisant do.call
+    valide <- do.call(nom_validation, list(data = data))
+
+    # Si la validation échoue, ajouter le message d'erreur correspondant à la liste
+    if (!valide) {
+      erreurs <- c(erreurs, validations[[nom_validation]])
+    }
+  }
+
+  return(erreurs)
+}
+
+valide_data_gaules <- function(data) {
+
+  validations <- list(
+    valide_espece = "Code d'essence non valide",
+    valide_DHPcm = "Valeurs de DHP non permise",
+    valide_Sup_PE = "Superficie de la placette en ha non valide",
+    valide_Nombre = "valeur de nombre null"
+  )
+
+  # Initialiser la liste des erreurs
+  erreurs <-list()
+
+  # Itérer sur chaque validation
+  for (nom_validation in names(validations)) {
+    # Appeler dynamiquement la fonction de validation en utilisant do.call
+    valide <- do.call(nom_validation, list(data = data))
+
+    # Si la validation échoue, ajouter le message d'erreur correspondant à la liste
+    if (!valide) {
+      erreurs <- c(erreurs, validations[[nom_validation]])
+    }
+  }
+
+  return(erreurs)
+}
+
+valide_Nombre <- function(data){
+
+  if(!"Nombre" %in% names(data)){
+    return (FALSE)
+  }
+  return(all(!is.na(data$Nombre )))
+
+}
+
+
+
+
+valide_espece <- function(data){
+
+  if(!"Espece" %in% names(data)){
+    return (FALSE)
+  }
+
+  valeurs_autorisees <- c("BOG","BOJ","BOP", "CAC", "CAF", "CAR", "CEO", "CET", "CHB", "CHE","CHG",
+                          "CHR", "EPB", "EPN", "EPO","EPR","ERA" , "ERG","ERN", "ERP","ERR","ERS",
+                          "FRA","FRN","FRP", "HEG", "JUV","MAS" , "MEJ" , "MEL", "MEU","NOC","ORA",
+                          "ORR","ORT","OSV","PEB","PED","PEG","PEH","PET","PIB","PID","PIG","PIR",
+                          "PIS","PRP","PRU","SAB","SAL","SOA","SOD","THO","TIL" ,"AME"  ,"AUR","ERE"
+                          ,"TIA" ,"CEP")
+
+  return(all(data$Espece %in% valeurs_autorisees))
+}
+
+
+valide_Etat <- function(data){
+
+  if(!"Etat" %in% names(data)){
+    return (FALSE)
+  }
+
+  valeurs_autorisees<-c(10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27,
+                        28, 29, 30, 32, 34, 36, 40, 42, 43, 44, 46, 50, 52, 54, 56 )
+
+  return(all(data$Etat %in% valeurs_autorisees))
+
+}
+
+valide_DHPcm <- function(data){
+
+  if(!"DHPcm" %in% names(data)){
+    return (FALSE)
+  }
+  return(all(data$DHPcm <= 200 ))
+
+}
+
+valide_Vigueur <- function(data){
+  if (!all(c("Vigueur", "MSCR") %in% names(data))) {
+    return(FALSE)
+  }
+
+  valeurs_autorisees <- c(1, 2, 3, 4, 5, 6)
+
+  condition_1 <- data$Vigueur %in% valeurs_autorisees | is.na(data$Vigueur)
+
+  condition_2 <- ifelse(is.na(data$Vigueur), data$MSCR %in% c('M', 'S', 'C', 'R', 'MS', 'CR'), TRUE)
+
+  return(all(condition_1 & condition_2))
+
+}
+
+valide_Sup_PE <- function(data){
+  if(!"Sup_PE" %in% names(data)){
+    return (FALSE)
+  }
+
+  return(all(data$Sup_PE <= 1 ))
+
+}
+
+valide_Annee_Coupe <- function(data){
+
+  if(!"Annee_Coupe" %in% names(data)){
+    return (FALSE)
+  }
+
+  condition <- ifelse(is.na(data$Annee_Coupe), FALSE, data$Annee_Coupe > 1900 & data$Annee_Coupe < 2100)
+
+
+  return(all(condition))
+
+}
+
+
+valide_Latitude <- function(data){
+
+  if(!"Latitude" %in% names(data)){
+    return (FALSE)
+  }
+  return(all(data$Latitude > 45 & data$Latitude < 50 ))
+
+}
+
+valide_Longitude <- function(data){
+
+  if(!"Longitude" %in% names(data)){
+    return (FALSE)
+  }
+  return(all(data$Longitude > -79.5 & data$Longitude < -57.0 ))
+
+}
+
+
+valide_Altitude <- function(data){
+
+  if(!"Altitude" %in% names(data)){
+    return (FALSE)
+  }
+
+  return(all(data$Altitude < 1000  ))
+
+}
+
+valide_Ptot <- function(data){
+  if(!"Ptot" %in% names(data)){
+    return (FALSE)
+  }
+
+  return(all(data$Ptot < 2000  ))
+
+}
+
+
+valide_Tmoy <- function(data){
+  if(!"Tmoy" %in% names(data)){
+    return (FALSE)
+  }
+
+  return(all(data$Tmoy > 0 & data$Tmoy < 10 ))
+
+}
+
+
+valide_Type_Eco <- function(data){
+
+  if(!"Type_Eco" %in% names(data)){
+    return (FALSE)
+  }
+  return(all(!is.na(data$Type_Eco )))
+
+}
+
+
+valide_Reg_Eco <- function(data){
+  if(!"Reg_Eco" %in% names(data)){
+    return (FALSE)
+  }
+
+  valeurs_autorisees<-c("1a", "2a", "2b", "2c", "3a", "3b", "3c", "3d", "4a", "4b", "4c", "4d", "4e", "4f", "4g",
+                        "4h", "5a", "5b", "5c", "5d", "5e", "5f", "5g","5h", "5i", "5j", "5k", "6a", "6b", "6c", "6d",
+                        "6e", "6f", "6g", "6h", "6i", "6j", "6k", "6l", "6m", "6n", "6o", "6p", "6q", "6r", "7a", "7b", "7c")
+
+  return(all(data$Reg_Eco %in% valeurs_autorisees))
+
+}
+
+valide_MSCR <- function(data){
+
+  if (!all(c("Vigueur", "MSCR") %in% names(data))) {
+    return(FALSE)
+  }
+  valeurs_autorisees<-c('M', 'S', 'C', 'R','MS','CR')
+
+  condition_1 <- data$MSCR %in% valeurs_autorisees | is.na(data$MSCR)
+  condition_2 <- ifelse(is.na(data$MSCR), data$Vigueur %in% c(1,2,3,4,5,6), TRUE)
+
+  return(all(condition_1 & condition_2))
+
+
+}
+
+
+valide_ABCD <- function(data){
+
+  if(!"ABCD" %in% names(data)){
+    return (FALSE)
+  }
+  valeurs_autorisees <- c("A","B","C","D",NA)
+
+  return(all(data$ABCD %in% valeurs_autorisees))
+}
+
+
+valide_Pente <- function(data){
+  if(!"Pente" %in% names(data)){
+    return (FALSE)
+  }
+
+  return(all(data$Pente >=0 & data$Pente < 100 ))
+
+}
+
+valide_GrwDays <- function(data){
+  if(!"GrwDays" %in% names(data)){
+    return (FALSE)
+  }
+
+  return(all(data$GrwDays >=1 & data$GrwDays < 365 ))
+
+}
+
+
