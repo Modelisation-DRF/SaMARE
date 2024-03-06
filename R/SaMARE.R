@@ -160,6 +160,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
                         Para.EvolQualHEG3)
    Para.EvolQualTot<-c()
 
+
+
   for(i in 1:13){
 
     Parai<-Para.EvolQual[[i]][,3]
@@ -167,6 +169,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
     Para.EvolQualTot<- rbind(Para.EvolQualTot,Parai)
 
   }
+
+
 
    rm(ParaBOJ,ParaERR,ParaERS,ParaFEN,ParaHEG,OmegaBOJ,OmegaERR,OmegaERS,OmegaFEN,OmegaHEG,Para.EvolQualBOJ1,Para.EvolQualBOJ2,
       Para.EvolQualBOJ3,Para.EvolQualERR1,Para.EvolQualERR2,Para.EvolQualERS1,Para.EvolQualERS2,Para.EvolQualERS3,Para.EvolQualFEN1,

@@ -33,6 +33,9 @@ SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
   ################################ Lecture des fichiers de placette et de parametres ###################
   Data <- renommer_les_colonnes(Data)
 
+  Data <- Data %>% filter(DHPcm>=9)
+
+
   # Fichier des effets aleatoires
   CovParms<-MatchModuleCovparms
   EfCovParms<-EffetCovParms
@@ -180,21 +183,24 @@ SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
 
   Simul<-Simul %>%
     inner_join(VarEco, relationship="many-to-many") %>%
-    mutate(nb_tige=Nombre*Sup_PE/25, step = (Annee -AnneeDep)/5 + 1) %>%   #Conversion pour relation HD
+    mutate(nb_tige=Nombre*Sup_PE/25, step= (Annee-AnneeDep)/5 +1) %>%   #Conversion pour relation HD
     rename(id_pe=Placette, dhpcm=DHPcm, essence=GrEspece,no_arbre=ArbreID,
            altitude=Altitude,p_tot=Ptot,t_ma=Tmoy, iter=Iter)
 
 
   SimulHtVol1<-Simul[which(Simul$Residuel==0),]
+  nb_iter <- length(unique(SimulHtVol1$iter))
+  nb_periodes <- Horizon+1
 
-  #SimulHtVol_Vivant <- SimulHtVol1[which(!SimulHtVol1$Etat=="mort"),]
 
-  ht <- relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=NbIter, nb_step=Horizon+1 , dt = 5, reg_eco = T)
-  vol <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=NbIter, nb_step=Horizon+1)
+        ht <- relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5)
+        SimulHtVol2 <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes)
+
+
 
 
   rm(SimulHtVol1)
-  SimulHtVol2<-vol[,c("id_pe","Annee","iter","no_arbre","hauteur_pred","vol_dm3")] ###Garde juste les variables de hauteur et volume pour
+  SimulHtVol2<-SimulHtVol2[,c("id_pe","Annee","iter","no_arbre","hauteur_pred","vol_dm3")] ###Garde juste les variables de hauteur et volume pour
   ###joindre avec Simul pour garder les morts
 
   SimulHtVol<-Simul %>%

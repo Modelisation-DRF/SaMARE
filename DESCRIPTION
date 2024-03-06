@@ -24,6 +24,7 @@ Depends: mvtnorm,
         miceadds,
         TarifQC,
         dplyr,
+        reticulate,
         future.apply,
         data.table,
         R (>= 2.10)
