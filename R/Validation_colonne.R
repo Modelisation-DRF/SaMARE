@@ -1,5 +1,6 @@
 
 valide_data <- function(data) {
+  data <- renommer_les_colonnes(data)
   validations <- list(
     valide_espece = "Code d'essence non valide",
     valide_Etat = "Code d'Etat non valide",
@@ -7,7 +8,7 @@ valide_data <- function(data) {
     valide_Vigueur = "Code de vigueur non permis",
     valide_Sup_PE = "Superficie de la placette en ha non valide",
     valide_Nombre = "valeur de nombre null",
-    valide_Annee_Coupe = "Annee coupe non valide",
+   # valide_Annee_Coupe = "Annee coupe non valide",
     valide_Latitude = "Latitude non valide",
     valide_Longitude = "Longitude non valide",
     valide_Altitude = "Altitude non valide",

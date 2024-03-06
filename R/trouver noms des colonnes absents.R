@@ -17,7 +17,7 @@ trouver_noms_absents <- function(Data) {
 
 trouver_noms_absents_gaules <- function(Data) {
 
-  ColOrdre<-c("Placette","Espece","GrEspece","DHPcm","Nombre","Sup_PE")
+  ColOrdre<-c("Placette","Espece","DHPcm","Nombre","Sup_PE")
 
   names(Data) <- tolower(names(Data))
 
