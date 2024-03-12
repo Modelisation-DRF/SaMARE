@@ -2,8 +2,7 @@
 trouver_noms_absents <- function(Data) {
 
   ColOrdre<-c("Placette","NoArbre","Espece","Etat","DHPcm","Vigueur","Nombre",
-              "Sup_PE","Annee_Coupe","Latitude","Longitude","Altitude","Pente","Ptot","Tmoy",
-              "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt","ABCD")
+              "Sup_PE","Annee_Coupe","Latitude","Longitude","Altitude","Pente","Reg_Eco","Type_Eco", "MSCR","ntrt","ABCD")
 
   names(Data) <- tolower(names(Data))
 

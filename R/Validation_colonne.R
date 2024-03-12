@@ -12,14 +12,14 @@ valide_data <- function(data) {
     valide_Latitude = "Latitude non valide",
     valide_Longitude = "Longitude non valide",
     valide_Altitude = "Altitude non valide",
-    valide_Ptot = "Ptot non valide",
-    valide_Tmoy = "Tmoy non valide",
+   # valide_Ptot = "Ptot non valide",
+   # valide_Tmoy = "Tmoy non valide",
     valide_Type_Eco = "valeur Type_Eco null",
     valide_MSCR = "MSCR non valide",
     valide_Reg_Eco = "reg_eco non valide",
     valide_ABCD = "ABCD non valide",
-    valide_Pente = "Pente non valide",
-    valide_GrwDays = "GrwDays non valide"
+    valide_Pente = "Pente non valide"
+   # valide_GrwDays = "GrwDays non valide"
   )
 
   # Initialiser la liste des erreurs

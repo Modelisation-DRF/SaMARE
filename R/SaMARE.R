@@ -115,7 +115,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   Plac<-PlacOri %>%
         filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
-        mutate(Etat=ifelse(Etat==11,"martelé","vivant"),ArbreID=seq(1:n())) %>%
+        mutate(Etat=ifelse(Etat==11,"martele","vivant"),ArbreID=seq(1:n())) %>%
         select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
                 DHPcm,Nombre,Vigueur,Iter,MSCR,ABCD)
 
@@ -207,13 +207,13 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   t0<-PlacOri$Annee_Coupe[1]
 
   #Variable du peuplement residuel avec condition que si St >26 = TEM
-  trt<-ifelse("martelé" %in% Plac$Etat,"CP",
+  trt<-ifelse("martele" %in% Plac$Etat,"CP",
                        ifelse(is.na(PlacOri$Annee_Coupe[1])==TRUE,"TEM",
                                ifelse(AnneeDep-PlacOri$Annee_Coupe[1]<5 &
                                        (sum((Plac$DHPcm/200)^2*3.1416*Plac$Nombre)/Sup_PE)>26,"TEM","CP")))
 
   #Nombre de traitements
-  ntrt=ifelse(trt=="CP" & "martelé" %in% Plac$Etat,PlacOri$ntrt[1]+1,
+  ntrt=ifelse(trt=="CP" & "martele" %in% Plac$Etat,PlacOri$ntrt[1]+1,
               ifelse(trt=="CP",PlacOri$ntrt[1],0))
 
   #Type de placette
@@ -323,7 +323,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
      #######Modification placette et création de la mesure résiduelle si martelage
 
-         if ("martelé" %in% Plac$Etat){
+         if ("martele" %in% Plac$Etat){
 
            outputInitial<-Plac %>%
                           filter(Etat=="vivant") %>%
