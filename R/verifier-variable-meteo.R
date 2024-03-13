@@ -38,7 +38,7 @@ vevifier_variable_meteo <- function(data){
   if(!is_empty(variables_non_trouvees)){
   variables_a_extraire <- map_noms_variables[variables_non_trouvees]
 
-    data <- extract_map_plot(file=data, liste_raster=cartes_climat, couche=1, variable=variables_a_extraire)
+    data <- extract_map_plot(file=data, liste_raster="cartes_climat", variable=variables_a_extraire)
 
     if('tmean' %in% variables_a_extraire) {
       data <- rename(data, Tmoy = tmean)
