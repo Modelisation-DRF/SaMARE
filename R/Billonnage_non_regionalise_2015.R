@@ -6,7 +6,7 @@ ABCD_DHP215<- function (data, type){
   select=dplyr::select
 
 
-  if (type == "ABCD"){
+  if (type == "ABCD2015"){
 
       CovParaPetro_abcd<-CovParaPetro_abcd %>%  filter(Cov>0)
 
@@ -232,7 +232,7 @@ ABCD_DHP215<- function (data, type){
     }
 
 
-  }else if (type == "DHP"){
+  }else if (type == "DHP2015"){
 
     Para<-ParaPetroFinal
 

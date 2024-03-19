@@ -114,7 +114,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
  ##########################Création de la placette de simulation
 
   Plac<-PlacOri %>%
-        filter(Etat %in% c(10,11,12,17,18,19,29,40,42,30,32,50,52,70,71,72)) %>%
+        filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
         mutate(Etat=ifelse(Etat==11,"martele","vivant"),ArbreID=seq(1:n())) %>%
         select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
                 DHPcm,Nombre,Vigueur,Iter,MSCR,ABCD)
@@ -213,9 +213,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
                                        (sum((Plac$DHPcm/200)^2*3.1416*Plac$Nombre)/Sup_PE)>26,"TEM","CP")))
 
   #Nombre de traitements
-  ntrt=ifelse(trt=="CP" & PlacOri$ntrt[1]>=2,2,
-                ifelse(trt=="CP" & "martele" %in% Plac$Etat,PlacOri$ntrt[1]+1,
-                        ifelse(trt=="CP",PlacOri$ntrt[1],0)))
+  ntrt=ifelse(trt=="CP" & "martele" %in% Plac$Etat,PlacOri$ntrt[1]+1,
+              ifelse(trt=="CP",PlacOri$ntrt[1],0))
 
   #Type de placette
   type_pe_Plac<-ifelse(PlacOri$Sup_PE[1]==0.04,"type0",

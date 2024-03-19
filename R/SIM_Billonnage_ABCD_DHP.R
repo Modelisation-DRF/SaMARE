@@ -22,8 +22,8 @@ SIMBillonnageABCD_DHP<- function (data , type){
     data <-ConvertisseurEco(data)
   }
 
-  if(type == "ABCD" && all(is.na(data$ABCD))){
-    type="DHP"
+  if (type %in% c("ABCD", "ABCD2015") && all(is.na(data$ABCD))) {
+    type <- ifelse(type == "ABCD", "DHP", "DHP2015")
   }
 
 
@@ -39,10 +39,10 @@ SIMBillonnageABCD_DHP<- function (data , type){
      non_regional_2015_ABCD <- data_ABCD %>% filter(!Espece %in% c("ERS", "BOJ"))
 
      # Billonnage régionalisé pour les arbres possédant la qualité ABCD
-     regional_result_ABCD <-ABCD_DHP_regio(data=regional_ABCD, type =type )
+     regional_result_ABCD <-ABCD_DHP_regio(data=regional_ABCD, type ="ABCD" )
 
      #Billonnage non régionalisé pour les arbres possédant la qualité ABCD
-     non_regional_2015_result_ABCD <- ABCD_DHP215(data=non_regional_2015_ABCD, type =type)
+     non_regional_2015_result_ABCD <- ABCD_DHP215(data=non_regional_2015_ABCD, type ="ABCD2015")
 
 
      regional_pas_ABCD <- data_pas_ABCD %>% filter(Espece %in% c("ERS", "BOJ"))
@@ -55,7 +55,7 @@ SIMBillonnageABCD_DHP<- function (data , type){
      # Billonnage non régionalisé pour les arbres ne  possédant pas la qualité ABCD
      # donc Billonage éffectuer avec DHP
 
-     non_regional_2015_result_pas_ABCD <- ABCD_DHP215(data=non_regional_2015_pas_ABCD, type ="DHP")
+     non_regional_2015_result_pas_ABCD <- ABCD_DHP215(data=non_regional_2015_pas_ABCD, type ="DHP2015")
 
      finl1 <-rbind(regional_result_ABCD,non_regional_2015_result_ABCD)
      finl2 <-rbind(regional_result_pas_ABCD,non_regional_2015_result_pas_ABCD)
@@ -67,38 +67,29 @@ SIMBillonnageABCD_DHP<- function (data , type){
     regional_result <-ABCD_DHP_regio(data=regional, type =type )
 
     non_regional_2015 <- data %>% filter(!Espece %in% c("ERS", "BOJ"))
-    non_regional_2015_result <- ABCD_DHP215(data=non_regional_2015, type =type)
+    non_regional_2015_result <- ABCD_DHP215(data=non_regional_2015, type ="DHP2015")
 
     final <-merge(regional_result,regional_result)
    }
   }else{
 
-    final <- ABCD_DHP215(data=data, type =type)
+
+    if(type=="ABCD2015"){
+
+      data_ABCD <- data %>% filter(!is.na(ABCD))
+      data_pas_ABCD <-data %>% filter(is.na(ABCD))
+
+      final_ABCD <- ABCD_DHP215(data=data_ABCD, type ="ABCD2015")
+      final_DHP<- ABCD_DHP215(data=data_pas_ABCD, type ="DHP2015")
+      final<-rbind(final_ABCD,final_DHP)
+
+    }else{
+
+      final <- ABCD_DHP215(data=data, type =type)
+    }
+
+
   }
-
-
-
-  # filtrer <23 cm DHP
-  # data<- data %>% filter(DHPcm >23)
-  #
-  # if(!"eco" %in% colnames(data)){
-  #   data <-ConvertisseurEco(data)
-  # }
-  #
-  # registerDoFuture()
-  #
-  # batch_size <- 10  # Taille de chaque lot
-  # n <- nrow(data)
-  # batch_indices <- split(1:n, ceiling(seq_along(1:n) / batch_size))
-  #
-  # sim_ABCD_DHPt <- future_sapply(batch_indices, function(indices) {
-  #   batch_df <- data[indices, , drop = FALSE]
-  #   ABCD_DHP(data = batch_df)
-  # }, simplify = FALSE)
-  #
-  # resultbionage <- do.call(rbind, sim_ABCD_DHPt)
-
-
 
 
 

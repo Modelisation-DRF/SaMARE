@@ -28,13 +28,13 @@
 #' @examples
 
 
-SimulSaMARE<-function(NbIter,AnneeDep,Horizon,RecruesGaules,Data,Gaules =NA){
+SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules =NA){
   select=dplyr::select
   ################################ Lecture des fichiers de placette et de parametres ###################
   Data <- renommer_les_colonnes(Data)
 
   Data <- Data %>% filter(DHPcm>=9)
-
+  AnneeDep <- as.numeric(format(Sys.Date(), "%Y"))
 
   # Fichier des effets aleatoires
   CovParms<-MatchModuleCovparms

@@ -8,7 +8,7 @@ valide_data <- function(data) {
     valide_Vigueur = "Code de vigueur non permis",
     valide_Sup_PE = "Superficie de la placette en ha non valide",
     valide_Nombre = "valeur de nombre null",
-   # valide_Annee_Coupe = "Annee coupe non valide",
+    valide_Annee_Coupe = "Annee coupe non valide",
     valide_Latitude = "Latitude non valide",
     valide_Longitude = "Longitude non valide",
     valide_Altitude = "Altitude non valide",
@@ -16,9 +16,10 @@ valide_data <- function(data) {
    # valide_Tmoy = "Tmoy non valide",
     valide_Type_Eco = "valeur Type_Eco null",
     valide_MSCR = "MSCR non valide",
-    valide_Reg_Eco = "reg_eco non valide",
+    valide_Reg_Eco = "Valeure non permise pour Reg_Eco",
     valide_ABCD = "ABCD non valide",
-    valide_Pente = "Pente non valide"
+    valide_Pente = "Pente non valide",
+    valide_ntrt = "Entrer le nombre de traitements"
    # valide_GrwDays = "GrwDays non valide"
   )
 
@@ -43,8 +44,8 @@ valide_data_gaules <- function(data) {
 
   validations <- list(
     valide_espece = "Code d'essence non valide",
-    valide_DHPcm = "Valeurs de DHP non permise",
-    valide_Sup_PE = "Superficie de la placette en ha non valide",
+    valide_DHPcm_gaules = "Valeurs de DHP non permise",
+    valide_Sup_PE_gaules = "Superficie de la placette en ha non valide",
     valide_Nombre = "valeur de nombre null"
   )
 
@@ -70,7 +71,7 @@ valide_Nombre <- function(data){
   if(!"Nombre" %in% names(data)){
     return (FALSE)
   }
-  return(all(!is.na(data$Nombre )))
+  return(all(data$Nombre>0))
 
 }
 
@@ -112,7 +113,16 @@ valide_DHPcm <- function(data){
   if(!"DHPcm" %in% names(data)){
     return (FALSE)
   }
-  return(all(data$DHPcm <= 200 ))
+  return(all(data$DHPcm <= 160 ))
+
+}
+
+valide_DHPcm_gaules <- function(data){
+
+  if(!"DHPcm" %in% names(data)){
+    return (FALSE)
+  }
+  return(all(between(data$DHPcm, 1.0, 9.0) ))
 
 }
 
@@ -120,14 +130,27 @@ valide_Vigueur <- function(data){
   if (!all(c("Vigueur", "MSCR") %in% names(data))) {
     return(FALSE)
   }
+   valeurs_autorisees <- c(1, 2, 3, 4, 5, 6)
 
-  valeurs_autorisees <- c(1, 2, 3, 4, 5, 6)
+
+  resultats <- sapply(1:nrow(data), function(i) {
 
   condition_1 <- data$Vigueur %in% valeurs_autorisees | is.na(data$Vigueur)
 
   condition_2 <- ifelse(is.na(data$Vigueur), data$MSCR %in% c('M', 'S', 'C', 'R', 'MS', 'CR'), TRUE)
 
-  return(all(condition_1 & condition_2))
+  condition_3 <- ifelse(data$Vigueur %in% c(1,2,3,4), data$Espece %in% c('AUT','BOJ', 'ERR', 'ERS', 'FEN', 'FIN', 'HEG'), TRUE)
+
+  condition_4 <- ifelse(data$Vigueur %in% c(5,6), data$Espece %in% c('EPX', 'RES', 'SAB'), TRUE)
+
+  condition_5 <- ifelse(data$Vigueur %in% c(3), data$DHPcm >23.1, TRUE)
+
+  return(condition_1 & condition_2 & condition_3 & condition_4 & condition_5)
+
+    })
+
+
+  return(all(resultats))
 
 }
 
@@ -136,7 +159,20 @@ valide_Sup_PE <- function(data){
     return (FALSE)
   }
 
-  return(all(data$Sup_PE <= 1 ))
+  resultat <- all(between(data$Sup_PE, 0.04, 1))
+
+  return(resultat)
+
+}
+
+valide_Sup_PE_gaules <- function(data){
+  if(!"Sup_PE" %in% names(data)){
+    return (FALSE)
+  }
+
+  resultat <- all(between(data$Sup_PE, 0.004, 1))
+
+  return(resultat)
 
 }
 
@@ -146,7 +182,7 @@ valide_Annee_Coupe <- function(data){
     return (FALSE)
   }
 
-  condition <- ifelse(is.na(data$Annee_Coupe), FALSE, data$Annee_Coupe > 1900 & data$Annee_Coupe < 2100)
+  condition <- ifelse(!is.na(data$Annee_Coupe), between(data$Annee_Coupe, 1900, 2100), TRUE)
 
 
   return(all(condition))
@@ -159,7 +195,7 @@ valide_Latitude <- function(data){
   if(!"Latitude" %in% names(data)){
     return (FALSE)
   }
-  return(all(data$Latitude > 45 & data$Latitude < 50 ))
+  return(all(data$Latitude > 45 & data$Latitude < 48.5 ))
 
 }
 
@@ -168,7 +204,7 @@ valide_Longitude <- function(data){
   if(!"Longitude" %in% names(data)){
     return (FALSE)
   }
-  return(all(data$Longitude > -79.5 & data$Longitude < -57.0 ))
+  return(all(data$Longitude > -79.5 & data$Longitude < -64.0 ))
 
 }
 
@@ -219,8 +255,7 @@ valide_Reg_Eco <- function(data){
   }
 
   valeurs_autorisees<-c("1a", "2a", "2b", "2c", "3a", "3b", "3c", "3d", "4a", "4b", "4c", "4d", "4e", "4f", "4g",
-                        "4h", "5a", "5b", "5c", "5d", "5e", "5f", "5g","5h", "5i", "5j", "5k", "6a", "6b", "6c", "6d",
-                        "6e", "6f", "6g", "6h", "6i", "6j", "6k", "6l", "6m", "6n", "6o", "6p", "6q", "6r", "7a", "7b", "7c")
+                        "4h", "DU", "SV")
 
   return(all(data$Reg_Eco %in% valeurs_autorisees))
 
@@ -247,9 +282,31 @@ valide_ABCD <- function(data){
   if(!"ABCD" %in% names(data)){
     return (FALSE)
   }
+
+  GrEspece_specifiques <- c("BOJ", "ERR", "ERS", "FEN", "FIN", "HEG")
   valeurs_autorisees <- c("A","B","C","D",NA)
 
-  return(all(data$ABCD %in% valeurs_autorisees))
+
+  resultats <- sapply(1:nrow(data), function(i) {
+
+    GrEspece  <- data$Espece [i]
+    ABCD  <- data$ABCD[i]
+    DHP  <- data$DHPcm[i]
+
+    condition0 <- ABCD %in% valeurs_autorisees
+
+    condition1 <-  ifelse(!GrEspece  %in% GrEspece_specifiques,  is.na(ABCD),TRUE)
+
+    condition2 <-  ifelse(DHP<23.1,  is.na(ABCD),TRUE)
+
+    condition3 <-  ifelse(between(DHP, 23.0 , 33.0),  ABCD %in% c("C","D"),TRUE)
+
+    condition4 <-  ifelse(between(DHP, 33.1 , 39.0),  ABCD %in% c("C","D", "B"),TRUE)
+
+    return(condition0 & condition1 & condition2 & condition3 & condition4)
+  })
+
+  return(all(resultats))
 }
 
 
@@ -269,6 +326,15 @@ valide_GrwDays <- function(data){
 
   return(all(data$GrwDays >=1 & data$GrwDays < 365 ))
 
+}
+
+valide_ntrt <- function(data){
+  if(!"ntrt" %in% names(data)){
+    return (FALSE)
+  }
+
+
+  return(all(data$ntrt %in% c(0,1,2)))
 }
 
 
