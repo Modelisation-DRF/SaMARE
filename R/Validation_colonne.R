@@ -12,6 +12,7 @@ valide_data <- function(data) {
     valide_Latitude = "Latitude non valide",
     valide_Longitude = "Longitude non valide",
     valide_Altitude = "Altitude non valide",
+    verifier_arbre_uniques_par_placette = "deux arbres identique pour la même placette",
    # valide_Ptot = "Ptot non valide",
    # valide_Tmoy = "Tmoy non valide",
     valide_Type_Eco = "valeur Type_Eco null",
@@ -335,6 +336,22 @@ valide_ntrt <- function(data){
 
 
   return(all(data$ntrt %in% c(0,1,2)))
+}
+
+
+verifier_arbre_uniques_par_placette <- function(data) {
+
+  data_diviser_par_placette <- split(data, data$Placette)
+
+
+  arbre_uniques_par_placette <- lapply(data_diviser_par_placette, function(data_placette) {
+
+    length(unique(data_placette$NoArbre)) == nrow(data_placette)
+  })
+
+
+    return(all(arbre_uniques_par_placette))
+
 }
 
 
