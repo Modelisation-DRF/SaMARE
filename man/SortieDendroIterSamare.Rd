@@ -7,7 +7,7 @@ placette, annee, groupe d'espèce et itération le diamètre quadratique moyen,
 la surface terrière, le volume et la hauteur dominante.
 Cette fonction prend en paramètre un dataframe qui a déjà été simulé}
 \usage{
-SortieDendroIterSamare(SimulHtVol)
+SortieDendroIterSamare(SimulHtVol, simplifier = FALSE)
 }
 \arguments{
 \item{SimulHtVol}{Un dataframe contenant les résultats de simulation pour chacune des

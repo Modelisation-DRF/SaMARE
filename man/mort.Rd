@@ -5,7 +5,7 @@
 \title{Fonction qui prévoit la probabilité de mortalité de chacun des arbres
 durant un pas de simulation.}
 \usage{
-mort(Mort, trt, temp, type_pe_Plac, fact_red, t, Iterj, Para.mort)
+mort(Mort, trt, temp, type_pe_Plac, fact_red, t, Iterj, MCH, Para.mort)
 }
 \arguments{
 \item{Mort}{Un dataframe qui contient la liste des arbres pour lesquels
@@ -25,6 +25,11 @@ une autre dimension.}
 été effectuée 3 ans ou moins avant la prévision.}
 
 \item{Iterj}{Itération en cours.}
+
+\item{MCH}{Variable prenant la veleur de 1 en présence de maladie corticale du hêtre dans
+la placette et 0 lorsque la maladie est absente. Lorsque la maladie corticale
+est présente,la probabilité de mortalié des hêtres est estimée avec
+l'équation de l'avis technique AT-SSRF 20 de la Direction de la recherche forestière.}
 
 \item{Para.mort}{Un dataframe  contenant les paramettres du module de mortalité.}
 }
