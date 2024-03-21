@@ -131,24 +131,34 @@ valide_Vigueur <- function(data){
   if (!all(c("Vigueur", "MSCR") %in% names(data))) {
     return(FALSE)
   }
-   valeurs_autorisees <- c(1, 2, 3, 4, 5, 6)
+   valeurs_autorisees <- c(1, 2, 3, 4, 5, 6,NA)
 
 
   resultats <- sapply(1:nrow(data), function(i) {
 
-  condition_1 <- data$Vigueur %in% valeurs_autorisees | is.na(data$Vigueur)
+  condition_1 <- data$Vigueur %in% valeurs_autorisees
 
   condition_2 <- ifelse(is.na(data$Vigueur), data$MSCR %in% c('M', 'S', 'C', 'R', 'MS', 'CR'), TRUE)
 
-  condition_3 <- ifelse(data$Vigueur %in% c(1,2,3,4), data$Espece %in% c('AUT','BOJ', 'ERR', 'ERS', 'FEN', 'FIN', 'HEG'), TRUE)
+  condition_3 <- ifelse(data$Vigueur %in% c(1,2,3,4), data$Espece %in% c("BOG","BOJ","BOP", "CAC", "CAF", "CAR", "CEO", "CET", "CHB", "CHE","CHG",
+                                                                         "CHR","ERA" , "ERG","ERN", "ERP","ERR","ERS",
+                                                                         "FRA","FRN","FRP", "HEG", "JUV","MAS" ,"NOC","ORA",
+                                                                         "ORR","ORT","OSV","PEB","PED","PEG","PEH","PET",
+                                                                         "PRP","SAL","SOA","SOD","TIL" ,"AME"  ,"AUR","ERE"
+                                                                         ,"TIA" ,"CEP"), TRUE)
 
-  condition_4 <- ifelse(data$Vigueur %in% c(5,6), data$Espece %in% c('EPX', 'RES', 'SAB'), TRUE)
+  condition_4 <- ifelse(data$Vigueur %in% c(5,6), data$Espece %in% c("EPB", "EPN", "EPO","EPR",
+                                                                     "MEJ" , "MEL", "MEU",
+                                                                     "PIB","PID","PIG","PIR",
+                                                                     "PIS","PRU","SAB","THO"), TRUE)
 
   condition_5 <- ifelse(data$Vigueur %in% c(3), data$DHPcm >23.1, TRUE)
 
   return(condition_1 & condition_2 & condition_3 & condition_4 & condition_5)
 
     })
+
+
 
 
   return(all(resultats))
@@ -284,7 +294,12 @@ valide_ABCD <- function(data){
     return (FALSE)
   }
 
-  GrEspece_specifiques <- c("BOJ", "ERR", "ERS", "FEN", "FIN", "HEG")
+  Espece_specifiques <- c("BOG","BOJ","BOP", "CAC", "CAF", "CAR", "CEO", "CET", "CHB", "CHE","CHG",
+                          "CHR","ERA" , "ERG","ERN", "ERP","ERR","ERS",
+                          "FRA","FRN","FRP", "HEG", "JUV","MAS" ,"NOC","ORA",
+                          "ORR","ORT","OSV","PEB","PED","PEG","PEH","PET",
+                          "PRP","SAL","SOA","SOD","TIL" ,"AME"  ,"AUR","ERE"
+                          ,"TIA" ,"CEP")
   valeurs_autorisees <- c("A","B","C","D",NA)
 
 
@@ -296,13 +311,13 @@ valide_ABCD <- function(data){
 
     condition0 <- ABCD %in% valeurs_autorisees
 
-    condition1 <-  ifelse(!GrEspece  %in% GrEspece_specifiques,  is.na(ABCD),TRUE)
+    condition1 <-  ifelse(!GrEspece  %in% Espece_specifiques,  is.na(ABCD),TRUE)
 
     condition2 <-  ifelse(DHP<23.1,  is.na(ABCD),TRUE)
 
-    condition3 <-  ifelse(between(DHP, 23.0 , 33.0),  ABCD %in% c("C","D"),TRUE)
+    condition3 <-  ifelse(between(DHP, 23.1 , 33.0),  ABCD %in% c("C","D",NA),TRUE)
 
-    condition4 <-  ifelse(between(DHP, 33.1 , 39.0),  ABCD %in% c("C","D", "B"),TRUE)
+    condition4 <-  ifelse(between(DHP, 33.1 , 39.0),  ABCD %in% c("C","D", "B",NA),TRUE)
 
     return(condition0 & condition1 & condition2 & condition3 & condition4)
   })
