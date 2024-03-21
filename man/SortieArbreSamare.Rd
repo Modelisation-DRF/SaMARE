@@ -5,7 +5,7 @@
 \title{Fonction qui structure un dataframe de sortie dont chaque ligne correspond
 à chacun des arbres par placette, par itération et par année.}
 \usage{
-SortieArbreSamare(SimulHtVol)
+SortieArbreSamare(SimulHtVol, simplifier = FALSE)
 }
 \arguments{
 \item{SimulHtVol}{Un dataframe contenant les résultats de simulation pour chacune des

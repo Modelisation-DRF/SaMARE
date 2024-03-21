@@ -2,8 +2,6 @@
 #'initiales ainsi qu'un choix de paramètres pour la simulation.
 #'
 #' @param NbIter Valuere numérique du nombre d'iterations à effectuer (ex: 300).
-#' @param AnneeDep Année de départ de la simulation, cette valeure sera ajustée de
-#'                 5 ans pour à chaque pas de simulation (ex: 2023).
 #' @param Horizon Valeure numérique du nombre de période de 5 ans sur lesquelles
 #'                le simulateur effectuera ses simulations (ex: 6 pour 30 ans de simulations).
 #' @param RecruesGaules Variable prenant la valeur de "1" pour utiliser les
@@ -21,6 +19,11 @@
 #'                fournie si le paramètre "RecruesGaules=1.
 #'                Les champs: "Placette","Espece","DHPcm",#' "Nombre","Sup_PE"
 #'                doivent être présents.
+#' @param MCH Variable prenant la veleur de 1 en présence de maladie corticale du hêtre dans
+#'            la placette et 0 lorsque la maladie est absente. Lorsque la maladie corticale
+#'            est présente,la probabilité de mortalié des hêtres est estimée avec
+#'            l'équation de l'avis technique AT-SSRF 20 de la Direction de la recherche forestière.
+#'
 #' @return Retourne un dataframe contenant la liste des arbres, leur état, leur DHP,
 #'         leur hauteur et leur volume pour chaque placette, chaque pas de simulation
 #'         et chaque iteration.
@@ -28,7 +31,7 @@
 #' @examples
 
 
-SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules =NA){
+SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules =NA,MCH=0){
   select=dplyr::select
   ################################ Lecture des fichiers de placette et de parametres ###################
   Data <- renommer_les_colonnes(Data)
@@ -141,7 +144,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules =NA){
     foreach(x = iterators::iter(list_plot)) %dorng%   ######utilisation de doRNG permet de controler la seed
       {SaMARE(Random=RandPlacStep,RandomGaules=RandPlacStepGaules,Data=Data,
               Gaules=Gaules, ListeIter=ListeIter[ListeIter$PlacetteID==x,],
-              AnneeDep=AnneeDep,Horizon=Horizon,RecruesGaules=RecruesGaules,
+              AnneeDep=AnneeDep,Horizon=Horizon,RecruesGaules=RecruesGaules, MCH=MCH,
               CovParms=CovParms,CovParmsGaules=CovParmsGaules,
               Para=Para,ParaGaules=ParaGaules,Omega=Omega, OmegaGaules=OmegaGaules)}
   )
@@ -193,8 +196,8 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules =NA){
   nb_periodes <- Horizon+1
 
 
-        ht <- relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5)
-        SimulHtVol2 <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes)
+  ht <- relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5)
+  SimulHtVol2 <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes)
 
 
 

@@ -16,6 +16,7 @@ SaMARE(
   AnneeDep,
   Horizon,
   RecruesGaules,
+  MCH,
   CovParms,
   CovParmsGaules,
   Para,
@@ -52,6 +53,11 @@ et le numéro de l'iteration à effecuer.}
 paramètres de recrutement basé sur l'inventaire des gaules
 de la placette et de "0" pour utiliser le module de
 recrutement basé sur les arbres de dimension marchande.}
+
+\item{MCH}{Variable prenant la veleur de 1 en présence de maladie corticale du hêtre dans
+la placette et 0 lorsque la maladie est absente. Lorsque la maladie corticale
+est présente,la probabilité de mortalié des hêtres est estimée avec
+l'équation de l'avis technique AT-SSRF 20 de la Direction de la recherche forestière.}
 
 \item{CovParms}{Un dataframe contenant la variance des effets aléatoires des
 équations des modules de base de SaMARE (modules 1 à 9 et 17 à 19).}

@@ -6,7 +6,7 @@
 pour les essences feuillues le volume prévu pour chacune des classe de produits
 issues de la classification Petro.}
 \usage{
-SortieBillesSamareLigne(SimulHtVolBillon)
+SortieBillesSamareLigne(SimulHtVol)
 }
 \arguments{
 \item{SimulHtVolBillon}{Un dataframe de sortie de la fonction de billonnage.}
