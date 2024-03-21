@@ -432,8 +432,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
     RandomMort<-RandPlacetteStep %>% filter(SubModuleID==1)
 
     # Application de la fonction de mortalité
-    #pred<-mort(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,MCH,Para.mort)
-    pred<-mortOri(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,Para.mort)
+    pred<-mort(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,MCH,Para.mort)
+
 
     Mort$pred_mort<-pred
 
