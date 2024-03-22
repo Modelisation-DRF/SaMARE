@@ -136,19 +136,19 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules =NA,MCH=0){
     arrange(PlacetteID)
 
 
-
   registerDoFuture()
-  list_plot <- unique(ListeIter$PlacetteID)
   plan(multisession)
+
+  list_plot <- unique(ListeIter$PlacetteID)
+
   Simul<- bind_rows(
-    foreach(x = iterators::iter(list_plot)) %dorng%   ######utilisation de doRNG permet de controler la seed
+    foreach(x = list_plot) %dorng%   ######utilisation de doRNG permet de controler la seed
       {SaMARE(Random=RandPlacStep,RandomGaules=RandPlacStepGaules,Data=Data,
               Gaules=Gaules, ListeIter=ListeIter[ListeIter$PlacetteID==x,],
               AnneeDep=AnneeDep,Horizon=Horizon,RecruesGaules=RecruesGaules, MCH=MCH,
               CovParms=CovParms,CovParmsGaules=CovParmsGaules,
               Para=Para,ParaGaules=ParaGaules,Omega=Omega, OmegaGaules=OmegaGaules)}
   )
-
 
 
 
