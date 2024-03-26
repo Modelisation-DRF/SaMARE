@@ -14,7 +14,7 @@ test_that("simulateur SaMARE return the expected data with gaules and without Ga
   set.seed(NULL)
   set.seed(3)
 
-  Result<-SimulSaMARE(NbIter=2,AnneeDep=2023, Horizon=6,RecruesGaules=0, Data = Test400m2Coupe )
+  Result<-SimulSaMARE(NbIter=30, Horizon=6,RecruesGaules=0, Data = Test400m2Coupe )
 
   set.seed(NULL)
 
