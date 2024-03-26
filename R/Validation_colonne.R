@@ -231,7 +231,7 @@ valide_Altitude <- function(data){
 }
 
 valide_Ptot <- function(data){
-  if(!"Ptot" %in% names(data)){
+  if(!"Ptot" %in% names(data)|| any(is.na(data$Ptot))){
     return (FALSE)
   }
 
@@ -241,7 +241,7 @@ valide_Ptot <- function(data){
 
 
 valide_Tmoy <- function(data){
-  if(!"Tmoy" %in% names(data)){
+  if(!"Tmoy" %in% names(data)|| any(is.na(data$Tmoy))){
     return (FALSE)
   }
 
@@ -336,7 +336,7 @@ valide_Pente <- function(data){
 }
 
 valide_GrwDays <- function(data){
-  if(!"GrwDays" %in% names(data)){
+  if(!"GrwDays" %in% names(data)|| any(is.na(data$GrwDays))){
     return (FALSE)
   }
 
