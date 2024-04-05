@@ -356,6 +356,10 @@ valide_ntrt <- function(data){
 
 verifier_arbre_uniques_par_placette <- function(data) {
 
+  if(!"Placette" %in% names(data)){
+    return (FALSE)
+  }
+
   data_diviser_par_placette <- split(data, data$Placette)
 
 
