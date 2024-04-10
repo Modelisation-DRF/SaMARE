@@ -128,7 +128,7 @@ valide_DHPcm_gaules <- function(data){
 }
 
 valide_Vigueur <- function(data){
-  if (!all(c("Vigueur", "MSCR") %in% names(data))) {
+  if (!all(c("Vigueur", "MSCR","DHPcm","Espece") %in% names(data))) {
     return(FALSE)
   }
    valeurs_autorisees <- c(1, 2, 3, 4, 5, 6,NA)
@@ -290,7 +290,7 @@ valide_MSCR <- function(data){
 
 valide_ABCD <- function(data){
 
-  if(!"ABCD" %in% names(data)){
+  if(!all(c("ABCD", "Espece","DHPcm") %in% names(data))){
     return (FALSE)
   }
 
