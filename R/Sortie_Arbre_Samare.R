@@ -21,7 +21,8 @@ SortieArbreSamare <- function(SimulHtVol ,simplifier=FALSE){
             Vigueur = case_when(
               vigu0 == "ViG" & prod0 == "sciage" ~ 1,
               vigu0 == "ViG" & prod0 == "pate" ~ 2,
-              vigu0 == "NONVIG" & prod0 == "sciage" ~ 3,
+              vigu0 == "NONVIG" & prod0 == "sciage" & DHPcm>=23.1 ~ 3,
+              vigu0 == "NONVIG" & prod0 == "sciage" & DHPcm<23.1 ~ 4,
               vigu0 == "NONVIG" & prod0 == "pate" ~ 4,
               vigu0 == "ViG" & prod0 == "resineux" ~ 5,
               vigu0 == "NONVIG" & prod0 == "resineux" ~ 6,

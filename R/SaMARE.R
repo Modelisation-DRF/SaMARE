@@ -1510,7 +1510,8 @@ if (nrow(outputTot)>0){
       RecSelect<-RecSelect %>%
         mutate(pred_dhp=rec_dhp(RecSelect,st_tot0,dens_tot0,t,ntrt,Iterj,Para.rec_dhp),
                eijk=rnorm(n(),mean=0,sd=sqrt(varRecDhp*pred_dhp^theta)),
-               DHPcm1=((pred_dhp+RandomRecDhp$RandomPlac+RandomRecDhp$RandomStep+eijk)^2+90)/10) %>%
+               DHPcm1=((pred_dhp+RandomRecDhp$RandomPlac+RandomRecDhp$RandomStep+eijk)^2+90)/10,
+               DHPcm1=ifelse(DHPcm1>=9.1,DHPcm1,9.1)) %>%
         select(ArbreID,GrEspece,DHPcm1)
       RecSelect$DHPcm1<-RecSelect$DHPcm1[,1]
 

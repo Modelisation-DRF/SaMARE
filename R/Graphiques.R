@@ -122,6 +122,7 @@ GraphDist<-Sommaire %>%
           strip.text = element_text(size = 10,face="bold"),
           legend.text= element_text(size = 12),
           legend.title= element_text(size = 12))+
+          labs(fill="Année")+
           theme(legend.position="top")
 GraphDist
 
