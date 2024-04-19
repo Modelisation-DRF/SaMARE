@@ -37,11 +37,15 @@ SortieDendroIterSamare <- function(SimulHtVol,simplifier=FALSE){
                      mutate (Stm2ha=pi*(DHPcm/200)^2/Sup_PE,
                              vol_dm3=ifelse(is.na(vol_dm3)==TRUE,0,vol_dm3/Sup_PE)) %>%
                      arrange( desc(hauteur_pred))%>%
-                     group_by(Placette,Annee,Iter,Etat,Residuel) %>%
                      group_by(Placette,Iter,Annee,Etat,Residuel) %>%
                      mutate(NbCum=cumsum(Nombre)) %>%
-                     summarise(DQM=(mean(DHPcm^2,na.rm=TRUE))^0.5,ST_HA=sum(Stm2ha),Vol_HA=sum(vol_dm3)/1000,
-                               nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>100))],na.rm = TRUE),mean(hauteur_pred)), .groups="drop") %>%
+                     summarise(DQM=(mean(DHPcm^2,na.rm=TRUE))^0.5,
+                               ST_HA=sum(Stm2ha),
+                               Vol_HA=sum(vol_dm3)/1000,
+                               nbTi_HA=sum(Nombre/Sup_PE),
+                               HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>100))],na.rm = TRUE),mean(hauteur_pred)), .groups="drop") %>%
+                    mutate(DQM=ifelse(Etat=="mort",NA,DQM),ST_HA=ifelse(Etat=="mort",NA,ST_HA),
+                                      Vol_HA=ifelse(Etat=="mort",NA,Vol_HA),HDomM=ifelse(Etat=="mort",NA,HDomM)) %>%
                     mutate(GrEspece="TOT") %>%
                     rbind(DendroIterSamaresp) %>%
                     arrange(Placette,Annee,Residuel,Iter,GrEspece,desc(Etat)) %>%

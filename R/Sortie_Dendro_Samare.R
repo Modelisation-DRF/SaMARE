@@ -19,8 +19,9 @@ SortieDendroSamare <- function(SimulHtVol,simplifier=FALSE){
 
   MinAnnee = min(SimulHtVol$Annee)
   MaxAnnee = max(SimulHtVol$Annee)
-
   NbIter<-length(unique(SimulHtVol$Iter))
+  Horizon=length(unique(SimulHtVol$Annee))-1
+
 
   DendroSamaresp <- SimulHtVol %>%
                     mutate(Etat=ifelse(Etat=="mort","mort","vivant")) %>%
@@ -113,16 +114,33 @@ DendroSamare<-DendroSamare %>%
                      AACMortM2HaAn=ifelse(is.na(AACMortM2HaAn)==TRUE | Etat=="mort",0,AACMortM2HaAn),
                      AACRecrM2HaAn=ifelse(is.na(AACRecrM2HaAn)==TRUE | Etat=="mort",0,AACRecrM2HaAn),
                      AACBrut=AACAccrM2HaAn+AACRecrM2HaAn,
-                     AACNet=AACBrut+AACMortM2HaAn))
-
-
+                     AACNet=AACBrut+AACMortM2HaAn) %>%
+                    filter (Etat=="vivant") %>%
+                    select(-Etat))
 
 
 
 
 if(simplifier == TRUE){
   DendroIterSamare_simp_min <-DendroSamare %>% filter(Annee==MinAnnee )
-  DendroIterSamare_simp_max <-DendroSamare %>% filter(Annee==MaxAnnee )
+  DendroIterSamare_simp_maxa <-DendroSamare %>%
+                              filter(Annee==MaxAnnee ) %>%
+                              select(-AACAccrM2HaAn,-AACMortM2HaAn,-AACRecrM2HaAn,-AACBrut,-AACBrut)
+
+  DendroIterSamare_simp_maxb <-DendroSamare %>%
+                              filter(Annee!=MinAnnee) %>%
+                              group_by(Placette,Residuel,GrEspece) %>%
+                              mutate(AACAccrM2HaAn=sum(AACAccrM2HaAn)/Horizon,
+                                     AACMortM2HaAn=sum(AACMortM2HaAn)/Horizon,
+                                     AACRecrM2HaAn=sum(AACRecrM2HaAn)/Horizon,
+                                     AACBrut=sum(AACBrut)/Horizon,
+                                     AACBrut=sum(AACNet)/Horizon)
+  suppressMessages(
+  DendroIterSamare_simp_max <-DendroIterSamare_simp_maxa %>%
+                              left_join(DendroIterSamare_simp_maxb))
+
+
+
   DendroSamare <-rbind(DendroIterSamare_simp_min,DendroIterSamare_simp_max)
 }
 
