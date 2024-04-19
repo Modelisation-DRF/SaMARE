@@ -173,13 +173,13 @@ valide_Vigueur <- function(data) {
       condition_4 = if_else(Vigueur %in% c(5,6), Espece %in% Espece_specifiques_5_6, TRUE),
       condition_5 = if_else(Vigueur == 3, DHPcm >= 23.1, TRUE)
     ) %>%
-    summarize(all_conditions = all(condition_1 & condition_2 & condition_3 & condition_4 & condition_5))
+    reframe(all_conditions = all(condition_1 & condition_2 & condition_3 & condition_4 & condition_5))
 
   return(resultats$all_conditions)
 }
 
 valide_Sup_PE <- function(data){
-  if(!"Sup_PE" %in% names(data)){
+  if(!all(c("Placette", "Sup_PE") %in% names(data))){
     return (FALSE)
   }
   if(any(is.na(data$Sup_PE)) ){
@@ -187,7 +187,7 @@ valide_Sup_PE <- function(data){
   }
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
       valeur_unique = n_distinct(Sup_PE) == 1 && all(Sup_PE >= 0.04 & Sup_PE <= 1)
     )
   return(all(resultats$valeur_unique))
@@ -196,7 +196,7 @@ valide_Sup_PE <- function(data){
 }
 
 valide_Sup_PE_gaules <- function(data){
-  if(!"Sup_PE" %in% names(data)){
+  if(!all(c("Placette", "Sup_PE") %in% names(data))){
     return (FALSE)
   }
   if(any(is.na(data$Sup_PE)) ){
@@ -205,7 +205,7 @@ valide_Sup_PE_gaules <- function(data){
 
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
       valeur_unique = n_distinct(Sup_PE) == 1 && all(Sup_PE >= 0.004 & Sup_PE <= 1)
     )
   return(all(resultats$valeur_unique))
@@ -214,15 +214,15 @@ valide_Sup_PE_gaules <- function(data){
 
 valide_Annee_Coupe <- function(data){
 
-  if(!"Annee_Coupe" %in% names(data)){
+  if(!all(c("Placette", "Annee_Coupe") %in% names(data))){
     return (FALSE)
   }
 
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
       valeur_unique = if (all(is.na(Annee_Coupe))) {
-        Data$ntrt == 0
+        ntrt == 0
       } else {
         n_distinct(Annee_Coupe) == 1 && all(Annee_Coupe >= 1900 & Annee_Coupe <= 2100)
       }
@@ -233,7 +233,7 @@ valide_Annee_Coupe <- function(data){
 
 valide_Latitude <- function(data){
 
-  if(!"Latitude" %in% names(data)){
+  if(!all(c("Placette", "Latitude") %in% names(data))){
     return (FALSE)
   }
   if(any(is.na(data$Latitude)) ){
@@ -242,7 +242,7 @@ valide_Latitude <- function(data){
 
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
       valeur_unique =  n_distinct(Latitude) == 1 && all(Latitude > 45 & Latitude < 48.5)
 
     )
@@ -252,7 +252,7 @@ valide_Latitude <- function(data){
 
 valide_Longitude <- function(data){
 
-  if(!"Longitude" %in% names(data)){
+  if(!all(c("Placette", "Longitude") %in% names(data))){
     return (FALSE)
   }
   if(any(is.na(data$Longitude)) ){
@@ -260,7 +260,7 @@ valide_Longitude <- function(data){
   }
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
 
       valeur_unique = n_distinct(Longitude) == 1 && all(Longitude > -79.5 & Longitude < -64.0)
 
@@ -272,7 +272,7 @@ valide_Longitude <- function(data){
 
 valide_Altitude <- function(data){
 
-  if(!"Altitude" %in% names(data)){
+  if(!all(c("Placette", "Altitude") %in% names(data))){
     return (FALSE)
   }
 
@@ -282,7 +282,7 @@ valide_Altitude <- function(data){
 
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
       valeur_unique = n_distinct(Altitude) == 1 && all(Altitude < 1000)
     )
   return(all(resultats$valeur_unique))
@@ -290,16 +290,14 @@ valide_Altitude <- function(data){
 }
 
 valide_Ptot <- function(data){
-  if(!"Ptot" %in% names(data)|| any(is.na(data$Ptot))){
-    return (FALSE)
-  }
-  if(any(is.na(data$Ptot)) ){
+  if(!all(c("Placette", "Ptot") %in% names(data))|| any(is.na(data$Ptot))){
     return (FALSE)
   }
 
+
    resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+     reframe(
       valeur_unique = n_distinct(Ptot) == 1 && all(Ptot < 2000)
     )
   return(all(resultats$valeur_unique))
@@ -308,7 +306,7 @@ valide_Ptot <- function(data){
 
 
 valide_Tmoy <- function(data){
-  if(!"Tmoy" %in% names(data)|| any(is.na(data$Tmoy))){
+  if(!all(c("Placette", "Tmoy") %in% names(data))|| any(is.na(data$Tmoy))){
     return (FALSE)
   }
 
@@ -317,7 +315,7 @@ valide_Tmoy <- function(data){
   }
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
       valeur_unique = n_distinct(Tmoy) == 1 && all(Tmoy > 0 & Tmoy < 10 )
 
     )
@@ -328,8 +326,8 @@ valide_Tmoy <- function(data){
 
 valide_Type_Eco <- function(data){
 
-  if(!"Type_Eco" %in% names(data)){
-    return (FALSE)
+  if (!all(c("Placette", "Type_Eco") %in% names(data))) {
+    return(FALSE)
   }
 
   if(any(is.na(data$Type_Eco)) ){
@@ -361,7 +359,7 @@ valide_Type_Eco <- function(data){
 
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
       valeur_unique = n_distinct(Type_Eco) == 1
 
 )
@@ -371,8 +369,8 @@ valide_Type_Eco <- function(data){
 
 
 valide_Reg_Eco <- function(data){
-  if(!"Reg_Eco" %in% names(data)){
-    return (FALSE)
+  if (!all(c("Placette", "Reg_Eco") %in% names(data))) {
+    return(FALSE)
   }
 
   if(any(is.na(data$Reg_Eco)) ){
@@ -388,7 +386,7 @@ valide_Reg_Eco <- function(data){
 
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
       valeur_unique = n_distinct(Reg_Eco) == 1
 
     )
@@ -418,6 +416,12 @@ valide_ABCD <- function(data) {
     return(FALSE)
   }
 
+  if(any(is.na(data$DHPcm)) ){
+    return (FALSE)
+  }
+  if(any(is.na(data$Espece)) ){
+    return (FALSE)
+  }
 
   Espece_specifiques <- c("BOG", "BOJ", "BOP", "CAC", "CAF", "CAR", "CEO", "CET", "CHB", "CHE", "CHG",
                           "CHR", "ERA", "ERG", "ERN", "ERP", "ERR", "ERS", "FRA", "FRN", "FRP", "HEG",
@@ -434,22 +438,22 @@ valide_ABCD <- function(data) {
       condition3 = if_else(DHPcm >= 23.1 & DHPcm <= 33.0, ABCD %in% c("C", "D", NA), TRUE),
       condition4 = if_else(DHPcm > 33.0 & DHPcm <= 39.0, ABCD %in% c("B", "C", "D", NA), TRUE)
     ) %>%
-    summarize(all_conditions = all(condition0 & condition1 & condition2 & condition3 & condition4))
+    reframe(all_conditions = all(condition0 & condition1 & condition2 & condition3 & condition4))
 
   return(resultats$all_conditions)
 }
 
 
 valide_Pente <- function(data){
-  if(!"Pente" %in% names(data)){
-    return (FALSE)
+  if (!all(c("Placette", "Pente") %in% names(data))) {
+    return(FALSE)
   }
   if(any(is.na(data$Pente)) ){
     return (FALSE)
   }
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
 
       valeur_unique = n_distinct(Pente) == 1 && all(Pente >= 0 & Pente <= 100)
     )
@@ -457,7 +461,7 @@ valide_Pente <- function(data){
 }
 
 valide_GrwDays <- function(data){
-  if(!"GrwDays" %in% names(data)|| any(is.na(data$GrwDays))){
+  if(!all(c("GrwDays","Placette") %in% names(data))|| any(is.na(data$GrwDays))){
     return (FALSE)
   }
   if(any(is.na(data$GrwDays)) ){
@@ -465,7 +469,7 @@ valide_GrwDays <- function(data){
   }
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
       valeur_unique = n_distinct(GrwDays) == 1 && all(GrwDays >=1 & GrwDays <365 )
 
     )
@@ -474,13 +478,13 @@ valide_GrwDays <- function(data){
 }
 
 valide_ntrt <- function(data){
-  if(!"ntrt" %in% names(data)){
-    return (FALSE)
+  if (!all(c("Placette", "ntrt") %in% names(data))) {
+    return(FALSE)
   }
 
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
       valeur_unique = n_distinct(ntrt) == 1 && all(ntrt %in% c(0,1,2))
 
     )
@@ -492,13 +496,15 @@ valide_ntrt <- function(data){
 
 verifier_arbre_uniques_par_placette <- function(data) {
 
-  if(!"Placette" %in% names(data)){
-    return (FALSE)
+
+  if (!all(c("Placette", "NoArbre") %in% names(data))) {
+    return(FALSE)
   }
+
 
   resultats <- data %>%
     group_by(Placette) %>%
-    summarise(
+    reframe(
       tous_uniques = n_distinct(NoArbre) == n(),
       .groups = 'drop'
     )
