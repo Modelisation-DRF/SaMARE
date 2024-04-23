@@ -197,6 +197,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules =NA,MCH=0){
 
 
   ht <- relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5)
+
   SimulHtVol2 <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes)
 
 

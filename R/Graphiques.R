@@ -19,7 +19,7 @@
 Graph<-function (SimulHtVol, Espece="TOT", Variable='ST_HA'){
 
 Data<-SortieDendroSamare(SimulHtVol) %>%
-      filter(GrEspece==Espece & Etat=="vivant") %>%
+      filter(GrEspece==Espece) %>%
       mutate(Yvar=NA)
 
 Data <- Data %>% #Permet de retirer le Residuel=0 dans le cas où on a également un résiduel=1 pour la même année

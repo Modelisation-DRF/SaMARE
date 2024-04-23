@@ -23,7 +23,7 @@ AttribQualFct<-function(PlacSansQual,rid1){
 
   PlacSansQualForm<-PlacSansQualForm %>%
                     mutate(PredQual=ifelse(Alea<=ProbQualC,"C","D")) %>%
-                    select(NoArbre,PredQual)
+                    select(ArbreID,PredQual)
 
   return ( PlacSansQualForm)
 
