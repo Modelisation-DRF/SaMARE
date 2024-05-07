@@ -54,7 +54,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   t<-5
 
 
-
+ #####################################################################
   ################## convertion MSCR #################################
 
   # Para.ConvMSCRVig<-Para %>%
