@@ -23,7 +23,21 @@ SortieDendroSamare <- function(SimulHtVol,simplifier=FALSE){
   Horizon=length(unique(SimulHtVol$Annee))-1
 
 
-  DendroSamaresp <- SimulHtVol %>%
+ ListeGrSp<-data.frame("GrEspece"=c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB"))
+ ListeSpIni<-SimulHtVol %>%
+              group_by(Placette,Iter,Annee,Etat,Residuel,GrEspece) %>%
+              summarise() %>%
+              filter(Annee==MinAnnee)
+ suppressMessages(
+  ListeMerge<-SimulHtVol %>%
+             group_by(Placette,Iter,Annee,Etat,Residuel) %>%
+             summarise() %>%
+             filter(Annee!=MinAnnee) %>%
+             merge(ListeGrSp) %>%
+            rbind(ListeSpIni) %>%
+            filter(Etat=="vivant"))
+ suppressMessages(
+   DendroSamaresp <- SimulHtVol %>%
                     mutate(Etat=ifelse(Etat=="mort","mort","vivant")) %>%
                     filter(Etat=="vivant") %>%
                     mutate (Stm2ha=pi*(DHPcm/200)^2*Nombre/Sup_PE,
@@ -33,12 +47,16 @@ SortieDendroSamare <- function(SimulHtVol,simplifier=FALSE){
                     mutate(NbCum=cumsum(Nombre)) %>%
                     summarise(DQM=(sum(DHPcm^2*Nombre)/sum(Nombre))^0.5,ST_HA=sum(Stm2ha),Vol_HA=sum(vol_dm3)/1000,
                               nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>100))],na.rm = TRUE),mean(hauteur_pred)), .groups="drop") %>%
+                    right_join(ListeMerge) %>%
+                    mutate(ST_HA=ifelse(is.na(ST_HA)==TRUE,0,ST_HA),Vol_HA=ifelse(is.na(Vol_HA)==TRUE,0,Vol_HA),
+                           nbTi_HA=ifelse(is.na(nbTi_HA)==TRUE,0,nbTi_HA)) %>%
                     group_by(Placette,Annee,GrEspece,Etat,Residuel) %>%
-                    summarise(EcartType_DQM=sd(DQM),DQM=mean(DQM),EcartType_ST_HA=sd(ST_HA),ST_HA=mean(ST_HA),
+                    summarise(EcartType_DQM=sd(DQM, na.rm=TRUE),DQM=mean(DQM,na.rm=TRUE),EcartType_ST_HA=sd(ST_HA),ST_HA=mean(ST_HA),
                               EcartType_Vol_HA=sd(Vol_HA),Vol_HA=mean(Vol_HA), EcartType_nbTi_HA=sd(nbTi_HA),
-                              nbTi_HA=mean(nbTi_HA),EcartType_HDomM=sd(HDomM),HDomM=mean(HDomM),.groups="drop")
+                              nbTi_HA=mean(nbTi_HA),EcartType_HDomM=sd(HDomM, na.rm=TRUE),HDomM=mean(HDomM, na.rm=TRUE),.groups="drop"))
 
-  DendroSamare <- SimulHtVol %>%
+   suppressMessages(
+   DendroSamare <- SimulHtVol %>%
                      mutate(Etat=ifelse(Etat=="mort","mort","vivant")) %>%
                      mutate (Stm2ha=pi*(DHPcm/200)^2*Nombre/Sup_PE,
                              vol_dm3=ifelse(is.na(vol_dm3)==TRUE,0,vol_dm3*Nombre/Sup_PE)) %>%
@@ -55,7 +73,7 @@ SortieDendroSamare <- function(SimulHtVol,simplifier=FALSE){
                     rbind(DendroSamaresp) %>%
                     arrange(Placette,Annee,Residuel,GrEspece,desc(Etat)) %>%
                     relocate(Placette,Annee,Residuel,GrEspece,Etat,nbTi_HA,ST_HA,DQM,Vol_HA,HDomM,
-                             EcartType_nbTi_HA,EcartType_ST_HA,EcartType_DQM,EcartType_Vol_HA,EcartType_HDomM)
+                             EcartType_nbTi_HA,EcartType_ST_HA,EcartType_DQM,EcartType_Vol_HA,EcartType_HDomM))
 suppressMessages(
 Recrutementsp<-SimulHtVol %>%
              filter(Etat=="recrue") %>%
