@@ -54,7 +54,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   t<-5
 
 
-
+ #####################################################################
   ################## convertion MSCR #################################
 
   # Para.ConvMSCRVig<-Para %>%
@@ -212,7 +212,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   #Variable du peuplement residuel avec condition que si St >26 = TEM
   trt<-ifelse("martele" %in% Plac$Etat,"CP",
-              ifelse(is.na(PlacOri$Annee_Coupe[1])==TRUE,"TEM",
+              ifelse((is.na(PlacOri$ntrt[1])==TRUE | PlacOri$ntrt[1]==0),"TEM",
                      ifelse(AnneeDep-PlacOri$Annee_Coupe[1]<5 &
                               (sum((Plac$DHPcm/200)^2*3.1416*Plac$Nombre)/Sup_PE)>26,"TEM","CP")))
 
@@ -396,7 +396,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
     }
 
     #Temps depuis coupe
-    t0_aj_<-Plac$Annee[1]-t0-4.9 ######on ajuste pour que lorsque la step débute immédiatement après coupe t0_aj a une valeur de 0.1
+    if(trt=="CP"){
+      t0_aj_<-Plac$Annee[1]-t0-4.9}else{t0_aj_=0} ######on ajuste pour que lorsque la step débute immédiatement après coupe t0_aj a une valeur de 0.1
 
     #Réduction de la mortalité
     fact_red<-ifelse(trt=="TEM",0,ifelse(t0_aj_<=3,1,0))
