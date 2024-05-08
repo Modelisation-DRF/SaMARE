@@ -2,11 +2,13 @@ test_that("simulateur SaMARE return the expected data with Gaules and coupe ", {
   set.seed(NULL)
   set.seed(3)
 
-  Result<-SimulSaMARE(NbIter=2,AnneeDep=2023, Horizon=6,RecruesGaules=1, Data = Test400m2Coupe , Gaules = GaulesTest2500m2)
+  system.time(
+  Result<-SimulSaMARE(NbIter=2, Horizon=6,RecruesGaules=1, Data = Test400m2Coupe , Gaules = GaulesTest2500m2,MCH = 0)
+  )
 
   set.seed(NULL)
 
-  expect_equal(Result, expect_for_Simulateur_Samare_test )
+  expect_equal(Result, expect_test_for_Simulateur_Samare )
 })
 
 
@@ -14,7 +16,7 @@ test_that("simulateur SaMARE return the expected data with gaules and without Ga
   set.seed(NULL)
   set.seed(3)
 
-  Result<-SimulSaMARE(NbIter=30, Horizon=6,RecruesGaules=0, Data = Test400m2Coupe )
+  Result<-SimulSaMARE(NbIter=30, Horizon=6,RecruesGaules=0, Data = Test400m2Coupe ,MCH = 0)
 
   set.seed(NULL)
 
@@ -25,7 +27,7 @@ test_that("simulateur SaMARE return the expected data with Gaules and without co
   set.seed(NULL)
   set.seed(3)
 
-  Result<-SimulSaMARE(NbIter=2,AnneeDep=2023, Horizon=6,RecruesGaules=1, Data = Test2500m2 , Gaules = GaulesTest2500m2)
+  Result<-SimulSaMARE(NbIter=2, Horizon=6,RecruesGaules=1, Data = Test2500m2 , Gaules = GaulesTest2500m2,MCH = 0)
 
   set.seed(NULL)
 
@@ -35,7 +37,7 @@ test_that("simulateur SaMARE return the expected data without Gaules and coupe "
   set.seed(NULL)
   set.seed(3)
 
-  Result<-SimulSaMARE(NbIter=2,AnneeDep=2023, Horizon=6,RecruesGaules=0, Data = Test2500m2 )
+  Result<-SimulSaMARE(NbIter=2,Horizon=6,RecruesGaules=0, Data = Test2500m2 ,MCH = 0)
 
   set.seed(NULL)
 
