@@ -232,15 +232,15 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   altitude<-PlacOri$Altitude[1]
 
-  pente<-PlacOri$Pente[1]
+  pente<-ifelse(is.na(PlacOri$Pente[1]==TRUE),6.5,PlacOri$Pente[1])
 
   dom<-substr(PlacOri$Reg_Eco[1],1,1) %>% ifelse(!. %in% c("2","3","4"),"4",. )##valeur de 4 attribué aux domaines pas dans la liste d'effets
 
   reg<-PlacOri$Reg_Eco[1]
 
-  rid1<-ifelse(reg %in% c("2a","2b","2c"),"2o",ifelse(reg %in% c("4a","4b","4c"),"4o",
+  rid1<-ifelse(reg %in% c("1a","2a","2b","2c"),"2o",ifelse(reg %in% c("4a","4b","4c"),"4o",
                                                       ifelse(reg %in% c("4d","4e","4f","4g","4h"),"4e",reg))) %>%
-    ifelse(!. %in% c("2o","3a","3b","3c","3d","4e","4o","DU","SV"),NA,.)  #Ajouté DU et SV qui manquaient
+         ifelse(!. %in% c("2o","3a","3b","3c","3d","4e","4o","DU","SV"),"4o",.)  #Ajouté DU et SV qui manquaient et mis "4o" quand manquant
   teco<-PlacOri$Type_Eco[1]
 
   vegp<-substr(PlacOri$Type_Eco[1],1,3)
@@ -510,6 +510,23 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
         mutate(prod1=as.character(ifelse(prod0=="resineux","resineux",prod1))) %>%
         arrange(ArbreID))
 
+    #############################Evolution Qualite##############################
+
+    PlacQual<-Plac %>%
+      filter(ABCD %in% c("A","B","C","D") & Etat=="vivant")
+
+    if (nrow(PlacQual)>0){
+
+      TigesQual<-EvolQual(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot)
+      suppressMessages(
+        Plac<-Plac %>%
+          left_join(TigesQual) %>%
+          mutate(ABCD=ABCD1) %>%
+          select(-ABCD1))
+
+    }
+
+    rm(PlacQual)
 
     ##############################Attribution Qualite###########################
 
@@ -531,23 +548,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
    }
 
-    #############################Evolution Qualite##############################
 
-    PlacQual<-Plac %>%
-      filter(ABCD %in% c("A","B","C","D") & Etat=="vivant")
-
-    if (nrow(PlacQual)>0){
-
-      TigesQual<-EvolQual(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot)
-      suppressMessages(
-        Plac<-Plac %>%
-          left_join(TigesQual) %>%
-          mutate(ABCD=ABCD1) %>%
-          select(-ABCD1))
-
-    }
-
-    rm(PlacQual)
 
     ##################RECRUTEMENT##################################################
 
