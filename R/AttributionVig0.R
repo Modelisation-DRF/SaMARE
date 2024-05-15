@@ -7,7 +7,7 @@
 #'              veut attribuer le vigueur.
 #' @param Para.ConvMSCRVig Un dataframe  contenant les paramettres des équations
 #'                         de conversion du classement MSCR en vigueur.
-#' @return Retourne la vigueur de l'arbre vigoureux ("vig")ou non vigoureux ("NONVIG").
+#' @return Retourne la vigueur de l'arbre vigoureux ("ViG")ou non vigoureux ("NONVIG").
 #' @examples
 #'
 
@@ -50,10 +50,10 @@ AttribVigu0<-function(Data,Para.ConvMSCRVig){
 
   pred<-exp(logit)/(1+exp(logit))
 
- vigu0<-ifelse(pred>=runif(n=1),"vig","NONVIG")
+ vigu0<-ifelse(pred>=runif(n=1),"ViG","NONVIG")
 
     }else{
-  vigu0="vig"
+  vigu0="ViG"
 
     }
   }
