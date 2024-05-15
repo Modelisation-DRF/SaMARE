@@ -59,7 +59,7 @@ AttribMSCR<-function(Data,Para.ConvVigMSCR){
             # Construction matrice X
             XConvVigMSCR<-matrix(0,ncol=5,nrow=n)
             XConvVigMSCR[,1]<-1
-            XConvVigMSCR[,2]<-(Data$vigu0=="vig")*1
+            XConvVigMSCR[,2]<-(Data$vigu0=="ViG")*1
             XConvVigMSCR[,3:4]<-(Data$GrEspece==listeEss)*1
             XConvVigMSCR[,5]<-Data$DHPcm
 
