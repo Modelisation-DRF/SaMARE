@@ -24,7 +24,7 @@ AttribMSCR<-function(Data,Para.ConvVigMSCR){
   # Construction matrice X
   XConvVigMSCR<-matrix(0,ncol=9,nrow=n)
   XConvVigMSCR[,1]<-1
-  XConvVigMSCR[,2]<-(Data$vigu0=="vig")*1
+  XConvVigMSCR[,2]<-(Data$vigu0=="ViG")*1
   XConvVigMSCR[,3]<-(Data$prod0=="sciage")*1
   XConvVigMSCR[,4]<-(Data$DHPcm*10)
   XConvVigMSCR[,5:9]<-(Data$GrEspece==listeEss)*1
