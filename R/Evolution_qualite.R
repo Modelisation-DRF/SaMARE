@@ -46,7 +46,7 @@ EvolQual<-function(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot){
   listeQualA<-c(rep("A",n),rep("B",n),rep("C",n))
   listeInterceptB<-c(rep(1,n),rep(2,n))
   listeInterceptA<-c(rep(1,n),rep(2,n),rep(3,n))
-  listeVigueur<-c(rep("NONVIG",n),rep("NONVIG",n),rep("vig",n))
+  listeVigueur<-c(rep("NONVIG",n),rep("NONVIG",n),rep("ViG",n))
   listeProduits<-c(rep("pate",n),rep("sciage",n),rep("pate",n))
 
   #Construction de la matrice X
