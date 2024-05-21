@@ -70,3 +70,52 @@ renommer_les_colonnes_gaules <- function(data){
 
   return(data)
 }
+
+
+
+
+
+
+
+
+cppFunction('
+#include <Rcpp.h>
+#include <string>
+#include <cctype>
+#include <algorithm>
+
+using namespace Rcpp;
+
+// Helper function to convert a string to lowercase
+std::string to_lower(std::string str) {
+    std::transform(str.begin(), str.end(), str.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+    return str;
+}
+
+// Main function to find missing column names
+// [[Rcpp::export]]
+CharacterVector trouver_noms_absents1(DataFrame Data) {
+    CharacterVector ColOrdre = CharacterVector::create("Placette","NoArbre","Espece","Etat","DHPcm","Vigueur","Nombre",
+                                                      "Sup_PE","Annee_Coupe","Latitude","Longitude","Altitude","Pente",
+                                                      "Reg_Eco","Type_Eco", "MSCR","ntrt","ABCD");
+
+    // Convert ColOrdre to lowercase
+    for (int i = 0; i < ColOrdre.size(); ++i) {
+        ColOrdre[i] = to_lower(as<std::string>(ColOrdre[i]));
+    }
+
+    // Extract names from Data and convert to lowercase
+    CharacterVector dataNames = Data.names();
+    for (int i = 0; i < dataNames.size(); ++i) {
+        dataNames[i] = to_lower(as<std::string>(dataNames[i]));
+    }
+
+    // Find missing names
+    CharacterVector noms_absents = setdiff(ColOrdre, dataNames);
+
+    return noms_absents;
+}
+')
+
+
