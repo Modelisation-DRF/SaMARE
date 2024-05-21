@@ -28,7 +28,10 @@ Depends: mvtnorm,
         future.apply,
         data.table,
         rlang,
+        Rcpp,
         R (>= 2.10)
+Imports: Rcpp
+LinkingTo: Rcpp
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
