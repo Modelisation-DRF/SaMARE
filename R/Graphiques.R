@@ -80,12 +80,13 @@ GraphEvol<-Data%>%
              geom_line(aes(),show.legend=FALSE, lwd=1.25, colour="#1B9E77")+
              ylim(0,ymax+5)+
              xlab(bquote(bold("Année de la simulation")))+ ylab(paste(Etiquette))+
-             scale_x_continuous(breaks = seq(AnneeDep, AnneeFin, by = 10))+
+             scale_x_continuous(breaks = seq(AnneeDep, AnneeFin, by = 5))+
              theme_bw() +
              ggtitle(paste(Etiquette,"  ",Essence))+
              theme(
       strip.background = element_rect(fill = "white"),
       axis.title=element_text(size=14,face="bold"),
+      axis.text.x = element_text(angle = 45,  hjust=1),
       strip.text.x = element_text(size = 12,face="bold"),
       plot.title = element_text(hjust = 0.5,size=14,face="bold"))+
      geom_text(data=dernieres_valeurs,aes(label = Placette), hjust = 1, vjust=-0.2,size=3)
