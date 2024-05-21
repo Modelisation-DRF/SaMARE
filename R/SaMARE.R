@@ -344,8 +344,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
       }
 
-
-      ######################## Résidus de l'arbre####################################
+  ########################### Résidus de l'arbre####################################
 
       Periodes<-c("ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
 
@@ -357,17 +356,28 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
       Residual<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Residual")]
 
-      Rho<-CovParms$ParameterEstimate[which(CovParms$CovParm=="RHO")]
+       Rho<-CovParms$ParameterEstimate[which(CovParms$CovParm=="RHO")]
 
-      Gamma<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Gamma")]
+       Gamma<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Gamma")]
 
       for (i in 1:Horizon){
 
         Residus[,i+1]<-rnorm(nrow(Residus),mean=0,sqrt(Residual*Gamma*(Rho^(i-1))))
       }
 
+      # fonction pour générer un element de la matrice de var-cov ARMA(1,1)
+     # f <- function(i, j, var_res, gamma, rho) { (((i-j)!=0)*(var_res * gamma*rho^(abs(j-i)-1)))+( ((i-j)==0)*var_res) } # correlation arma
+      # créer et remplir la matrice de var-cov
+      # varcov <- expand.grid(i=1:Horizon, j=1:Horizon)
+      # varcov <- matrix(f(varcov$i, varcov$j, Residual, Gamma, Rho), nrow=Horizon)
+      #
+      # Residus <- rockchalk::mvrnorm(n=nrow(Plac), mu=rep(0,Horizon), Sigma = varcov, empirical=T)
+      # Residus <- cbind(Plac$ArbreID, Residus)
+      # colnames(Residus)<-c("ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
+      #
+      #
 
-      # Mise en forme des statistiques de gaules qui seront mises à jour par la suite
+######### Mise en forme des statistiques de gaules qui seront mises à jour par la suite
 
       if (RecruesGaules==1){
         RecGaules<-data.frame("GrEspece"=c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB"))
@@ -787,11 +797,18 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
           ResidusRec[,i+1]<-rnorm(nrow(ResidusRec),
                                   mean=0,sqrt(Residual*Gamma*(Rho^(i-k-1))))
         }
-        Residus<-rbind(Residus,ResidusRec)
+        # créer et remplir la matrice de var-cov ARMA(1,1)
+        # varcov <- expand.grid(i=1:(Horizon-k), j=1:(Horizon-k))
+        # varcov <- matrix(f(varcov$i, varcov$j, Residual, Gamma, Rho), nrow=Horizon-k)
+        #
+        # ResidusRec <- rockchalk::mvrnorm(n=nrow(RecSelect), mu=rep(0,Horizon-k), Sigma = varcov, empirical=T)
+        # ResidusRec0<-matrix(0,nrow=nrow(RecSelect),ncol=k) # colonnes de 0 pour les steps passés
+        # ResidusRec <- cbind(RecSelect$ArbreID, ResidusRec0, ResidusRec)
+
+         Residus<-rbind(Residus,ResidusRec)
 
 
       }
-
       ########Ajout des recrues au fichier des Placettes
       RecSelect<-RecSelect %>%
         mutate(Placette=Placette,Annee=AnneeDep+k*t,NoArbre=NA,

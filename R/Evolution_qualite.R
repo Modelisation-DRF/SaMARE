@@ -145,8 +145,8 @@ EvolQual<-function(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot){
   PlacQual$pred<-pred[,1]
   PlacQual$predb<-ifelse(PlacQual$GrDHP=="C",exp(pred)/(1+exp(pred)),1/(1+exp(-pred)))
   PlacQualb<-PlacQual %>%
-            select(ArbreID,GrEspece,GrDHP,Intercept,pred,ABCD,vigu0,prod0,dtr) %>%
-            pivot_wider(id_cols=c("ArbreID","GrEspece","GrDHP","ABCD","vigu0","prod0","dtr"), values_from=pred, names_from=Intercept,names_prefix="Intercept")
+            select(ArbreID,GrEspece,GrDHP,Intercept,predb,ABCD,vigu0,prod0,dtr) %>%
+            pivot_wider(id_cols=c("ArbreID","GrEspece","GrDHP","ABCD","vigu0","prod0","dtr"), values_from=predb, names_from=Intercept,names_prefix="Intercept")
 
  if("A" %in% PlacQualb$GrDHP){
    PlacQualb<-PlacQualb %>%
