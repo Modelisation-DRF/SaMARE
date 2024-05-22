@@ -24,11 +24,11 @@ Depends: mvtnorm,
         miceadds,
         TarifQC,
         dplyr,
-        reticulate,
         future.apply,
         data.table,
         rlang,
         Rcpp,
+        rockchalk,
         R (>= 2.10)
 Imports: Rcpp
 LinkingTo: Rcpp

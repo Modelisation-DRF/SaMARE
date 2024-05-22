@@ -346,13 +346,13 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   ########################### Résidus de l'arbre####################################
 
-      Periodes<-c("ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
-
-      Residus<-matrix(0,nrow=nrow(Plac),ncol=Horizon+1)
-
-      colnames(Residus)<-Periodes
-
-      Residus[,1]<-Plac$ArbreID
+      # Periodes<-c("ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
+      #
+      # Residus<-matrix(0,nrow=nrow(Plac),ncol=Horizon+1)
+      #
+      # colnames(Residus)<-Periodes
+      #
+      # Residus[,1]<-Plac$ArbreID
 
       Residual<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Residual")]
 
@@ -360,22 +360,22 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
        Gamma<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Gamma")]
 
-      for (i in 1:Horizon){
-
-        Residus[,i+1]<-rnorm(nrow(Residus),mean=0,sqrt(Residual*Gamma*(Rho^(i-1))))
-      }
+      # for (i in 1:Horizon){
+      #
+      #   Residus[,i+1]<-rnorm(nrow(Residus),mean=0,sqrt(Residual*Gamma*(Rho^(i-1))))
+      # }
 
       # fonction pour générer un element de la matrice de var-cov ARMA(1,1)
-     # f <- function(i, j, var_res, gamma, rho) { (((i-j)!=0)*(var_res * gamma*rho^(abs(j-i)-1)))+( ((i-j)==0)*var_res) } # correlation arma
+      f <- function(i, j, var_res, gamma, rho) { (((i-j)!=0)*(var_res * gamma*rho^(abs(j-i)-1)))+( ((i-j)==0)*var_res) } # correlation arma
       # créer et remplir la matrice de var-cov
-      # varcov <- expand.grid(i=1:Horizon, j=1:Horizon)
-      # varcov <- matrix(f(varcov$i, varcov$j, Residual, Gamma, Rho), nrow=Horizon)
-      #
-      # Residus <- rockchalk::mvrnorm(n=nrow(Plac), mu=rep(0,Horizon), Sigma = varcov, empirical=T)
-      # Residus <- cbind(Plac$ArbreID, Residus)
-      # colnames(Residus)<-c("ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
-      #
-      #
+      varcov <- expand.grid(i=1:Horizon, j=1:Horizon)
+      varcov <- matrix(f(varcov$i, varcov$j, Residual, Gamma, Rho), nrow=Horizon)
+
+      Residus <- rockchalk::mvrnorm(n=nrow(Plac), mu=rep(0,Horizon), Sigma = varcov, empirical=F)
+      Residus <- cbind(Plac$ArbreID, Residus)
+      colnames(Residus)<-c("ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
+
+
 
 ######### Mise en forme des statistiques de gaules qui seront mises à jour par la suite
 
@@ -790,20 +790,21 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
       # Résidus de l'arbre
       if (k < Horizon){
-        ResidusRec<-matrix(0,nrow=nrow(RecSelect),ncol=Horizon+1)
-        ResidusRec[,1]<-RecSelect$ArbreID
-
-        for (i in (k+1):Horizon){
-          ResidusRec[,i+1]<-rnorm(nrow(ResidusRec),
-                                  mean=0,sqrt(Residual*Gamma*(Rho^(i-k-1))))
-        }
-        # créer et remplir la matrice de var-cov ARMA(1,1)
-        # varcov <- expand.grid(i=1:(Horizon-k), j=1:(Horizon-k))
-        # varcov <- matrix(f(varcov$i, varcov$j, Residual, Gamma, Rho), nrow=Horizon-k)
+        # ResidusRec<-matrix(0,nrow=nrow(RecSelect),ncol=Horizon+1)
+        # ResidusRec[,1]<-RecSelect$ArbreID
         #
-        # ResidusRec <- rockchalk::mvrnorm(n=nrow(RecSelect), mu=rep(0,Horizon-k), Sigma = varcov, empirical=T)
-        # ResidusRec0<-matrix(0,nrow=nrow(RecSelect),ncol=k) # colonnes de 0 pour les steps passés
-        # ResidusRec <- cbind(RecSelect$ArbreID, ResidusRec0, ResidusRec)
+        # for (i in (k+1):Horizon){
+        #   ResidusRec[,i+1]<-rnorm(nrow(ResidusRec),
+        #                           mean=0,sqrt(Residual*Gamma*(Rho^(i-k-1))))
+        # }
+        # créer et remplir la matrice de var-cov ARMA(1,1)
+        varcov <- expand.grid(i=1:(Horizon-k), j=1:(Horizon-k))
+        varcov <- matrix(f(varcov$i, varcov$j, Residual, Gamma, Rho), nrow=Horizon-k)
+
+        ResidusRec <- matrix(rockchalk::mvrnorm(n=nrow(RecSelect), mu=rep(0,Horizon-k), Sigma = varcov, empirical=F),ncol=(Horizon-k))
+       # ResidusRec <- rockchalk::mvrnorm(n=nrow(RecSelect), mu=rep(0,Horizon-k), Sigma = varcov, empirical=F)
+        ResidusRec0<-matrix(0,nrow=nrow(RecSelect),ncol=k) # colonnes de 0 pour les steps passés
+        ResidusRec <- cbind(RecSelect$ArbreID, ResidusRec0, ResidusRec)
 
          Residus<-rbind(Residus,ResidusRec)
 
