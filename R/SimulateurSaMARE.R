@@ -184,21 +184,31 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules =NA,MCH=0){
               Altitude=first(Altitude),Ptot=first(Ptot),Tmoy=first(Tmoy)) %>%
     mutate(veg_pot=substr(Type_Eco,1,3),milieu=substr(Type_Eco,4,4))
 
+  # renommer les variables pour l'équation de ht
   Simul<-Simul %>%
     inner_join(VarEco, relationship="many-to-many") %>%
-    mutate(nb_tige=Nombre*Sup_PE/25, step= (Annee-AnneeDep)/5 +1) %>%   #Conversion pour relation HD
-    rename(id_pe=Placette, dhpcm=DHPcm, essence=GrEspece,no_arbre=ArbreID,
+    mutate(nb_tige=Nombre/Sup_PE/25, step= (Annee-AnneeDep)/5 +1) %>%   #Conversion pour relation HD
+    rename(id_pe=Placette, dhpcm=DHPcm, no_arbre=ArbreID,          #IA: j'ai enlevé essence=GrEspece
            altitude=Altitude,p_tot=Ptot,t_ma=Tmoy, iter=Iter)
+
+  # IA: ajout
+  # faire l'association d'essence pour l'équation de hauteur et de volume: le data ass_ess_ht_vol est un fihcier rda sous data\
+  # utiliser GrEspece pour faire l'association
+  ass_ess_ht_vol2 <- ass_ess_ht_vol %>% group_by(GrEspece) %>% slice(1) %>% dplyr::select(-Espece)
+  Simul <- left_join(Simul,ass_ess_ht_vol2)
 
 
   SimulHtVol1<-Simul[which(Simul$Residuel==0),]
   nb_iter <- length(unique(SimulHtVol1$iter))
   nb_periodes <- Horizon+1
 
+  SimulHtVol1<- SimulHtVol1 %>% rename(essence=essence_hauteur) #IA: ajout
+  ht <- relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5) %>%
+    dplyr::select(-essence) # IA ajout
 
-  ht <- relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5)
-
-  SimulHtVol2 <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes)
+  ht <- ht %>% rename(essence=essence_volume) #IA: ajout
+  SimulHtVol2 <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes) %>%
+    dplyr::select(-essence) #IA: ajout
 
 
 
@@ -209,7 +219,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules =NA,MCH=0){
 
   SimulHtVol<-Simul %>%
     left_join(SimulHtVol2, by=c("id_pe","Annee","no_arbre","iter")) %>%
-    rename(Placette=id_pe, DHPcm=dhpcm, GrEspece=essence,ArbreID=no_arbre,
+    rename(Placette=id_pe, DHPcm=dhpcm,ArbreID=no_arbre,                #IA : j'ai enlevé GrEspece=essence
            Altitude=altitude,Ptot=p_tot,Tmoy=t_ma, Iter=iter) %>%
     mutate(PlacetteID=paste(Placette,"_",Iter, sep=""))
 
@@ -217,3 +227,4 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules =NA,MCH=0){
   return(SimulHtVol)
 
 }
+
