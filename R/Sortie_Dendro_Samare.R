@@ -42,11 +42,11 @@ SortieDendroSamare <- function(SimulHtVol,simplifier=FALSE){
                     filter(Etat=="vivant") %>%
                     mutate (Stm2ha=pi*(DHPcm/200)^2*Nombre/Sup_PE,
                             vol_dm3=ifelse(is.na(vol_dm3)==TRUE,0,vol_dm3/Sup_PE*Nombre)) %>%
-                    arrange(Placette,Iter,Annee,GrEspece,Etat,Residuel,desc(DHPcm))%>%
+                    arrange(Placette,Iter,Annee,GrEspece,Etat,Residuel,desc(hauteur_pred))%>%
                     group_by(Placette,Iter,Annee,GrEspece,Etat,Residuel) %>%
                     mutate(NbCum=cumsum(Nombre)) %>%
                     summarise(DQM=(sum(DHPcm^2*Nombre)/sum(Nombre))^0.5,ST_HA=sum(Stm2ha),Vol_HA=sum(vol_dm3)/1000,
-                              nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>100))],na.rm = TRUE),mean(hauteur_pred)), .groups="drop") %>%
+                              nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>=100))],na.rm = TRUE),NA), .groups="drop") %>%
                     right_join(ListeMerge) %>%
                     mutate(ST_HA=ifelse(is.na(ST_HA)==TRUE,0,ST_HA),Vol_HA=ifelse(is.na(Vol_HA)==TRUE,0,Vol_HA),
                            nbTi_HA=ifelse(is.na(nbTi_HA)==TRUE,0,nbTi_HA)) %>%
@@ -64,7 +64,7 @@ SortieDendroSamare <- function(SimulHtVol,simplifier=FALSE){
                      group_by(Placette,Iter,Annee,Etat,Residuel) %>%
                      mutate(NbCum=cumsum(Nombre)) %>%
                      summarise(DQM=(sum(DHPcm^2*Nombre)/sum(Nombre))^0.5,ST_HA=sum(Stm2ha),Vol_HA=sum(vol_dm3)/1000,
-                              nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>100))],na.rm = TRUE),mean(hauteur_pred)), .groups="drop") %>%
+                              nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>=100))],na.rm = TRUE),NA), .groups="drop") %>%
                     mutate(GrEspece="TOT") %>%
                     group_by(Placette,GrEspece,Annee,Etat,Residuel) %>%
                     summarise(EcartType_DQM=sd(DQM),DQM=mean(DQM),EcartType_ST_HA=sd(ST_HA),ST_HA=mean(ST_HA),
