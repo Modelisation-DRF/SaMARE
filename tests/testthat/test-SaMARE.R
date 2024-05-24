@@ -23,7 +23,7 @@ test_that("SaMARE returns the expected data frame with Gaules", {
                               Iter = 1)
 
 
-  result_samare_avec_gaules_test<-SaMARE(Random =RandomTest,RandomGaules=RandPlacStepGaules_test, Data = Data_test_for_simul_samare, Gaules =Gaules_test, ListeIter=ListeItertest, AnneeDep=2023, Horizon = 6 ,
+  result_simul<-SaMARE(Random =RandomTest,RandomGaules=RandPlacStepGaules_test, Data = Data_test_for_simul_samare, Gaules =Gaules_test, ListeIter=ListeItertest, AnneeDep=2023, Horizon = 6 ,
                         RecruesGaules =1,CovParms=MatchModuleCovparms,CovParmsGaules=CovparmGaules,
                         Para=MatchModuleParameters,ParaGaules=ParametresGaules,Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat, MCH = 0)
 
