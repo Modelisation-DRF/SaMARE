@@ -1,3 +1,23 @@
+#' Répertoire des erreurs dans le fichier des arbres
+#'
+#' La fonction \code{valide_data} vérifie la validité des données dans un dataframe représentant
+#' le fichier des arbres et retourne une liste des erreurs trouvées.
+#'
+#' @param data Un dataframe représentant le fichier des arbres.
+#'
+#' @return Une liste des erreurs trouvées dans le fichier des arbres.
+#'
+#' @examples
+#' \dontrun{
+#' # Supposons que nous ayons un dataframe `data` représentant le fichier des arbres
+#'
+#' # Appel de la fonction
+#' erreurs <- valide_data(data)
+#'
+#' # La fonction retournera une liste des erreurs trouvées dans le dataframe `data`
+#' }
+#'
+#' @export
 
 valide_data <- function(data) {
   data <- renommer_les_colonnes(data)
@@ -41,6 +61,27 @@ valide_data <- function(data) {
   return(erreurs)
 }
 
+#' Répertoire des erreurs dans le fichier des gaules
+#'
+#' La fonction \code{valide_data_gaules} vérifie la validité des données dans un dataframe représentant
+#' le fichier des gaules et retourne une liste des erreurs trouvées.
+#'
+#' @param data Un dataframe représentant le fichier des gaules.
+#'
+#' @return Une liste des erreurs trouvées dans le fichier des gaules.
+#'
+#' @examples
+#' \dontrun{
+#' # Supposons que nous ayons un dataframe `data` représentant le fichier des gaules
+#'
+#' # Appel de la fonction
+#' erreurs <- valide_data_gaules(data)
+#'
+#' # La fonction retournera une liste des erreurs trouvées dans le dataframe `data`
+#' }
+#'
+#' @export
+
 valide_data_gaules <- function(data) {
 
   validations <- list(
@@ -67,6 +108,13 @@ valide_data_gaules <- function(data) {
   return(erreurs)
 }
 
+
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'nombre' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
+
 valide_Nombre <- function(data){
 
   if(!"Nombre" %in% names(data)){
@@ -82,6 +130,11 @@ valide_Nombre <- function(data){
 
 
 
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Espece' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 
 valide_espece <- function(data){
 
@@ -103,6 +156,12 @@ valide_espece <- function(data){
 }
 
 
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Etat' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
+
 valide_Etat <- function(data){
 
   if(!"Etat" %in% names(data)){
@@ -119,6 +178,13 @@ valide_Etat <- function(data){
 
 }
 
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'DHPcm' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
+
+
 valide_DHPcm <- function(data){
 
   if(!"DHPcm" %in% names(data)){
@@ -132,6 +198,12 @@ valide_DHPcm <- function(data){
 
 }
 
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'DHPcm' sont correctes.
+#' @param data fichier des gaules
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
+
 valide_DHPcm_gaules <- function(data){
 
   if(!"DHPcm" %in% names(data)){
@@ -144,6 +216,12 @@ valide_DHPcm_gaules <- function(data){
   return(all(between(data$DHPcm, 1.0, 9.0) ))
 
 }
+
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Vigueur' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 
 valide_Vigueur <- function(data) {
 
@@ -178,6 +256,13 @@ valide_Vigueur <- function(data) {
   return(resultats$all_conditions)
 }
 
+
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Sup_PE' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
+
 valide_Sup_PE <- function(data){
   if(!all(c("Placette", "Sup_PE") %in% names(data))){
     return (FALSE)
@@ -195,6 +280,12 @@ valide_Sup_PE <- function(data){
 
 }
 
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Sup_PE' sont correctes.
+#' @param data fichier des gaules
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
+
 valide_Sup_PE_gaules <- function(data){
   if(!all(c("Placette", "Sup_PE") %in% names(data))){
     return (FALSE)
@@ -211,6 +302,13 @@ valide_Sup_PE_gaules <- function(data){
   return(all(resultats$valeur_unique))
 
 }
+
+
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Annee_Coupe' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 
 valide_Annee_Coupe <- function(data){
 
@@ -230,6 +328,11 @@ valide_Annee_Coupe <- function(data){
   return(all(resultats$valeur_unique))
 }
 
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Latitude' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 
 valide_Latitude <- function(data){
 
@@ -250,6 +353,12 @@ valide_Latitude <- function(data){
 
 }
 
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Longitude' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
+
 valide_Longitude <- function(data){
 
   if(!all(c("Placette", "Longitude") %in% names(data))){
@@ -269,6 +378,11 @@ valide_Longitude <- function(data){
 
 }
 
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Altitude' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 
 valide_Altitude <- function(data){
 
@@ -289,6 +403,12 @@ valide_Altitude <- function(data){
 
 }
 
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Ptot' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
+
 valide_Ptot <- function(data){
   if(!all(c("Placette", "Ptot") %in% names(data))|| any(is.na(data$Ptot))){
     return (FALSE)
@@ -304,7 +424,11 @@ valide_Ptot <- function(data){
 
 }
 
-
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Tmoy' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 valide_Tmoy <- function(data){
   if(!all(c("Placette", "Tmoy") %in% names(data))|| any(is.na(data$Tmoy))){
     return (FALSE)
@@ -323,7 +447,11 @@ valide_Tmoy <- function(data){
 
 }
 
-
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Type_Eco' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 valide_Type_Eco <- function(data){
 
   if (!all(c("Placette", "Type_Eco") %in% names(data))) {
@@ -367,7 +495,11 @@ valide_Type_Eco <- function(data){
 
 }
 
-
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Reg_Eco' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 valide_Reg_Eco <- function(data){
   if (!all(c("Placette", "Reg_Eco") %in% names(data))) {
     return(FALSE)
@@ -393,6 +525,11 @@ valide_Reg_Eco <- function(data){
   return(all(resultats$valeur_unique))
 }
 
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'MSCR' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 valide_MSCR <- function(data){
 
   if (!all(c("Vigueur", "MSCR") %in% names(data))) {
@@ -409,7 +546,11 @@ valide_MSCR <- function(data){
   return(all(resultats$condition_respectee))
 }
 
-
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'ABCD' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 valide_ABCD <- function(data) {
 
   if (!all(c("ABCD", "Espece", "DHPcm") %in% names(data))) {
@@ -427,16 +568,16 @@ valide_ABCD <- function(data) {
                           "CHR", "ERA", "ERG", "ERN", "ERP", "ERR", "ERS", "FRA", "FRN", "FRP", "HEG",
                           "JUV", "MAS", "NOC", "ORA", "ORR", "ORT", "OSV", "PEB", "PED", "PEG", "PEH",
                           "PET", "PRP", "SAL", "SOA", "SOD", "TIL", "AME", "AUR", "ERE", "TIA", "CEP")
-  valeurs_autorisees <- c("A", "B", "C", "D", NA)
+  valeurs_autorisees <- c("A", "B", "C", "D", NA,"")
 
 
   resultats <- data %>%
     mutate(
       condition0 = ABCD %in% valeurs_autorisees,
-      condition1 = if_else(!Espece %in% Espece_specifiques, is.na(ABCD), TRUE),
-      condition2 = if_else(DHPcm < 23.1, is.na(ABCD), TRUE),
-      condition3 = if_else(DHPcm >= 23.1 & DHPcm <= 33.0, ABCD %in% c("C", "D", NA), TRUE),
-      condition4 = if_else(DHPcm > 33.0 & DHPcm <= 39.0, ABCD %in% c("B", "C", "D", NA), TRUE)
+      condition1 = ifelse(!Espece %in% Espece_specifiques, is.na(ABCD) | ABCD == "", TRUE),
+      condition2 = ifelse(DHPcm < 23.1, is.na(ABCD) | ABCD == "", TRUE),
+      condition3 = ifelse(DHPcm >= 23.1 & DHPcm <= 33.0, ABCD %in% c("C", "D", NA, ""), TRUE),
+      condition4 = ifelse(DHPcm > 33.0 & DHPcm <= 39.0, ABCD %in% c("B", "C", "D", NA, ""), TRUE)
     ) %>%
     reframe(all_conditions = all(condition0 & condition1 & condition2 & condition3 & condition4))
 
@@ -444,6 +585,11 @@ valide_ABCD <- function(data) {
 }
 
 
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Pente' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 valide_Pente <- function(data){
   if (!all(c("Placette", "Pente") %in% names(data))) {
     return(FALSE)
@@ -455,11 +601,17 @@ valide_Pente <- function(data){
     group_by(Placette) %>%
     reframe(
 
-      valeur_unique = n_distinct(Pente) == 1 && all(Pente >= 0 & Pente <= 100)
+      valeur_unique = n_distinct(Pente) == 1 && (all(Pente >= 0 & Pente <= 100)|| is.na(Pente))
     )
   return(all(resultats$valeur_unique))
 }
 
+
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'GrwDays' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 valide_GrwDays <- function(data){
   if(!all(c("GrwDays","Placette") %in% names(data))|| any(is.na(data$GrwDays))){
     return (FALSE)
@@ -477,6 +629,12 @@ valide_GrwDays <- function(data){
 
 }
 
+
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'ntrt' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#' @examples
+#'
 valide_ntrt <- function(data){
   if (!all(c("Placette", "ntrt") %in% names(data))) {
     return(FALSE)
@@ -494,6 +652,11 @@ valide_ntrt <- function(data){
 }
 
 
+#' Fonction pour vérifier que chaque arbres est unique dans chaque placette
+#' @param data fichier des arbres
+#' @return Retourne vrai ou faux s'il y a des arbres qui se répètent.
+#' @examples
+#'
 verifier_arbre_uniques_par_placette <- function(data) {
 
 

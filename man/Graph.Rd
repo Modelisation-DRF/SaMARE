@@ -5,7 +5,7 @@
 \title{Fonction qui prépare les graphiques à insérer dans l'interface utilisateur
 cette function prend en parametre une sortie de la fonction SimulSaMARE}
 \usage{
-Graph(SimulHtVol, Espece = "TOT", Variable = "ST_HA")
+Graph(SimulHtVol, Espece = "TOT", Variable = "ST_HA", listePlacette)
 }
 \arguments{
 \item{SimulHtVol}{Un dataframe contenant les résultats de simulation pour chacune des

@@ -17,7 +17,7 @@ veut attribuer le vigueur.}
 de conversion du classement MSCR en vigueur.}
 }
 \value{
-Retourne la vigueur de l'arbre vigoureux ("vig")ou non vigoureux ("NONVIG").
+Retourne la vigueur de l'arbre vigoureux ("ViG")ou non vigoureux ("NONVIG").
 }
 \description{
 Fonction qui attribut la vigueur au début de la simulation. La fonction
