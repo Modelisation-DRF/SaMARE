@@ -1,18 +1,30 @@
-#' Fonction qui structure un dataframe de sortie pour lequels on rapporte pour chaque
-#' placette, annee, groupe d'espèce et itération le diamètre quadratique moyen,
-#' la surface terrière, le volume et la hauteur dominante.
-
-#' Cette fonction prend en paramètre un dataframe qui a déjà été simulé
-
-#' @param SimulHtVol Un dataframe contenant les résultats de simulation pour chacune des
-#'                    iterations du simulateur SaMARE. Typiquement un résultat retourné
-#'                    par la fonction "SimulSaMARE".
-#' @return  Retourne un dataframe contenant par placette, groupe d'espèce, année
-#'          et iteration la surface terrière le volume marchand brut, le diamètre
-#'          moyen quadratique et la hauteur dominante.
-#' @examples
+#' Structurer un dataframe de sortie pour les simulations SaMARE
 #'
-
+#' La fonction \code{SortieDendroIterSamare} structure un dataframe de sortie pour lequel
+#' on rapporte, pour chaque placette, année, groupe d'espèce et itération, le diamètre
+#' quadratique moyen, la surface terrière, le volume et la hauteur dominante.
+#' Cette fonction prend en paramètre un dataframe qui a déjà été simulé.
+#'
+#' @param SimulHtVol Un dataframe contenant les résultats de simulation pour chacune des
+#' itérations du simulateur SaMARE. Typiquement un résultat retourné par la fonction \code{SimulSaMARE}.
+#' @param simplifier Un booléen indiquant si les résultats doivent être simplifiés pour ne garder
+#' que les années minimales et maximales. Par défaut, \code{FALSE}.
+#'
+#' @return Un dataframe contenant, pour chaque placette, groupe d'espèce, année et itération,
+#' la surface terrière, le volume marchand brut, le diamètre moyen quadratique et la hauteur dominante.
+#'
+#' @examples
+#' \dontrun{
+#' # Supposons que nous ayons un dataframe `SimulHtVol` contenant les résultats de simulation
+#'
+#' # Appel de la fonction
+#' resultats <- SortieDendroIterSamare(SimulHtVol)
+#'
+#' # Pour simplifier les résultats
+#' resultats_simplifies <- SortieDendroIterSamare(SimulHtVol, simplifier = TRUE)
+#' }
+#'
+#' @export
 
 SortieDendroIterSamare <- function(SimulHtVol,simplifier=FALSE){
   select=dplyr::select
