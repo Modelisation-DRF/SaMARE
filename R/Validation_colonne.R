@@ -568,16 +568,16 @@ valide_ABCD <- function(data) {
                           "CHR", "ERA", "ERG", "ERN", "ERP", "ERR", "ERS", "FRA", "FRN", "FRP", "HEG",
                           "JUV", "MAS", "NOC", "ORA", "ORR", "ORT", "OSV", "PEB", "PED", "PEG", "PEH",
                           "PET", "PRP", "SAL", "SOA", "SOD", "TIL", "AME", "AUR", "ERE", "TIA", "CEP")
-  valeurs_autorisees <- c("A", "B", "C", "D", NA)
+  valeurs_autorisees <- c("A", "B", "C", "D", NA,"")
 
 
   resultats <- data %>%
     mutate(
       condition0 = ABCD %in% valeurs_autorisees,
-      condition1 = if_else(!Espece %in% Espece_specifiques, is.na(ABCD), TRUE),
-      condition2 = if_else(DHPcm < 23.1, is.na(ABCD), TRUE),
-      condition3 = if_else(DHPcm >= 23.1 & DHPcm <= 33.0, ABCD %in% c("C", "D", NA), TRUE),
-      condition4 = if_else(DHPcm > 33.0 & DHPcm <= 39.0, ABCD %in% c("B", "C", "D", NA), TRUE)
+      condition1 = ifelse(!Espece %in% Espece_specifiques, is.na(ABCD) | ABCD == "", TRUE),
+      condition2 = ifelse(DHPcm < 23.1, is.na(ABCD) | ABCD == "", TRUE),
+      condition3 = ifelse(DHPcm >= 23.1 & DHPcm <= 33.0, ABCD %in% c("C", "D", NA, ""), TRUE),
+      condition4 = ifelse(DHPcm > 33.0 & DHPcm <= 39.0, ABCD %in% c("B", "C", "D", NA, ""), TRUE)
     ) %>%
     reframe(all_conditions = all(condition0 & condition1 & condition2 & condition3 & condition4))
 
