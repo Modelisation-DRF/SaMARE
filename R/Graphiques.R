@@ -77,7 +77,7 @@ dernieres_valeurs <- Data %>%
 
 GraphEvol<-Data%>%
              ggplot(aes(x=Annee,y=Yvar,group=Placette, label = Placette))+
-             geom_line(aes(),show.legend=FALSE, lwd=1.25, colour="#1B9E77")+
+             geom_line(aes(),show.legend=FALSE, lwd=1.25, colour="#008000")+
              ylim(0,ymax+5)+
              xlab(bquote(bold("Année de la simulation")))+ ylab(paste(Etiquette))+
              scale_x_continuous(breaks = seq(AnneeDep, AnneeFin, by = 5))+
@@ -114,7 +114,7 @@ GraphDist<-Sommaire %>%
            ggtitle(paste("Distribution diamétrale","  ",Essence))+
           xlab(bquote(bold("Classe de DHP (cm)")))+ ylab("Nombre de tiges par hectare")+
           scale_x_continuous(breaks = seq(10, 70, by = 5))+
-          scale_fill_manual(values=c("#D95F02" ,"#1B9E77"))+
+          scale_fill_manual(values=c("#D95F02" ,"#008000"))+
           theme(strip.background = element_rect(fill = "white"),
           plot.title=element_text(size=12,face="bold",hjust=0.5),
           axis.title=element_text(size=12,face="bold"),
