@@ -95,8 +95,7 @@ GraphEvol<-Data%>%
 NbPlac<-length(unique(SimulHtVol$Placette))
 
 Sommaire<-Sommaire_Classes_DHP(SimulHtVol) %>%
-          filter(Annee %in% c(AnneeDep,AnneeFin)) %>%
-          filter(GrEspece==Espece) %>%
+          filter((Annee %in% c(AnneeDep,AnneeFin)) & GrEspece==Espece  & (Placette %in% listePlacette)) %>%
           mutate(DHP_cl=round(DHP_cl/5)*5) %>%
           group_by(Annee, DHP_cl) %>%
           summarise(NbHa=(sum(NbHa)/NbPlac),.groups="drop")
