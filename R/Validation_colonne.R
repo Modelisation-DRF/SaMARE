@@ -82,7 +82,9 @@ valide_data <- function(data) {
 #'
 #' @export
 
-valide_data_gaules <- function(data) {
+valide_data_gaules <- function(data ) {
+
+  data<- renommer_les_colonnes_gaules(data)
 
   validations <- list(
     valide_espece = "Code d'essence non valide",
@@ -104,6 +106,7 @@ valide_data_gaules <- function(data) {
       erreurs <- c(erreurs, validations[[nom_validation]])
     }
   }
+
 
   return(erreurs)
 }
@@ -677,3 +680,50 @@ verifier_arbre_uniques_par_placette <- function(data) {
 }
 
 
+#' Valide la correspondance des placettes entre les arbres et les gaules
+#'
+#' Cette fonction vérifie que toutes les placettes présentes dans le fichier des arbres sont également présentes dans le fichier des gaules.
+#'
+#' @param data_arbre Un data.frame contenant les données des arbres.
+#' @param data_gaules Un data.frame contenant les données des gaules.
+#'
+#' @return Une liste de messages d'erreurs. Si aucune erreur n'est trouvée, une liste vide est retournée.
+#'
+#' @examples
+#'
+#' valide_placette_gaules(data_arbre, data_gaules)
+#'
+#' Les erreurs seront retournées comme ceci
+#' 'Les placette suivantes n'ont pas de gaules :  TEM23APC5001, TEM23APC5002, TEM23APC5003, TEM23APC5004, TEM23APC5005, TEM23APC5006'
+#'
+#' @export
+
+valide_placette_gaules <-function (data_arbre , data_gaules){
+
+  data_arbre <- renommer_les_colonnes(data_arbre)
+  data_gaules<- renommer_les_colonnes_gaules(data_gaules)
+
+  erreurs <-list()
+
+  if(!"Placette" %in% names(data_arbre) ||!"Placette" %in% names(data_gaules) ){
+    erreurs<-paste("La colonne 'Placette' est manquante dans le fichier des gaules ou dans le fichier des arbres.")
+
+    return(erreurs)
+  }
+
+
+  pacette_arbre <- unique(data_arbre$Placette)
+  placette_gaules <- unique(data_gaules$Placette)
+
+  diff_placette <- setdiff(pacette_arbre, placette_gaules)
+
+  erreurs <-list()
+
+  if (!length(diff_placette) == 0) {
+
+    erreurs<-paste("Les placette suivantes n'ont pas de gaules : ", paste(diff_placette, collapse = ", "))
+  }
+
+
+  return(erreurs)
+}
