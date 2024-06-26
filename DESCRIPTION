@@ -2,15 +2,17 @@ Package: SimulateurSaMARE
 Type: Package
 Title: Simulateur de l'accroissement, de la mortalité et du recrutement pour les forêts feuillues et mixtes du Québec (SaMARE)
 Version: 2.1.0
-Author: Hugues Power / Junior Peumi
+Author: c(
+    person("Huges", "Power", email = "hugues.power@mrnf.gouv.qc.ca", role = c("aut", "cre")),
+    person("Junior", "Peumi", email = "junior.peumi@mrnf.gouv.qc.ca", role = c("ctb")))
 Maintainer: The package maintainer <hugues.power@mrnf.gouv.qc.ca>
 Description: Le simulateur SaMARE est un modèle de croissance à l'échelle de l'arbre. Il prévoit l'accroissement, 
              la mortalité et le recrutement des arbres de dimension marchande. Le simulateur est basé sur une mise
              à jour des paramètres de la version SaMARE 2014. Cette version du simulateur se base sur les données
              des dispositifs de recherche de la Direction de la recherche forestière du Ministère des Ressources
-             naturelles et des Forêts du Québec ainsi que sur le suivi des effets réels des coupes de jardinage.    L'utilisation
-             du simulateur est indiqué pour les peuplements feuillus et mixtes de la forêt tempérée du Québec.
-License: What license is it under?
+             naturelles et des Forêts du Québec ainsi que sur le suivi des effets réels des coupes de jardinage.    
+             L'utilisation du simulateur est indiqué pour les peuplements feuillus et mixtes de la forêt tempérée du Québec.
+License: LGPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1

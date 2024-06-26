@@ -31,10 +31,13 @@
 #' @examples
 
 
-SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules =NA,MCH=0){
+SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
   select=dplyr::select
   ################################ Lecture des fichiers de placette et de parametres ###################
   Data <- renommer_les_colonnes(Data)
+
+  Gaules <- if (!missing(Gaules)) renommer_les_colonnes_gaules(Gaules) else NA
+
 
   Data <- Data %>% filter(DHPcm>=9)
   AnneeDep <- as.numeric(format(Sys.Date(), "%Y"))
