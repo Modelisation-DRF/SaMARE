@@ -13,6 +13,9 @@ SortieDendroSamare(SimulHtVol, simplifier = FALSE)
 \item{SimulHtVol}{Un dataframe contenant les résultats de simulation pour chacune des
 iterations du simulateur SaMARE. Typiquement un résultat retourné
 par la fonction "SimulSaMARE".}
+
+\item{simplifier}{Un booléen indiquant si les résultats doivent être simplifiés pour ne garder
+que la première et la dernière année de la simulation. Par défaut, \code{FALSE}.}
 }
 \value{
 Retourne un dataframe contenant par placette, groupe d'espèce, année

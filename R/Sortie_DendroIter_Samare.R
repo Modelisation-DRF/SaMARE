@@ -8,7 +8,7 @@
 #' @param SimulHtVol Un dataframe contenant les résultats de simulation pour chacune des
 #' itérations du simulateur SaMARE. Typiquement un résultat retourné par la fonction \code{SimulSaMARE}.
 #' @param simplifier Un booléen indiquant si les résultats doivent être simplifiés pour ne garder
-#' que les années minimales et maximales. Par défaut, \code{FALSE}.
+#' que la première et la dernière année de la simulation. Par défaut, \code{FALSE}.
 #'
 #' @return Un dataframe contenant, pour chaque placette, groupe d'espèce, année et itération,
 #' la surface terrière, le volume marchand brut, le diamètre moyen quadratique et la hauteur dominante.

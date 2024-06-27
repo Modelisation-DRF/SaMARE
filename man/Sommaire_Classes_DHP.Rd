@@ -7,14 +7,15 @@
 classe de DHP et année. La sortie présente donc un sommaire de la table de peuplement simulée
 pour chacune des placettes.}
 \usage{
-Sommaire_Classes_DHP(SimulHtVol)
+Sommaire_Classes_DHP(SimulHtVol, simplifier = FALSE)
 }
 \arguments{
 \item{SimulHtVol}{Un dataframe contenant les résultats de simulation pour chacune des
 iterations du simulateur SaMARE. Typiquement un résultat retourné
 par la fonction "SimulSaMARE".}
 
-\item{NbIter}{Nombre d'iterations utilisées pour créer le dataframe "SimulHtVol"}
+\item{simplifier}{Un booléen indiquant si les résultats doivent être simplifiés pour ne garder
+que la première et la dernière année de la simulation. Par défaut, \code{FALSE}.}
 }
 \value{
 Retourne un dataframe contenant le sommaire des itérations par placette,
