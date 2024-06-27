@@ -11,7 +11,7 @@ SortieDendroIterSamare(SimulHtVol, simplifier = FALSE)
 itérations du simulateur SaMARE. Typiquement un résultat retourné par la fonction \code{SimulSaMARE}.}
 
 \item{simplifier}{Un booléen indiquant si les résultats doivent être simplifiés pour ne garder
-que les années minimales et maximales. Par défaut, \code{FALSE}.}
+que la première et la dernière année de la simulation. Par défaut, \code{FALSE}.}
 }
 \value{
 Un dataframe contenant, pour chaque placette, groupe d'espèce, année et itération,

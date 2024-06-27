@@ -4,6 +4,8 @@
 #' @param SimulHtVol Un dataframe contenant les résultats de simulation pour chacune des
 #'                    iterations du simulateur SaMARE. Typiquement un résultat retourné
 #'                    par la fonction "SimulSaMARE".
+#' @param simplifier Un booléen indiquant si les résultats doivent être simplifiés pour ne garder
+#'                  que la première et la dernière année de la simulation. Par défaut, \code{FALSE}.
 #' @return  Retourne un dataframe contenant l'ensemble des arbres pour chacune des
 #'          placettes, années, itérations.
 #' @examples
