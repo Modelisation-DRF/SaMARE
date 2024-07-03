@@ -1,9 +1,9 @@
 #'Fonction qui sert à appeler le simulateur SaMARE et qui fournit les données
 #'initiales ainsi qu'un choix de paramètres pour la simulation.
 #'
-#' @param NbIter Valuere numérique du nombre d'iterations à effectuer (ex: 300).
-#' @param Horizon Valeure numérique du nombre de période de 5 ans sur lesquelles
-#'                le simulateur effectuera ses simulations (ex: 6 pour 30 ans de simulations).
+#' @param NbIter Valeur numérique du nombre d'iterations à effectuer (ex: 30).
+#' @param Horizon Valeur numérique du nombre de périodes de 5 ans sur lesquelles
+#'                le simulateur effectuera ses simulations (ex: 6 pour 30 ans de simulation).
 #' @param RecruesGaules Variable prenant la valeur de "1" pour utiliser les
 #'                       paramètres de recrutement basé sur l'inventaire des gaules
 #'                       de la placette et de "0" pour utiliser le module de
@@ -19,7 +19,7 @@
 #'                fournie si le paramètre "RecruesGaules=1.
 #'                Les champs: "Placette","Espece","DHPcm",#' "Nombre","Sup_PE"
 #'                doivent être présents.
-#' @param MCH Variable prenant la veleur de 1 en présence de maladie corticale du hêtre dans
+#' @param MCH Variable prenant la valeur de 1 en présence de maladie corticale du hêtre dans
 #'            la placette et 0 lorsque la maladie est absente. Lorsque la maladie corticale
 #'            est présente,la probabilité de mortalié des hêtres est estimée avec
 #'            l'équation de l'avis technique AT-SSRF 20 de la Direction de la recherche forestière.
