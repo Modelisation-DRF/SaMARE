@@ -33,15 +33,15 @@ valide_data <- function(data) {
     valide_Longitude = "Longitude non valide",
     valide_Altitude = "Altitude non valide",
     verifier_arbre_uniques_par_placette = "plusieurs noarbre identiques pour la même placette ",
-   # valide_Ptot = "Ptot non valide",
-   # valide_Tmoy = "Tmoy non valide",
+    # valide_Ptot = "Ptot non valide",
+    # valide_Tmoy = "Tmoy non valide",
     valide_Type_Eco = "valeur Type_Eco null",
     valide_MSCR = "MSCR non valide",
     valide_Reg_Eco = "Valeur non permise pour Reg_Eco",
     valide_ABCD = "ABCD non valide",
     valide_Pente = "Pente non valide",
     valide_ntrt = "Entrer le nombre de traitements"
-   # valide_GrwDays = "GrwDays non valide"
+    # valide_GrwDays = "GrwDays non valide"
   )
 
   # Initialiser la liste des erreurs
@@ -123,9 +123,13 @@ valide_Nombre <- function(data){
   if(!"Nombre" %in% names(data)){
     return (FALSE)
   }
-  if(any(is.na(data$Nombre)) ){
+  if(length(data$Nombre) == 0){
+    return(FALSE)
+  }
+  if(any(is.na(data$Nombre))){
     return (FALSE)
   }
+
 
   return(all(data$Nombre>0))
 
@@ -143,6 +147,9 @@ valide_espece <- function(data){
 
   if(!"Espece" %in% names(data)){
     return (FALSE)
+  }
+  if(length(data$Espece) == 0){
+    return(FALSE)
   }
   if(any(is.na(data$Espece)) ){
     return (FALSE)
@@ -170,6 +177,9 @@ valide_Etat <- function(data){
   if(!"Etat" %in% names(data)){
     return (FALSE)
   }
+  if(length(data$Etat) == 0){
+    return(FALSE)
+  }
   if(any(is.na(data$Etat)) ){
     return (FALSE)
   }
@@ -193,6 +203,9 @@ valide_DHPcm <- function(data){
   if(!"DHPcm" %in% names(data)){
     return (FALSE)
   }
+  if( length(data$DHPcm) == 0){
+    return(FALSE)
+  }
 
   if(any(is.na(data$DHPcm)) ){
     return (FALSE)
@@ -213,6 +226,9 @@ valide_DHPcm_gaules <- function(data){
     return (FALSE)
   }
 
+  if(length(data$DHPcm) == 0){
+    return(FALSE)
+  }
   if(any(is.na(data$DHPcm)) ){
     return (FALSE)
   }
@@ -270,6 +286,11 @@ valide_Sup_PE <- function(data){
   if(!all(c("Placette", "Sup_PE") %in% names(data))){
     return (FALSE)
   }
+
+  if(length(data$Sup_PE) == 0){
+    return(FALSE)
+  }
+
   if(any(is.na(data$Sup_PE)) ){
     return (FALSE)
   }
@@ -293,6 +314,10 @@ valide_Sup_PE_gaules <- function(data){
   if(!all(c("Placette", "Sup_PE") %in% names(data))){
     return (FALSE)
   }
+  if(length(data$Sup_PE) == 0){
+    return(FALSE)
+  }
+
   if(any(is.na(data$Sup_PE)) ){
     return (FALSE)
   }
@@ -319,6 +344,11 @@ valide_Annee_Coupe <- function(data){
     return (FALSE)
   }
 
+
+  if(length(data$Placette) == 0){
+    return(FALSE)
+  }
+
   resultats <- data %>%
     group_by(Placette) %>%
     reframe(
@@ -342,6 +372,11 @@ valide_Latitude <- function(data){
   if(!all(c("Placette", "Latitude") %in% names(data))){
     return (FALSE)
   }
+
+  if(length(data$Latitude) == 0){
+    return(FALSE)
+  }
+
   if(any(is.na(data$Latitude)) ){
     return (FALSE)
   }
@@ -367,6 +402,11 @@ valide_Longitude <- function(data){
   if(!all(c("Placette", "Longitude") %in% names(data))){
     return (FALSE)
   }
+
+  if(length(data$Longitude) == 0){
+    return(FALSE)
+  }
+
   if(any(is.na(data$Longitude)) ){
     return (FALSE)
   }
@@ -392,8 +432,11 @@ valide_Altitude <- function(data){
   if(!all(c("Placette", "Altitude") %in% names(data))){
     return (FALSE)
   }
+  if(length(data$Altitude) == 0){
+    return(FALSE)
+  }
 
-  if(any(is.na(data$Altitude)) ){
+  if(any(is.na(data$Altitude))){
     return (FALSE)
   }
 
@@ -411,16 +454,15 @@ valide_Altitude <- function(data){
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
-
 valide_Ptot <- function(data){
   if(!all(c("Placette", "Ptot") %in% names(data))|| any(is.na(data$Ptot))){
     return (FALSE)
   }
 
 
-   resultats <- data %>%
+  resultats <- data %>%
     group_by(Placette) %>%
-     reframe(
+    reframe(
       valeur_unique = n_distinct(Ptot) == 1 && all(Ptot < 2000)
     )
   return(all(resultats$valeur_unique))
@@ -460,6 +502,9 @@ valide_Type_Eco <- function(data){
   if (!all(c("Placette", "Type_Eco") %in% names(data))) {
     return(FALSE)
   }
+  if(length(data$Type_Eco) == 0){
+    return(FALSE)
+  }
 
   if(any(is.na(data$Type_Eco)) ){
     return (FALSE)
@@ -493,7 +538,7 @@ valide_Type_Eco <- function(data){
     reframe(
       valeur_unique = n_distinct(Type_Eco) == 1
 
-)
+    )
   return(all(resultats$valeur_unique))
 
 }
@@ -505,6 +550,9 @@ valide_Type_Eco <- function(data){
 #'
 valide_Reg_Eco <- function(data){
   if (!all(c("Placette", "Reg_Eco") %in% names(data))) {
+    return(FALSE)
+  }
+  if(length(data$Reg_Eco) == 0){
     return(FALSE)
   }
 
@@ -536,6 +584,12 @@ valide_Reg_Eco <- function(data){
 valide_MSCR <- function(data){
 
   if (!all(c("Vigueur", "MSCR") %in% names(data))) {
+    return(FALSE)
+  }
+  if(length(data$Vigueur) == 0){
+    return(FALSE)
+  }
+  if(length(data$MSCR) == 0){
     return(FALSE)
   }
   valeurs_autorisees<-c('M', 'S', 'C', 'R','MS','CR')
@@ -597,6 +651,10 @@ valide_Pente <- function(data){
   if (!all(c("Placette", "Pente") %in% names(data))) {
     return(FALSE)
   }
+  if(length(data$Pente) == 0){
+    return(FALSE)
+  }
+
   if(any(is.na(data$Pente)) ){
     return (FALSE)
   }
@@ -642,6 +700,9 @@ valide_ntrt <- function(data){
   if (!all(c("Placette", "ntrt") %in% names(data))) {
     return(FALSE)
   }
+  if(length(data$ntrt) == 0){
+    return(FALSE)
+  }
 
   resultats <- data %>%
     group_by(Placette) %>%
@@ -666,7 +727,18 @@ verifier_arbre_uniques_par_placette <- function(data) {
   if (!all(c("Placette", "NoArbre") %in% names(data))) {
     return(FALSE)
   }
-
+if(any(is.na(data$Placette))){
+  return(FALSE)
+}
+  if(any(is.na(data$NoArbre))){
+    return(FALSE)
+  }
+  if(length(data$Placette) == 0){
+    return(FALSE)
+  }
+  if(length(data$NoArbre) == 0){
+    return(FALSE)
+  }
 
   resultats <- data %>%
     group_by(Placette) %>%
@@ -709,6 +781,9 @@ valide_placette_gaules <-function (data_arbre , data_gaules){
     erreurs<-paste("La colonne 'Placette' est manquante dans le fichier des gaules ou dans le fichier des arbres.")
 
     return(erreurs)
+  }else  if(length(data_arbre$Placette) == 0|| length(data_gaules$Placette) == 0){
+    erreurs<-paste("La colonne 'Placette' est vide dans le fichier des gaules ou dans le fichier des arbres.")
+    return(erreurs)
   }
 
 
@@ -721,7 +796,7 @@ valide_placette_gaules <-function (data_arbre , data_gaules){
 
   if (!length(diff_placette) == 0) {
 
-    erreurs<-paste("Les placette suivantes n'ont pas de gaules : ", paste(diff_placette, collapse = ", "))
+    erreurs<-paste("Les placettes suivantes n'ont pas de gaules : ", paste(diff_placette, collapse = ", "))
   }
 
 
