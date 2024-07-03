@@ -23,12 +23,12 @@ valide_data <- function(data) {
   data <- renommer_les_colonnes(data)
   validations <- list(
     valide_espece = "Code d'essence non valide",
-    valide_Etat = "Code d'etat non valide",
-    valide_DHPcm = "Valeurs de DHP non permise",
+    valide_Etat = "Code d'état non valide",
+    valide_DHPcm = "Valeur de DHP non permise",
     valide_Vigueur = "Code de vigueur non permis",
     valide_Sup_PE = "Superficie de la placette en ha non valide",
     valide_Nombre = "valeur de nombre null",
-    valide_Annee_Coupe = "Annee coupe non valide",
+    valide_Annee_Coupe = "Année de coupe non valide",
     valide_Latitude = "Latitude non valide",
     valide_Longitude = "Longitude non valide",
     valide_Altitude = "Altitude non valide",
@@ -88,7 +88,7 @@ valide_data_gaules <- function(data ) {
 
   validations <- list(
     valide_espece = "Code d'essence non valide",
-    valide_DHPcm_gaules = "Valeurs de DHP non permise",
+    valide_DHPcm_gaules = "Valeur de DHP non permise",
     valide_Sup_PE_gaules = "Superficie de la placette en ha non valide",
     valide_Nombre = "valeur de nombre null"
   )
