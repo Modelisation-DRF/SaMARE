@@ -4,6 +4,7 @@
 
 Auteurs: 
 Hugues Power - Ministère des Ressources Naturelles et des Forêts du Québec
+
 Junior Peumi - Ministère des Ressources Naturelles et des Forêts du Québec
 
 ## Introduction
@@ -14,13 +15,13 @@ Un package pour la simulation de l'accroissement, de la mortalité et du recrute
 Non disponibles pour l'instant.
 
 ## Dépendences
-Ce package dépends des packages ExtractMap et TarifQC.
+Ce package dépend des packages ExtractMap et TarifQC.
 
 TarifQC est disponible ici: https://github.com/Modelisation-DRF/TarifQC
 
 ExtractMap est disponible ici: https://github.com/Modelisation-DRF/ExtractMap
 
-Comment installer le package dans R
+## Comment installer le package dans R
 ```{r eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
 require(remotes)
 install_github("https://github.com/Modelisation-DRF/Package-SaMARE-version-2.1.0", ref="main", auth_token = "demander_un_token")
