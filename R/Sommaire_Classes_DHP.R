@@ -27,9 +27,9 @@ Sommaire_Classes_DHP <- function(SimulHtVol ,simplifier=FALSE){
                                 ifelse(vigu0=="NONVIG" & prod0=="sciage",3,
                                        ifelse(vigu0=="NONVIG" & prod0=="pate",4,
                                               ifelse(vigu0=="ViG" & prod0=="resineux",5,6)))))) %>%
-    mutate(Stm2ha=pi*(DHPcm/200)^2/Sup_PE,      #Calcul surface terrière par ha
+    mutate(Stm2ha=pi*(DHPcm/200)^2*Nombre/Sup_PE,      #Calcul surface terrière par ha
            DHPcm2=DHPcm^2,
-           vol_dm3=ifelse(is.na(vol_dm3)==TRUE,0,vol_dm3/Sup_PE),#volume par ha en dm3 a mettre en m3
+           vol_dm3=ifelse(is.na(vol_dm3)==TRUE,0,vol_dm3*Nombre/Sup_PE),#volume par ha en dm3 a mettre en m3
            DHP_cl=round(DHPcm/2)*2) %>%
     group_by(Placette,GrEspece,DHP_cl,vigueur,Annee,Iter) %>%
     summarise(StM2Ha=sum(Stm2ha), VolM3Ha=sum(vol_dm3)/1000, .groups="drop") %>%
