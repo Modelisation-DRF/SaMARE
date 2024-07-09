@@ -97,8 +97,8 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
     ColOrdre<-c("Placette","Espece","GrEspece","DHPcm","Nombre","Sup_PE")
 
     Gaules<-Gaules %>%
-      inner_join(ListeSp) %>%
-      filter(!Espece %in% c("ERE","ERP","PRP","SAL","SOA","SOD","AME","AUR","ERE"))
+      inner_join(ListeSp) #%>%
+      #filter(!Espece %in% c("ERE","ERP","PRP","SAL","SOA","SOD","AME","AUR","ERE")) #Retirait les gaules d'essences non commerciales
     Gaules<-Gaules[ColOrdre]
 
 
