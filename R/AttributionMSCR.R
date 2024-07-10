@@ -9,6 +9,12 @@
 #' @return Retourne le classement MSCR de l'arbre.
 #' @examples
 #'
+#'l'attribution de la classe MSCR
+#'
+#' resultat <- AttribMSCR(Data,Para.ConvVigMSCR)
+#' print(resultat)
+#'
+#' @export
 
 AttribMSCR<-function(Data,Para.ConvVigMSCR){
 
