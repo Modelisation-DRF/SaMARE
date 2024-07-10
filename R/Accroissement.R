@@ -20,6 +20,11 @@
 #'         Les    valeurs prédites sont faites sans effets aléatoires,
 #'         ceux-ci sont ajoutés dans la fonction SaMARE.
 #' @examples
+#' # Calcul de l'accroissement
+#' resultat <- accrois(Accrois, st_tot0, t, fact_red, ntrt, type_pe_Plac, Iterj, Para.acc)
+#' print(resultat)
+#'
+#' @export
 
 
 accrois<-function(Accrois ,st_tot0, t, fact_red, ntrt, type_pe_Plac, Iterj, Para.acc){

@@ -12,6 +12,13 @@
 #' @return Retourne la classe de produit de l'arbre.
 #' @examples
 #'
+#'l'attribution des produits
+#'
+#' resultat <- AttribProd0(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24)
+#' print(resultat)
+#'
+#' @export
+#'
 
 AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
 

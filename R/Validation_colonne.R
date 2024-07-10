@@ -90,7 +90,7 @@ valide_data_gaules <- function(data ) {
     valide_espece = "Code d'essence non valide",
     valide_DHPcm_gaules = "Valeur de DHP non permise",
     valide_Sup_PE_gaules = "Superficie de la placette en ha non valide",
-    valide_Nombre = "valeur de nombre null"
+    valide_Nombre_gaules = "valeur de nombre null"
   )
 
   # Initialiser la liste des erreurs
@@ -135,6 +135,30 @@ valide_Nombre <- function(data){
 
 }
 
+valide_Nombre_gaules <- function(data){
+
+  if(!"Nombre" %in% names(data)){
+    return (FALSE)
+  }
+  if(length(data$Nombre) == 0){
+    return(FALSE)
+  }
+  if(any(is.na(data$Nombre))){
+    return (FALSE)
+  }
+
+
+
+  resultats <- data %>%
+    group_by(Placette) %>%
+    reframe(
+      somme = sum(Nombre) > 0
+    )
+
+  return(all(resultats$somme))
+
+}
+
 
 
 #' Fonction pour vérifier que les valeurs saisies dans la colonne 'Espece' sont correctes.
@@ -155,12 +179,18 @@ valide_espece <- function(data){
     return (FALSE)
   }
 
-  valeurs_autorisees <- c("BOG","BOJ","BOP", "CAC", "CAF", "CAR", "CEO", "CET", "CHB", "CHE","CHG",
-                          "CHR", "EPB", "EPN", "EPO","EPR","ERA" , "ERG","ERN", "ERP","ERR","ERS",
-                          "FRA","FRN","FRP", "HEG", "JUV","MAS" , "MEJ" , "MEL", "MEU","NOC","ORA",
-                          "ORR","ORT","OSV","PEB","PED","PEG","PEH","PET","PIB","PID","PIG","PIR",
-                          "PIS","PRP","PRU","SAB","SAL","SOA","SOD","THO","TIL" ,"AME"  ,"AUR","ERE"
-                          ,"TIA" ,"CEP")
+  valeurs_autorisees <- c("AME", "AUR", "ERE", "ERG", "ERP", "MAS", "OSV", "PRP", "SAL",
+                          "SOA", "SOD", "BOJ", "EPB", "EPN", "EPO", "EPR", "ERR", "ERA",
+                          "ERN", "ERS", "CAC", "CAF", "CAR", "CEO", "CET", "CHB", "CHE",
+                          "CHG", "CHR", "FRA", "FRN", "FRP", "NOC", "ORA", "ORR", "ORT",
+                          "TIL", "AME", "AUR", "ERE", "ERG", "ERP", "MAS", "OSV", "PRP",
+                          "SAL", "SOA", "SOD", "BOJ", "EPB", "EPN", "EPO", "EPR", "ERR",
+                          "ERA", "ERN", "ERS", "CAC", "CAF", "CAR", "CEO", "CET", "CHB",
+                          "CHE", "CHG", "CHR", "FRA", "FRN", "FRP", "NOC", "ORA", "ORR",
+                          "ORT", "TIL", "BOG", "BOP", "PEB", "PED", "PEG", "PEH", "PET",
+                          "HEG", "JUV", "MEJ", "MEL", "MEU", "PIB", "PID", "PIG", "PIR",
+                          "PIS", "PRU", "THO", "SAB")
+
 
   return(all(data$Espece %in% valeurs_autorisees))
 }

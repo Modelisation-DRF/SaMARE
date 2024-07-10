@@ -40,3 +40,9 @@ Retourne la prévision d'accroissement diamétral en mm pour un pas de simulatio
 Fonction qui calcule de l'Accroissement du diamètre en mm pour une période de temps
  égale au pas de simulation 't'.
 }
+\examples{
+# Calcul de l'accroissement
+resultat <- accrois(Accrois, st_tot0, t, fact_red, ntrt, type_pe_Plac, Iterj, Para.acc)
+print(resultat)
+
+}
