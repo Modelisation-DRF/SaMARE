@@ -15,3 +15,17 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'Espece' sont correctes.
 }
+\examples{
+
+# Exemple avec un dataframe valide
+valide_espece(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'Espece' manquante)
+valide_espece(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs non autorisées)
+valide_espece(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA)
+valide_espece(data) # Devrait retourner FALSE
+}

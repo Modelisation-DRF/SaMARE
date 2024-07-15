@@ -6,6 +6,11 @@
 #' @param symmetric Champ TRUE/FALSE qui indique si la matrice est symetrique
 #' @return Retourne une matrice de variance-covariance symetrique
 #' @examples
+#' # reconstruit la matrice de variance-covariance
+#' resultat <- reconstruct(m_lower, diag = TRUE, symmetric = TRUE)
+#' print(resultat)
+#'
+#' @export
 #'
 
 reconstruct <- function(m_lower, diag = TRUE, symmetric = TRUE) {
@@ -34,6 +39,12 @@ reconstruct <- function(m_lower, diag = TRUE, symmetric = TRUE) {
 #' @param NbIter Nombre d'iterations, corespond au nombre de version des
 #'               paramètres que l'on veut obtenir.
 #' @examples
+#' # ajuste les paramètre des chaque itération
+#' resultat <- ParaOmega(ModuleID,ParaOri,ParaIter,Omega,NbIter)
+#' print(resultat)
+#'
+#' @export
+#'
 #'
 ParaOmega<-function(ModuleID,ParaOri,ParaIter,Omega,NbIter){
   select=dplyr::select

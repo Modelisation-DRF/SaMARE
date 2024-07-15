@@ -33,3 +33,8 @@ Retourne le prédicteur linéaire du paramètre delta de la fonction
 Fonction qui prevoit le paramètre lambda de la fonction Weibull qui est
 la deuxième portion du modèles zero-inflated du nombre de recrues de SaMARE.
 }
+\examples{
+
+ #resultat <- rec_lambda(Rec,type_pe_Plac,st_tot0,t,Iterj,Para.rec_n)
+print(resultat)
+}

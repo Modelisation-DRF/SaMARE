@@ -43,3 +43,10 @@ Retourne le prédicteur linéaire de l'équation de la prévision du
 Fonction qui prévoit la probabilité de mortalité de chacun des arbres
 durant un pas de simulation.
 }
+\examples{
+
+# prévoit la probabilité de mortalité
+resultat <- mort(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,MCH,Para.mort)
+print(resultat)
+
+}

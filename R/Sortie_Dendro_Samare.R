@@ -13,7 +13,9 @@
 #'          et iteration la surface terrière le volume marchand brut, le diamètre
 #'          moyen quadratique et la hauteur dominante.
 #' @examples
-#'
+#' #resultat <- SortieDendroSamare(SimulHtVol ,simplifier=FALSE)
+#' print(resultat)
+#' @export
 
 
 SortieDendroSamare <- function(SimulHtVol,simplifier=FALSE){

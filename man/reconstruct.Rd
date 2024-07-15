@@ -21,3 +21,9 @@ Retourne une matrice de variance-covariance symetrique
 Fonction qui reconstruit la matrice de variance-covariance à partir du
 fichier Omega où chaque ligne correspond à une valeur de la matrice
 }
+\examples{
+# reconstruit la matrice de variance-covariance
+resultat <- reconstruct(m_lower, diag = TRUE, symmetric = TRUE)
+print(resultat)
+
+}

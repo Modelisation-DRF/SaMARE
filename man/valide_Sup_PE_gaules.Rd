@@ -15,3 +15,20 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'Sup_PE' sont correctes.
 }
+\examples{
+
+# Exemple avec un dataframe valide
+valide_Sup_PE_gaules(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'Sup_PE' manquante)
+valide_Sup_PE_gaules(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+valide_Sup_PE_gaules(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA)
+valide_Sup_PE_gaules(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Sup_PE' par 'Placette')
+valide_Sup_PE_gaules(data) # Devrait retourner FALSE
+}

@@ -15,3 +15,20 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'Type_Eco' sont correctes.
 }
+\examples{
+# Exemple avec un dataframe valide
+valide_Type_Eco(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'Type_Eco' manquante)
+valide_Type_Eco(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs non autorisées)
+valide_Type_Eco(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA)
+valide_Type_Eco(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Type_Eco' par 'Placette')
+valide_Type_Eco(data) # Devrait retourner FALSE
+
+}

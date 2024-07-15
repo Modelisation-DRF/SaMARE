@@ -22,3 +22,9 @@ Retourne un vecteur de probabilité que l'arbre soit vigoureux.
 Fonction qui permet de convertir le classement MSCR Boulet-2007 en vigueur
 selon le classement de Majcen-1990.
 }
+\examples{
+#convertisseur du classement MSCR en vigueur
+resultat <- ConvMSCRVig(Data,Para.ConvMSCRVig)
+print(resultat)
+
+}

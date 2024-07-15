@@ -46,6 +46,9 @@
 #' @return Retourne un dataframe avec une liste d'arbres vivants et mort ainsi que
 #'        leur DHP pour chaque étape de 5 ans de l'horizon de simulation.
 #' @examples
+#'
+#'  #resultat <- SaMARE(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horizon, RecruesGaules,MCH,CovParms,CovParmsGaules,Para,ParaGaules,Omega,OmegaGaules)
+#' print(resultat)
 
 
 SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horizon, RecruesGaules,

@@ -1,4 +1,4 @@
-#' Fonction qui prévoit l'évolution de la classe de qualite des arbres.
+#' Fonction qui prévoit l'évolution de la classe de qualité des arbres.
 #'La fonction se base sur les équation des Filip Havreljuk pour SaMARE 2018
 #'elle ne prévoit pas la qualité des arbre qu n'ont pas de valeur de qualité dans
 #'les données d'origines (ex. arbres qui passent le seuil de la classe de 24 cm".
@@ -15,10 +15,15 @@
 #' @param prec Précipitations annuelles moyennes.
 #' @param rid1 variable de groupement de variables écologiques.
 #' @param dens_tot0 Densité totale en arbres marchands.
-#' @param Para.EvolQualTot Un dataframe  contenant les parametres du module d'évolution
+#' @param Para.EvolQualTot Un dataframe  contenant les paramétrés du module d'évolution
 #'                 de la qualité des arbres.
-#' @return  Le numero d'arbre avec la qualité prédite".
+#' @return  Le numéro d'arbre avec la qualité prédite".
 #' @examples
+#'# prévision de la classe de qualité
+#' resultat <- EvolQual(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot)
+#' print(resultat)
+#'
+#' @export
 #'
 
 EvolQual<-function(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot){

@@ -9,6 +9,10 @@
 #' @return  Retourne un dataframe contenant l'ensemble des arbres pour chacune des
 #'          placettes, années, itérations.
 #' @examples
+#' #resultat <- SortieArbreSamare(SimulHtVol ,simplifier=FALSE)
+#' print(resultat)
+#' @export
+
 
 SortieArbreSamare <- function(SimulHtVol ,simplifier=FALSE){
 

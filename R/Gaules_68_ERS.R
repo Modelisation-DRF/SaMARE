@@ -11,9 +11,14 @@
 #' @param Iterj  Itération en cours
 #' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 #'                          recrutement basé sur les gaules et du module d'évolution des gaules
-#' @param Para.68_BOJ Paramètres de l'équation de prévision du nombre de gaules de bouleau jaune de 6 et 8 cm de diamètre
-#' @return Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de bouleau jaune
+#' @param Para.68_ERS Paramètres de l'équation de prévision du nombre de gaules d'érable à sucre de 6 et 8 cm de diamètre
+#' @return Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP d'érable à sucre
 #' @examples
+#'  # calcul de la probabilité d'absence de gaules d'érable à sucre
+#' resultat <- pi68ERS(RecGaules,Ratio,Iterj,RandomPlacGaules,Para.68_ERS)
+#' print(resultat)
+#'
+#' @export
 
 pi68ERS<-function(RecGaules,Ratio,Iterj,RandomPlacGaules,Para.68_ERS){
 
@@ -57,9 +62,14 @@ pi68ERS<-function(RecGaules,Ratio,Iterj,RandomPlacGaules,Para.68_ERS){
 #' @param Iterj  Itération en cours
 #' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 #'                          recrutement basé sur les gaules et du module d'évolution des gaules
-#' @param Para.68_BOJ Paramètres de l'équation de prévision du nombre de gaules de bouleau jaune de 6 et 8 cm de diamètre
-#' @return Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP de bouleau jaune lorsquelles sont présentes
+#' @param Para.68_BOJ Paramètres de l'équation de prévision du nombre de gaules d'érable à sucre de 6 et 8 cm de diamètre
+#' @return Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP d'érable à sucre lorsquelles sont présentes
 #' @examples
+#' # calcul du nombre de Gaules d'érable à sucre
+#' resultat <- count68ERS(RecGaules,Ratio,dens_tot0,grwd,Iterj,RandomPlacGaules,Para.68_ERS)
+#' print(resultat)
+#'
+#' @export
 
 
 count68ERS<-function(RecGaules,Ratio,dens_tot0,grwd,Iterj,RandomPlacGaules,Para.68_ERS){

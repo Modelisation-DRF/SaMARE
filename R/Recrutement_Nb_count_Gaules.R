@@ -21,6 +21,8 @@
 #' @return  Retourne une prévision du nombre de recrues, prévisions basées sur
 #'          les informations provenant des recrues.
 #' @examples
+#'  #resultat <- rec_count_Gaules(Rec,RecGaules,t,st_tot0,Iterj,RandomPlacGaules,Para.rec_gaules)
+#' print(resultat)
 
 
 rec_count_Gaules<-function(Rec,RecGaules,t,st_tot0,Iterj,RandomPlacGaules,Para.rec_gaules){

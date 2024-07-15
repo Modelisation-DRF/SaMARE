@@ -47,3 +47,8 @@ Fonction qui prévoie la probabilité d'absence  de recrues par grouoe d'espèce
 Cette fonction corespond à la première portion de la fonction zero-inflated
 de prévision du nombre de recrues basé sur les gaules de Rijal et al. 2023.
 }
+\examples{
+
+ #resultat <- rec_pi_Gaules(Rec,RecGaules,t,st_tot0,Iterj,RandomPlacGaules,Para.rec_gaules)
+print(resultat)
+}

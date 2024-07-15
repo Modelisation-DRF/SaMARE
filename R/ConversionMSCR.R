@@ -7,6 +7,11 @@
 #'                         de conversion du classement MSCR en vigueur.
 #' @return Retourne un vecteur de probabilité que l'arbre soit vigoureux.
 #' @examples
+#' #convertisseur du classement MSCR en vigueur
+#' resultat <- ConvMSCRVig(Data,Para.ConvMSCRVig)
+#' print(resultat)
+#'
+#' @export
 #'
 
 ConvMSCRVig<-function(Data,Para.ConvMSCRVig){
@@ -50,6 +55,12 @@ ConvMSCRVig<-function(Data,Para.ConvMSCRVig){
 #' @param Para.ConvMSCRProd1024 Un dataframe  contenant les paramettres des équations de conversion du classement MSCR en vigueur
 #' @return Retourne un vecteur de probabilité que l'arbre soit de classe de produit sciage
 #' @examples
+#'# convertisseur du classement MSCR en produits
+#' resultat <- ConvMSCRProd1024(Data,Para.ConvMSCRProd1024)
+#' print(resultat)
+#'
+#' @export
+#'
 #'
 
 ConvMSCRProd1024<-function(Data,Para.ConvMSCRProd1024){
@@ -112,6 +123,12 @@ ConvMSCRProd1024<-function(Data,Para.ConvMSCRProd1024){
 #' @param Para.ConvMSCRProd1024 Un dataframe  contenant les paramettres des équations de conversion du classement MSCR en vigueur
 #' @return Retourne un vecteur de probabilité que l'arbre soit de classe de produit sciage
 #' @examples
+#' # convertisseur du classement MSCR en produits
+#' resultat <- ConvMSCRProd24(Data,Para.ConvMSCRProd24)
+#' print(resultat)
+#'
+#' @export
+#'
 #'
 
 

@@ -116,7 +116,17 @@ valide_data_gaules <- function(data ) {
 #' @param data fichier des arbres
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
+#'  # Exemple avec un dataframe valide
+#' valide_Nombre(data) # Devrait retourner TRUE
 #'
+#' # Exemple avec un dataframe invalide (colonne 'Nombre' manquante)
+#' valide_Nombre(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs négatives)
+#' valide_Nombre(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Nombre(data) # Devrait retourner FALSE
 
 valide_Nombre <- function(data){
 
@@ -134,6 +144,29 @@ valide_Nombre <- function(data){
   return(all(data$Nombre>0))
 
 }
+
+
+#' Cette fonction vérifie si la colonne 'Nombre' dans le fichier de données contient des valeurs valides pour chaque 'Placette'.
+#' Elle s'assure que la colonne existe, qu'elle n'est pas vide, qu'elle ne contient pas de valeurs manquantes (NA), et que la somme des valeurs pour chaque 'Placette' est supérieure à zéro.
+#'
+#' @param data Un dataframe contenant les données des arbres avec les colonnes 'Nombre' et 'Placette'.
+#' @return Retourne TRUE si les valeurs dans la colonne 'Nombre' sont valides pour chaque 'Placette', FALSE sinon.
+#' @examples
+#'
+#' # Exemple avec un dataframe valide
+#' valide_Nombre_gaules(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Nombre' manquante)
+#' valide_Nombre_gaules(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs négatives)
+#' valide_Nombre_gaules(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Nombre_gaules(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (somme de 'Nombre' par 'Placette' égale à zéro)
+#' valide_Nombre_gaules(data) # Devrait retourner FALSE
 
 valide_Nombre_gaules <- function(data){
 
@@ -166,6 +199,17 @@ valide_Nombre_gaules <- function(data){
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
+#'# Exemple avec un dataframe valide
+#' valide_espece(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Espece' manquante)
+#' valide_espece(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs non autorisées)
+#' valide_espece(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_espece(data) # Devrait retourner FALSE
 
 valide_espece <- function(data){
 
@@ -200,7 +244,17 @@ valide_espece <- function(data){
 #' @param data fichier des arbres
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
+#' # Exemple avec un dataframe valide
+#' valide_Etat(data) # Devrait retourner TRUE
 #'
+#' # Exemple avec un dataframe invalide (colonne 'Etat' manquante)
+#' valide_Etat(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs non autorisées)
+#' valide_Etat(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Etat(data) # Devrait retourner FALSE
 
 valide_Etat <- function(data){
 
@@ -226,7 +280,17 @@ valide_Etat <- function(data){
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
-
+#'# Exemple avec un dataframe valide
+#' valide_DHPcm(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'DHPcm' manquante)
+#' valide_DHPcm(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs supérieures à 160 cm)
+#' valide_DHPcm(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_DHPcm(data) # Devrait retourner FALSE
 
 valide_DHPcm <- function(data){
 
@@ -249,6 +313,17 @@ valide_DHPcm <- function(data){
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
+#'# Exemple avec un dataframe valide
+#' valide_DHPcm_gaules(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'DHPcm' manquante)
+#' valide_DHPcm_gaules(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs hors de l'intervalle)
+#' valide_DHPcm_gaules(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_DHPcm_gaules(data) # Devrait retourner FALSE
 
 valide_DHPcm_gaules <- function(data){
 
@@ -271,6 +346,14 @@ valide_DHPcm_gaules <- function(data){
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
+#'# Exemple avec un dataframe valide
+#' valide_Vigueur(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (valeurs non autorisées dans 'Vigueur')
+#' valide_Vigueur(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA sans MSCR correct)
+#' valide_Vigueur(data) # Devrait retourner FALSE
 
 valide_Vigueur <- function(data) {
 
@@ -311,6 +394,20 @@ valide_Vigueur <- function(data) {
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
+#' # Exemple avec un dataframe valide
+#' valide_Sup_PE(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Sup_PE' manquante)
+#' valide_Sup_PE(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+#' valide_Sup_PE(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Sup_PE(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Sup_PE' par 'Placette')
+#' valide_Sup_PE(data) # Devrait retourner FALSE
 
 valide_Sup_PE <- function(data){
   if(!all(c("Placette", "Sup_PE") %in% names(data))){
@@ -339,6 +436,20 @@ valide_Sup_PE <- function(data){
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
+#'# Exemple avec un dataframe valide
+#' valide_Sup_PE_gaules(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Sup_PE' manquante)
+#' valide_Sup_PE_gaules(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+#' valide_Sup_PE_gaules(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Sup_PE_gaules(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Sup_PE' par 'Placette')
+#' valide_Sup_PE_gaules(data) # Devrait retourner FALSE
 
 valide_Sup_PE_gaules <- function(data){
   if(!all(c("Placette", "Sup_PE") %in% names(data))){
@@ -367,6 +478,17 @@ valide_Sup_PE_gaules <- function(data){
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
+#'# Exemple avec un dataframe valide
+#' valide_Annee_Coupe(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Annee_Coupe' manquante)
+#' valide_Annee_Coupe(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+#' valide_Annee_Coupe(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe valide (toutes les valeurs de 'Annee_Coupe' sont NA pour une 'Placette')
+#' valide_Annee_Coupe(data) # Devrait retourner TRUE
 
 valide_Annee_Coupe <- function(data){
 
@@ -396,6 +518,20 @@ valide_Annee_Coupe <- function(data){
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
+#'# Exemple avec un dataframe valide
+#' valide_Latitude(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Latitude' manquante)
+#' valide_Latitude(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+#' valide_Latitude(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Latitude(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Latitude' par 'Placette')
+#' valide_Latitude(data) # Devrait retourner FALSE
 
 valide_Latitude <- function(data){
 
@@ -426,6 +562,20 @@ valide_Latitude <- function(data){
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
+#'# Exemple avec un dataframe valide
+#' valide_Longitude(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Longitude' manquante)
+#' valide_Longitude(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+#' valide_Longitude(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Longitude(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Longitude' par 'Placette')
+#' valide_Longitude(data) # Devrait retourner FALSE
 
 valide_Longitude <- function(data){
 
@@ -456,6 +606,20 @@ valide_Longitude <- function(data){
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
+#'# Exemple avec un dataframe valide
+#' valide_Altitude(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Altitude' manquante)
+#' valide_Altitude(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+#' valide_Altitude(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Altitude(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Altitude' par 'Placette')
+#' valide_Altitude(data) # Devrait retourner FALSE
 
 valide_Altitude <- function(data){
 
@@ -484,6 +648,21 @@ valide_Altitude <- function(data){
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
 #'
+#' # Exemple avec un dataframe valide
+#' valide_Ptot(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Ptot' manquante)
+#' valide_Ptot(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+#' valide_Ptot(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Ptot(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Ptot' par 'Placette')
+#' valide_Ptot(data) # Devrait retourner FALSE
+#'
 valide_Ptot <- function(data){
   if(!all(c("Placette", "Ptot") %in% names(data))|| any(is.na(data$Ptot))){
     return (FALSE)
@@ -503,6 +682,21 @@ valide_Ptot <- function(data){
 #' @param data fichier des arbres
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
+#'
+#' # Exemple avec un dataframe valide
+#' valide_Tmoy(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Tmoy' manquante)
+#' valide_Tmoy(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+#' valide_Tmoy(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Tmoy(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Tmoy' par 'Placette')
+#' valide_Tmoy(data) # Devrait retourner FALSE
 #'
 valide_Tmoy <- function(data){
   if(!all(c("Placette", "Tmoy") %in% names(data))|| any(is.na(data$Tmoy))){
@@ -526,6 +720,20 @@ valide_Tmoy <- function(data){
 #' @param data fichier des arbres
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
+#'# Exemple avec un dataframe valide
+#' valide_Type_Eco(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Type_Eco' manquante)
+#' valide_Type_Eco(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs non autorisées)
+#' valide_Type_Eco(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Type_Eco(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Type_Eco' par 'Placette')
+#' valide_Type_Eco(data) # Devrait retourner FALSE
 #'
 valide_Type_Eco <- function(data){
 
@@ -577,6 +785,20 @@ valide_Type_Eco <- function(data){
 #' @param data fichier des arbres
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
+#'# Exemple avec un dataframe valide
+#' valide_Reg_Eco(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Reg_Eco' manquante)
+#' valide_Reg_Eco(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs non autorisées)
+#' valide_Reg_Eco(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Reg_Eco(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Reg_Eco' par 'Placette')
+#' valide_Reg_Eco(data) # Devrait retourner FALSE
 #'
 valide_Reg_Eco <- function(data){
   if (!all(c("Placette", "Reg_Eco") %in% names(data))) {
@@ -610,6 +832,17 @@ valide_Reg_Eco <- function(data){
 #' @param data fichier des arbres
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
+#' # Exemple avec un dataframe valide
+#' valide_MSCR(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'MSCR' manquante)
+#' valide_MSCR(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs non autorisées dans 'MSCR')
+#' valide_MSCR(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA dans 'MSCR' sans 'Vigueur' appropriée)
+#' valide_MSCR(data) # Devrait retourner FALSE
 #'
 valide_MSCR <- function(data){
 
@@ -637,6 +870,21 @@ valide_MSCR <- function(data){
 #' @param data fichier des arbres
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
+#'
+#'# Exemple avec un dataframe valide
+#' valide_ABCD(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'ABCD' manquante)
+#' valide_ABCD(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs non autorisées dans 'ABCD')
+#' valide_ABCD(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA dans 'DHPcm' ou 'Espece')
+#' valide_ABCD(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (conditions spécifiques non respectées)
+#' valide_ABCD(data) # Devrait retourner FALSE
 #'
 valide_ABCD <- function(data) {
 
@@ -676,6 +924,20 @@ valide_ABCD <- function(data) {
 #' @param data fichier des arbres
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
+#'# Exemple avec un dataframe valide
+#' valide_Pente(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'Pente' manquante)
+#' valide_Pente(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+#' valide_Pente(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Pente(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Pente' par 'Placette')
+#' valide_Pente(data) # Devrait retourner FALSE
 #'
 valide_Pente <- function(data){
   if (!all(c("Placette", "Pente") %in% names(data))) {
@@ -702,6 +964,20 @@ valide_Pente <- function(data){
 #' @param data fichier des arbres
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
+#' # Exemple avec un dataframe valide
+#' valide_GrwDays(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'GrwDays' manquante)
+#' valide_GrwDays(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+#' valide_GrwDays(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_GrwDays(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'GrwDays' par 'Placette')
+#' valide_GrwDays(data) # Devrait retourner FALSE
 #'
 valide_GrwDays <- function(data){
   if(!all(c("GrwDays","Placette") %in% names(data))|| any(is.na(data$GrwDays))){
@@ -725,6 +1001,17 @@ valide_GrwDays <- function(data){
 #' @param data fichier des arbres
 #' @return retourne vrai ou faux s'il détecte des erreurs.
 #' @examples
+#' # Exemple avec un dataframe valide
+#' valide_ntrt(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'ntrt' manquante)
+#' valide_ntrt(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs non autorisées dans 'ntrt')
+#' valide_ntrt(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'ntrt' par 'Placette')
+#' valide_ntrt(data) # Devrait retourner FALSE
 #'
 valide_ntrt <- function(data){
   if (!all(c("Placette", "ntrt") %in% names(data))) {
@@ -750,6 +1037,17 @@ valide_ntrt <- function(data){
 #' @param data fichier des arbres
 #' @return Retourne vrai ou faux s'il y a des arbres qui se répètent.
 #' @examples
+#'  # Exemple avec un dataframe valide
+#' verifier_arbre_uniques_par_placette(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (colonne 'NoArbre' manquante)
+#' verifier_arbre_uniques_par_placette(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA dans 'Placette' ou 'NoArbre')
+#' verifier_arbre_uniques_par_placette(data) # Devrait retourner FALSE
+#'
+#' # Exemple avec un dataframe invalide (arbres non uniques dans une placette)
+#' verifier_arbre_uniques_par_placette(data) # Devrait retourner FALSE
 #'
 verifier_arbre_uniques_par_placette <- function(data) {
 
@@ -788,18 +1086,13 @@ if(any(is.na(data$Placette))){
 #'
 #' @param data_arbre Un data.frame contenant les données des arbres.
 #' @param data_gaules Un data.frame contenant les données des gaules.
-#'
 #' @return Une liste de messages d'erreurs. Si aucune erreur n'est trouvée, une liste vide est retournée.
-#'
 #' @examples
-#'
+#' data_arbre <- data.frame(Placette = c("TEM23APC5001", "TEM23APC5002", "TEM23APC5003"))
+#' data_gaules <- data.frame(Placette = c("TEM23APC5001", "TEM23APC5002"))
 #' valide_placette_gaules(data_arbre, data_gaules)
-#'
-#' Les erreurs seront retournées comme ceci
-#' 'Les placette suivantes n'ont pas de gaules :  TEM23APC5001, TEM23APC5002, TEM23APC5003, TEM23APC5004, TEM23APC5005, TEM23APC5006'
-#'
-#' @export
-
+#' # Les erreurs seront retournées comme ceci
+#' # 'Les placette suivantes n'ont pas de gaules : TEM23APC5003'
 valide_placette_gaules <-function (data_arbre , data_gaules){
 
   data_arbre <- renommer_les_colonnes(data_arbre)

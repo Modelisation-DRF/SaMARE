@@ -13,3 +13,9 @@ Retourne une liste de dataframes qui contiennent les paramètres
 \description{
 Fonction qui lit les paramètres nécessaire au simulateur SaMARE
 }
+\examples{
+
+#resultat <- ParametresSimulSaMARE()
+print(resultat)
+
+}

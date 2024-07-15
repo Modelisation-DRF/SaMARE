@@ -90,3 +90,8 @@ du simulateur SaMARE. Cette fonction effectue la simulation et
 appele chacune des fonction permettant de prévoir la mortalité, l'accroissement,
 le recrutement et l'évolution des paramètres de simulation.
 }
+\examples{
+
+ #resultat <- SaMARE(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horizon, RecruesGaules,MCH,CovParms,CovParmsGaules,Para,ParaGaules,Omega,OmegaGaules)
+print(resultat)
+}
