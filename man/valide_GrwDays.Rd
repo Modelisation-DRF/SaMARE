@@ -15,3 +15,20 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'GrwDays' sont correctes.
 }
+\examples{
+# Exemple avec un dataframe valide
+valide_GrwDays(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'GrwDays' manquante)
+valide_GrwDays(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+valide_GrwDays(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA)
+valide_GrwDays(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'GrwDays' par 'Placette')
+valide_GrwDays(data) # Devrait retourner FALSE
+
+}

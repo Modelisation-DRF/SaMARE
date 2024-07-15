@@ -24,6 +24,12 @@
 #'         aléatoires, ceux-ci sont ajoutés dans la fonction SaMARE avant
 #'         de convertir le prédicteur linéaire en probabilité de mortalité.
 #' @examples
+#'
+#' # prévoit la probabilité de mortalité
+#' resultat <- mort(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,MCH,Para.mort)
+#' print(resultat)
+#'
+#' @export
 
 mort<-function(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,MCH,Para.mort){
 

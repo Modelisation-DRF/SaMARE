@@ -10,6 +10,12 @@
 #' @return Retourne la vigueur de l'arbre vigoureux ("ViG")ou non vigoureux ("NONVIG").
 #' @examples
 #'
+#' #l'attribution de la vigueur
+#' resultat <- AttribVigu0(Data,Para.ConvMSCRVig)
+#' print(resultat)
+#'
+#' @export
+#'
 
 AttribVigu0<-function(Data,Para.ConvMSCRVig){
   select=dplyr::select

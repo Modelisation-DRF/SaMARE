@@ -15,3 +15,17 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'DHPcm' sont correctes.
 }
+\examples{
+
+# Exemple avec un dataframe valide
+valide_DHPcm(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'DHPcm' manquante)
+valide_DHPcm(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs supérieures à 160 cm)
+valide_DHPcm(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA)
+valide_DHPcm(data) # Devrait retourner FALSE
+}

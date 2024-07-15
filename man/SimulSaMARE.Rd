@@ -45,3 +45,7 @@ Retourne un dataframe contenant la liste des arbres, leur état, leur DHP,
 Fonction qui sert à appeler le simulateur SaMARE et qui fournit les données
 initiales ainsi qu'un choix de paramètres pour la simulation.
 }
+\examples{
+result <- SimulSaMARE(NbIter = 10, Horizon = 6, RecruesGaules = 1, Data = data_arbre, Gaules = data_gaules, MCH = 0)
+print(result)
+}

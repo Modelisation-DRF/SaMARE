@@ -36,3 +36,8 @@ Retourne le prédicteur linéaire du paramètre delta de la fonction
 Fonction qui prevoit le paramètre delta de la fonction Weibull qui est
 la deuxième portion du modèles zero-inflated du nombre de recrues de SaMARE.
 }
+\examples{
+
+ #resultat <- rec_delta(Rec,st_tot0,type_pe_Plac,ntrt,t0_aj_,Iterj,Para.rec_n)
+print(resultat)
+}

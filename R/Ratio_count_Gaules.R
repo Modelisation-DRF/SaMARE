@@ -28,6 +28,9 @@
 #'          chacun des groupes d'espèces lorsqu'il y a
 #'          présence de gaules de l'espèce.
 #' @examples
+#'
+#'  #resultat <- ratio_count_Gaules(Ratio,Rec,RecGaules,t,st_tot0,latitude,longitude,prec,trt,t0_aj_,Iterj,RandomPlacGaules,Para.ratio_gaules)
+#' print(resultat)
 
 
 ratio_count_Gaules<-function(Ratio,Rec,RecGaules,t,st_tot0,latitude,longitude,

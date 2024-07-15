@@ -46,3 +46,9 @@ Fonction qui calcul le nombre de Gaules de bouleau jaune classes de 6 ou 8 cm de
 Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière.
 Les prévisions sont basées sur un modèle de type Zero inflated
 }
+\examples{
+ # calcul du nombre de Gaules de bouleau jaune
+resultat <- count68BOJ(RecGaules,Ratio,t,trt,t0_aj_,latitude,Iterj,RandomPlacGaules,Para.68_BOJ)
+print(resultat)
+
+}

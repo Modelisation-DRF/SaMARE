@@ -15,3 +15,16 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'Etat' sont correctes.
 }
+\examples{
+# Exemple avec un dataframe valide
+valide_Etat(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'Etat' manquante)
+valide_Etat(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs non autorisées)
+valide_Etat(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA)
+valide_Etat(data) # Devrait retourner FALSE
+}

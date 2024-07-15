@@ -16,6 +16,10 @@
 #' @return  Retourne le prédicteur linéaire de l'équation de la probabilité que
 #'         l'arbre soit de classe "vigoureux".
 #' @examples
+#' #resultat <- vig(Vig,type_pe_Plac,rid1,Iterj,Para.vig)
+#' print(resultat)
+#' @export
+
 #'
 
 vig<-function(Vig,type_pe_Plac,rid1,Iterj,Para.vig){

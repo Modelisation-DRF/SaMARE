@@ -28,3 +28,10 @@ cherche dabord si la tige est résineuse ensuite si le classement
 vigueur 1,2,3,4,5,6 est fourni sinon elle cherche le classement MSCR pour
 attribuer le produit sinon il classe l'arbre comme pate.
 }
+\examples{
+
+#l'attribution des produits
+resultat <- AttribProd0(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24)
+print(resultat)
+
+}

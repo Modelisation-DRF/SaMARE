@@ -26,13 +26,19 @@ recrutement basé sur les gaules et du module d'évolution des gaules}
 
 \item{altitude}{Altitude de la placette}
 
-\item{Para.68_BOJ}{Paramètres de l'équation de prévision du nombre de gaules de bouleau jaune de 6 et 8 cm de diamètre}
+\item{Para.68_BOJ}{Paramètres de l'équation de prévision du nombre de gaules de hêtre à grande feuille de 6 et 8 cm de diamètre}
 }
 \value{
-Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de bouleau jaune
+Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de hêtre à grande feuille
 }
 \description{
 Fonction qui calcul la probabilité d'absence de Gaules de hêtre à grande feuille classes de 6 ou 8 cm de diamètre.
 Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière
 Les prévisions sont basées sur un modèle de type Zero inflated
+}
+\examples{
+ # calcul de la probabilité d'absence de gaules de hêtre à grande feuille
+resultat <- pi68HEG(RecGaules,Ratio,Rec,Iterj,RandomPlacGaules,Para.68_HEG)
+print(resultat)
+
 }

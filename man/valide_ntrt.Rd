@@ -15,3 +15,17 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'ntrt' sont correctes.
 }
+\examples{
+# Exemple avec un dataframe valide
+valide_ntrt(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'ntrt' manquante)
+valide_ntrt(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs non autorisées dans 'ntrt')
+valide_ntrt(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'ntrt' par 'Placette')
+valide_ntrt(data) # Devrait retourner FALSE
+
+}

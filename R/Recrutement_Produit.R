@@ -15,7 +15,8 @@
 #'         probabilité de présence de potentiel sciage pour les recrues de groupes
 #'         d'essences feuillues.
 #' @examples
-#'
+#'  #resultat <- rec_prod(RecSelect,type_pe_Plac,rid1,Iterj,Para.rec_prod)
+#' print(resultat)
 
 rec_prod<-function(RecSelect,type_pe_Plac,rid1,Iterj,Para.rec_prod){
   select=dplyr::select

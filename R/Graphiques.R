@@ -7,15 +7,18 @@
 #'@param Espece Un code de trois lettre majuscule présentant l'espèce pour laquelle on veut faire
 #'              les graphiques. Le code d'espèce doit être celui d'un des groupes d'espèce de SaMARE
 #'              ou le code "TOT" pour l'ensemble des espèces.
-#'@Variable La variable pour laquelle le graphique d'évolution sera créé. Cette variable doit être une des
+#'@param Variable  La variable pour laquelle le graphique d'évolution sera créé. Cette variable doit être une des
 #'          variable de la sortie "Dendro-SaMARE" soit "Vol_HA", "ST_HA", "DQM","HDomM" ou "nbTi_HA"
 #' @return  Retourne une liste de deux graphiques, le premier montrant l'évolution d'une variables
 #'          dendrométrique et le second la distribution en diamètre au début et à la fin de la simulation
 #'          moyen quadratique et la hauteur dominante.
 #' @examples
+#'  # prépare les graphiques à insérer dans l'interface
+#' resultat <- Graph(SimulHtVol, Espece="TOT", Variable='ST_HA',listePlacette)
+#' print(resultat)
 #'
-
-
+#' @export
+#'
 Graph<-function (SimulHtVol, Espece="TOT", Variable='ST_HA',listePlacette){
 
 Data<-SortieDendroSamare(SimulHtVol) %>%

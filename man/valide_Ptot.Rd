@@ -15,3 +15,21 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'Ptot' sont correctes.
 }
+\examples{
+
+# Exemple avec un dataframe valide
+valide_Ptot(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'Ptot' manquante)
+valide_Ptot(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+valide_Ptot(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA)
+valide_Ptot(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Ptot' par 'Placette')
+valide_Ptot(data) # Devrait retourner FALSE
+
+}

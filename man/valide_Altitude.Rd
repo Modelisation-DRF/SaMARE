@@ -15,3 +15,20 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'Altitude' sont correctes.
 }
+\examples{
+
+# Exemple avec un dataframe valide
+valide_Altitude(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'Altitude' manquante)
+valide_Altitude(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+valide_Altitude(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA)
+valide_Altitude(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Altitude' par 'Placette')
+valide_Altitude(data) # Devrait retourner FALSE
+}

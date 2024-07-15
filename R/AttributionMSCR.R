@@ -1,20 +1,19 @@
-#' Fonction qui attribut la classe MSCR. La fonction
-#' applique les équation de 2006 pour les feuillus puis celle de SaMARE2018
-#' pour les résineux puisquelle sépare les épinettes des résineux.
+#' Fonction qui attribue la classe MSCR. La fonction
+#' applique les équations de 2006 pour les feuillus puis celle de SaMARE2018
+#' pour les résineux puisqu'elle sépare les épinettes des résineux.
 #'
 #' @param Data Un dataframe contenant une ligne par arbre pour lesquels on
-#'              veut attribuer le vigueur.
-#' @param Para.ConvVigMSCR Un dataframe  contenant les paramettres des équations
+#'              veut attribuer la vigueur.
+#' @param Para.ConvVigMSCR Un dataframe contenant les paramètres des équations
 #'                         de conversion de vigueur en MSCR.
 #' @return Retourne le classement MSCR de l'arbre.
 #' @examples
-#'
-#'l'attribution de la classe MSCR
-#'
-#' resultat <- AttribMSCR(Data,Para.ConvVigMSCR)
+#' # Attribution de la classe MSCR
+#' resultat <- AttribMSCR(Data, Para.ConvVigMSCR)
 #' print(resultat)
 #'
 #' @export
+
 
 AttribMSCR<-function(Data,Para.ConvVigMSCR){
 

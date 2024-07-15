@@ -27,3 +27,8 @@ Retourne une liste d'effets aléatoires à l'échelle de la placette et
 Fonction qui simule les effets aléatoires à l'échelle de la placette
  et de la période de simulation pour les modules originaux du modèle SaMARE
 }
+\examples{
+
+#resultat <- RandomPlacStep(CovParms, Data, NbIter, NbPeriodes)
+print(resultat)
+}

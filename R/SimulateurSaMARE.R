@@ -29,6 +29,9 @@
 #'         et chaque iteration.
 #'
 #' @examples
+#' result <- SimulSaMARE(NbIter = 10, Horizon = 6, RecruesGaules = 1, Data = data_arbre, Gaules = data_gaules, MCH = 0)
+#' print(result)
+#' @export
 
 
 SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){

@@ -5,6 +5,12 @@
 #'         nécessaires à la simulation
 #' @examples
 #'
+#' #resultat <- ParametresSimulSaMARE()
+#' print(resultat)
+#'
+#' @export
+#'
+#'
 
 ParametresSimulSaMARE <- function() {
 

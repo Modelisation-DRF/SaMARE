@@ -18,6 +18,9 @@
 #' @return  Retourne le prédicteur linéaire de l'équation de la prévision
 #'          de la présence de recrues par groupe d'espèce.
 #' @examples
+#'
+#'  #resultat <- rec_pi(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n)
+#' print(resultat)
 
 rec_pi<-function(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n){
   select=dplyr::select

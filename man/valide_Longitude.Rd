@@ -15,3 +15,20 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'Longitude' sont correctes.
 }
+\examples{
+
+# Exemple avec un dataframe valide
+valide_Longitude(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'Longitude' manquante)
+valide_Longitude(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+valide_Longitude(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA)
+valide_Longitude(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Longitude' par 'Placette')
+valide_Longitude(data) # Devrait retourner FALSE
+}

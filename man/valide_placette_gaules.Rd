@@ -17,3 +17,10 @@ Une liste de messages d'erreurs. Si aucune erreur n'est trouvée, une liste vide
 \description{
 Cette fonction vérifie que toutes les placettes présentes dans le fichier des arbres sont également présentes dans le fichier des gaules.
 }
+\examples{
+data_arbre <- data.frame(Placette = c("TEM23APC5001", "TEM23APC5002", "TEM23APC5003"))
+data_gaules <- data.frame(Placette = c("TEM23APC5001", "TEM23APC5002"))
+valide_placette_gaules(data_arbre, data_gaules)
+# Les erreurs seront retournées comme ceci
+# 'Les placette suivantes n'ont pas de gaules : TEM23APC5003'
+}

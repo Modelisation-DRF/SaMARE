@@ -15,3 +15,20 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'Pente' sont correctes.
 }
+\examples{
+# Exemple avec un dataframe valide
+valide_Pente(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'Pente' manquante)
+valide_Pente(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+valide_Pente(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA)
+valide_Pente(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Pente' par 'Placette')
+valide_Pente(data) # Devrait retourner FALSE
+
+}

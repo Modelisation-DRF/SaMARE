@@ -15,3 +15,21 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'Tmoy' sont correctes.
 }
+\examples{
+
+# Exemple avec un dataframe valide
+valide_Tmoy(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'Tmoy' manquante)
+valide_Tmoy(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+valide_Tmoy(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA)
+valide_Tmoy(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Tmoy' par 'Placette')
+valide_Tmoy(data) # Devrait retourner FALSE
+
+}

@@ -2,24 +2,30 @@
 % Please edit documentation in R/AttributionMSCR.R
 \name{AttribMSCR}
 \alias{AttribMSCR}
-\title{Fonction qui attribut la classe MSCR. La fonction
-applique les équation de 2006 pour les feuillus puis celle de SaMARE2018
-pour les résineux puisquelle sépare les épinettes des résineux.}
+\title{Fonction qui attribue la classe MSCR. La fonction
+applique les équations de 2006 pour les feuillus puis celle de SaMARE2018
+pour les résineux puisqu'elle sépare les épinettes des résineux.}
 \usage{
 AttribMSCR(Data, Para.ConvVigMSCR)
 }
 \arguments{
 \item{Data}{Un dataframe contenant une ligne par arbre pour lesquels on
-veut attribuer le vigueur.}
+veut attribuer la vigueur.}
 
-\item{Para.ConvVigMSCR}{Un dataframe  contenant les paramettres des équations
+\item{Para.ConvVigMSCR}{Un dataframe contenant les paramètres des équations
 de conversion de vigueur en MSCR.}
 }
 \value{
 Retourne le classement MSCR de l'arbre.
 }
 \description{
-Fonction qui attribut la classe MSCR. La fonction
-applique les équation de 2006 pour les feuillus puis celle de SaMARE2018
-pour les résineux puisquelle sépare les épinettes des résineux.
+Fonction qui attribue la classe MSCR. La fonction
+applique les équations de 2006 pour les feuillus puis celle de SaMARE2018
+pour les résineux puisqu'elle sépare les épinettes des résineux.
+}
+\examples{
+# Attribution de la classe MSCR
+resultat <- AttribMSCR(Data, Para.ConvVigMSCR)
+print(resultat)
+
 }

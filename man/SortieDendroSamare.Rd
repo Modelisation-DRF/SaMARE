@@ -28,3 +28,7 @@ placette, annee et groupe d'espèce le diamètre quadratique moyen,
 la surface terrière, le volume et la hauteur dominante.
 cette function prend en parametre un daframe qui a déja été simullé
 }
+\examples{
+#resultat <- SortieDendroSamare(SimulHtVol ,simplifier=FALSE)
+print(resultat)
+}

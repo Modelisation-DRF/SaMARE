@@ -15,3 +15,17 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'Annee_Coupe' sont correctes.
 }
+\examples{
+
+# Exemple avec un dataframe valide
+valide_Annee_Coupe(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'Annee_Coupe' manquante)
+valide_Annee_Coupe(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
+valide_Annee_Coupe(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe valide (toutes les valeurs de 'Annee_Coupe' sont NA pour une 'Placette')
+valide_Annee_Coupe(data) # Devrait retourner TRUE
+}

@@ -37,3 +37,8 @@ Fonction qui prévoie la probabilité de présence de recrues par grouoe d'espè
 Cette fonction corespond à la première portion de la fonction zero-inflated
 de prévision du nombre de recrues non basé sur les gaules.
 }
+\examples{
+
+ #resultat <- rec_pi(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n)
+print(resultat)
+}

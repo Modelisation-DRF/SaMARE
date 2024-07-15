@@ -23,6 +23,12 @@
 #' @return Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de
 #'         bouleau jaune.
 #' @examples
+#' # calcul de la probabilité d'absence de gaules de bouleau jaune
+#' resultat <- pi68BOJ(RecGaules,Ratio,Rec,trt,t0_aj_,altitude,Iterj,RandomPlacGaules,Para.68_BOJ)
+#' print(resultat)
+#'
+#' @export
+#'
 
 
 pi68BOJ<-function(RecGaules,Ratio,Rec,trt,t0_aj_,altitude,Iterj,RandomPlacGaules,Para.68_BOJ){
@@ -74,6 +80,12 @@ pi68BOJ<-function(RecGaules,Ratio,Rec,trt,t0_aj_,altitude,Iterj,RandomPlacGaules
 #' @param Para.68_BOJ Paramètre de l'équation de prévision du nombre de gaules de bouleau jaune de 6 et 8 cm de diamètre
 #' @return Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP de bouleau jaune lorsquelles sont présentes
 #' @examples
+#'  # calcul du nombre de Gaules de bouleau jaune
+#' resultat <- count68BOJ(RecGaules,Ratio,t,trt,t0_aj_,latitude,Iterj,RandomPlacGaules,Para.68_BOJ)
+#' print(resultat)
+#'
+#' @export
+#'
 
 count68BOJ<-function(RecGaules,Ratio,t,trt,t0_aj_,latitude,Iterj,RandomPlacGaules,Para.68_BOJ){
 

@@ -11,9 +11,14 @@
 #' @param Iterj  Itération en cours
 #' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 #'                          recrutement basé sur les gaules et du module d'évolution des gaules
-#' @param Para.68_BOJ Paramètres de l'équation de prévision du nombre de gaules de bouleau jaune de 6 et 8 cm de diamètre
-#' @return Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de bouleau jaune
+#' @param Para.68_BOJ Paramètres de l'équation de prévision du nombre de gaules de sapin baumier de 6 et 8 cm de diamètre
+#' @return Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de sapin baumier
 #' @examples
+#' # calcul de la probabilité d'absence de gaules de sapin baumier
+#' resultat <- pi68SAB(RecGaules,Ratio,dens_tot0,Iterj,RandomPlacGaules,Para.68_SAB)
+#' print(resultat)
+#'
+#' @export
 
 pi68SAB<-function(RecGaules,Ratio,dens_tot0,Iterj,RandomPlacGaules,Para.68_SAB){
 
@@ -57,9 +62,14 @@ pi68SAB<-function(RecGaules,Ratio,dens_tot0,Iterj,RandomPlacGaules,Para.68_SAB){
 #' @param Iterj  Itération en cours
 #' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 #'                          recrutement basé sur les gaules et du module d'évolution des gaules
-#' @param Para.68_BOJ Paramètres de l'équation de prévision du nombre de gaules de bouleau jaune de 6 et 8 cm de diamètre
-#' @return Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP de bouleau jaune lorsquelles sont présentes
+#' @param Para.68_BOJ Paramètres de l'équation de prévision du nombre de gaules de sapin baumier de 6 et 8 cm de diamètre
+#' @return Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP de sapin baumier lorsqu'elles sont présentes.
 #' @examples
+#'  # calcul du nombre de Gaules de hêtre à grande feuille
+#' resultat <- count68SAB(RecGaules,Ratio,Rec,trt,t0_aj_,dens_tot0,Iterj,RandomPlacGaules,Para.68_SAB)
+#' print(resultat)
+#'
+#' @export
 
 count68SAB<-function(RecGaules,Ratio,Rec,trt,t0_aj_,dens_tot0,Iterj,RandomPlacGaules,Para.68_SAB){
 

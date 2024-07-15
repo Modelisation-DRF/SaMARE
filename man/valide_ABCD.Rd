@@ -15,3 +15,21 @@ retourne vrai ou faux s'il détecte des erreurs.
 \description{
 Fonction pour vérifier que les valeurs saisies dans la colonne 'ABCD' sont correctes.
 }
+\examples{
+
+# Exemple avec un dataframe valide
+valide_ABCD(data) # Devrait retourner TRUE
+
+# Exemple avec un dataframe invalide (colonne 'ABCD' manquante)
+valide_ABCD(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs non autorisées dans 'ABCD')
+valide_ABCD(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (valeurs NA dans 'DHPcm' ou 'Espece')
+valide_ABCD(data) # Devrait retourner FALSE
+
+# Exemple avec un dataframe invalide (conditions spécifiques non respectées)
+valide_ABCD(data) # Devrait retourner FALSE
+
+}
