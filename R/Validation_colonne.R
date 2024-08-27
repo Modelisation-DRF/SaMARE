@@ -947,9 +947,6 @@ valide_Pente <- function(data){
     return(FALSE)
   }
 
-  if(any(is.na(data$Pente)) ){
-    return (FALSE)
-  }
   resultats <- data %>%
     group_by(Placette) %>%
     reframe(
