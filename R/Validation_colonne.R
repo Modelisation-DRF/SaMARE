@@ -857,10 +857,11 @@ valide_MSCR <- function(data){
   }
   valeurs_autorisees<-c('M', 'S', 'C', 'R','MS','CR')
 
+  valeurs_null_NA <- c( NA,"")
 
   resultats <- data %>%
     mutate(
-      condition_respectee = (MSCR %in% valeurs_autorisees | (is.na(MSCR) & Vigueur %in% c(1,2,3,4,5,6)))
+      condition_respectee = (MSCR %in% valeurs_autorisees | ( MSCR %in% valeurs_null_NA & Vigueur %in% c(1,2,3,4,5,6)))
     )
 
   return(all(resultats$condition_respectee))
@@ -914,9 +915,10 @@ valide_ABCD <- function(data) {
       condition3 = ifelse(DHPcm >= 23.1 & DHPcm <= 33.0, ABCD %in% c("C", "D", NA, ""), TRUE),
       condition4 = ifelse(DHPcm > 33.0 & DHPcm <= 39.0, ABCD %in% c("B", "C", "D", NA, ""), TRUE)
     ) %>%
-    reframe(all_conditions = all(condition0 & condition1 & condition2 & condition3 & condition4))
+    mutate(all_conditions = condition0 & condition1 & condition2 & condition3 & condition4)
 
-  return(resultats$all_conditions)
+  return(all(resultats$all_conditions))
+
 }
 
 
