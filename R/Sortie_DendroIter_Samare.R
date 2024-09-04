@@ -39,8 +39,8 @@ SortieDendroIterSamare <- function(SimulHtVol,simplifier=FALSE){
                     arrange(  desc(hauteur_pred))%>%
                     group_by(Placette,Iter,Annee,GrEspece,Etat,Residuel) %>%
                     mutate(NbCum=cumsum(Nombre)) %>%
-                    summarise(DQM=(sum(DHPcm^2*Nombre)/sum(Nombre))^0.5,ST_HA=sum(Stm2ha),Vol_HA=sum(vol_dm3)/1000,
-                              nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>=100))],na.rm = TRUE),mean(hauteur_pred)), .groups="drop")
+                    summarise(ST_HA=sum(Stm2ha),Vol_HA=sum(vol_dm3)/1000,nbTi_HA=sum(Nombre/Sup_PE),DQM=(ST_HA/nbTi_HA/pi)^0.5*200,
+                              HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>=100))],na.rm = TRUE),mean(hauteur_pred)), .groups="drop")
 
 
 
@@ -51,10 +51,7 @@ SortieDendroIterSamare <- function(SimulHtVol,simplifier=FALSE){
                      arrange( desc(hauteur_pred))%>%
                      group_by(Placette,Iter,Annee,Etat,Residuel) %>%
                      mutate(NbCum=cumsum(Nombre)) %>%
-                     summarise(DQM=(sum(DHPcm^2*Nombre)/sum(Nombre))^0.5,
-                               ST_HA=sum(Stm2ha),
-                               Vol_HA=sum(vol_dm3)/1000,
-                               nbTi_HA=sum(Nombre/Sup_PE),
+                     summarise(ST_HA=sum(Stm2ha), Vol_HA=sum(vol_dm3)/1000, nbTi_HA=sum(Nombre/Sup_PE), DQM=(ST_HA/nbTi_HA/pi)^0.5*200,
                                HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>=100))],na.rm = TRUE),mean(hauteur_pred)), .groups="drop") %>%
                     mutate(DQM=ifelse(Etat=="mort",NA,DQM),ST_HA=ifelse(Etat=="mort",NA,ST_HA),
                                       Vol_HA=ifelse(Etat=="mort",NA,Vol_HA),HDomM=ifelse(Etat=="mort",NA,HDomM)) %>%

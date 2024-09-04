@@ -49,15 +49,16 @@ SortieDendroSamare <- function(SimulHtVol,simplifier=FALSE){
                     arrange(Placette,Iter,Annee,GrEspece,Etat,Residuel,desc(hauteur_pred))%>%
                     group_by(Placette,Iter,Annee,GrEspece,Etat,Residuel) %>%
                     mutate(NbCum=cumsum(Nombre)) %>%
-                    summarise(DQM=(sum(DHPcm^2*Nombre)/sum(Nombre))^0.5,ST_HA=sum(Stm2ha),Vol_HA=sum(vol_dm3)/1000,
-                              nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>=100))],na.rm = TRUE),NA), .groups="drop") %>%
+                    summarise(ST_HA=sum(Stm2ha),Vol_HA=sum(vol_dm3)/1000,nbTi_HA=sum(Nombre/Sup_PE), DQM=(ST_HA/nbTi_HA/pi)^0.5*200,
+                              HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>=100))],na.rm = TRUE),NA), .groups="drop") %>%
                     right_join(ListeMerge) %>%
                     mutate(ST_HA=ifelse(is.na(ST_HA)==TRUE,0,ST_HA),Vol_HA=ifelse(is.na(Vol_HA)==TRUE,0,Vol_HA),
                            nbTi_HA=ifelse(is.na(nbTi_HA)==TRUE,0,nbTi_HA)) %>%
                     group_by(Placette,Annee,GrEspece,Etat,Residuel) %>%
-                    summarise(EcartType_DQM=sd(DQM, na.rm=TRUE),DQM=mean(DQM,na.rm=TRUE),EcartType_ST_HA=sd(ST_HA),ST_HA=mean(ST_HA),
+                    summarise(EcartType_DQM=sd(DQM, na.rm=TRUE),EcartType_ST_HA=sd(ST_HA),ST_HA=mean(ST_HA),
                               EcartType_Vol_HA=sd(Vol_HA),Vol_HA=mean(Vol_HA), EcartType_nbTi_HA=sd(nbTi_HA),
-                              nbTi_HA=mean(nbTi_HA),EcartType_HDomM=sd(HDomM, na.rm=TRUE),HDomM=mean(HDomM, na.rm=TRUE),.groups="drop"))
+                              nbTi_HA=mean(nbTi_HA),EcartType_HDomM=sd(HDomM, na.rm=TRUE), DQM=(ST_HA/nbTi_HA/pi)^0.5*200,
+                              HDomM=mean(HDomM, na.rm=TRUE),.groups="drop"))
 
    suppressMessages(
    DendroSamare <- SimulHtVol %>%
@@ -67,13 +68,14 @@ SortieDendroSamare <- function(SimulHtVol,simplifier=FALSE){
                      arrange(Placette,Iter,Annee,Etat,Residuel,desc(hauteur_pred))%>%
                      group_by(Placette,Iter,Annee,Etat,Residuel) %>%
                      mutate(NbCum=cumsum(Nombre)) %>%
-                     summarise(DQM=(sum(DHPcm^2*Nombre)/sum(Nombre))^0.5,ST_HA=sum(Stm2ha),Vol_HA=sum(vol_dm3)/1000,
-                              nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>=100))],na.rm = TRUE),NA), .groups="drop") %>%
+                     summarise(ST_HA=sum(Stm2ha),Vol_HA=sum(vol_dm3)/1000, nbTi_HA=sum(Nombre/Sup_PE), DQM=(ST_HA/nbTi_HA/pi)^0.5*200,
+                              HDomM=ifelse(nbTi_HA>100,mean(hauteur_pred[1:first(which((NbCum/Sup_PE)>=100))],na.rm = TRUE),NA), .groups="drop") %>%
                     mutate(GrEspece="TOT") %>%
                     group_by(Placette,GrEspece,Annee,Etat,Residuel) %>%
-                    summarise(EcartType_DQM=sd(DQM),DQM=mean(DQM),EcartType_ST_HA=sd(ST_HA),ST_HA=mean(ST_HA),
+                    summarise(EcartType_DQM=sd(DQM),EcartType_ST_HA=sd(ST_HA),ST_HA=mean(ST_HA),
                               EcartType_Vol_HA=sd(Vol_HA),Vol_HA=mean(Vol_HA), EcartType_nbTi_HA=sd(nbTi_HA),
-                              nbTi_HA=mean(nbTi_HA),EcartType_HDomM=sd(HDomM),HDomM=mean(HDomM),.groups="drop") %>%
+                              nbTi_HA=mean(nbTi_HA),EcartType_HDomM=sd(HDomM), DQM=(ST_HA/nbTi_HA/pi)^0.5*200,
+                              HDomM=mean(HDomM),.groups="drop") %>%
                     rbind(DendroSamaresp) %>%
                     arrange(Placette,Annee,Residuel,GrEspece,desc(Etat)) %>%
                     relocate(Placette,Annee,Residuel,GrEspece,Etat,nbTi_HA,ST_HA,DQM,Vol_HA,HDomM,
