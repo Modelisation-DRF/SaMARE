@@ -25,8 +25,3 @@ Fonction qui simule les effets aléatoires à l'échelle de la placette
  pour les modules de recrutement basé sur les gaules et d'évolution des
  gaules de SaMARE
 }
-\examples{
- #resultat <- RandomPlacStepGaules(CovParms, Data, NbIter)
-print(resultat)
-
-}

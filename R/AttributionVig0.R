@@ -8,11 +8,6 @@
 #' @param Para.ConvMSCRVig Un dataframe  contenant les paramettres des équations
 #'                         de conversion du classement MSCR en vigueur.
 #' @return Retourne la vigueur de l'arbre vigoureux ("ViG")ou non vigoureux ("NONVIG").
-#' @examples
-#'
-#' #l'attribution de la vigueur
-#' resultat <- AttribVigu0(Data,Para.ConvMSCRVig)
-#' print(resultat)
 #'
 #' @export
 #'

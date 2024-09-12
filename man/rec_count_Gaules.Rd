@@ -49,7 +49,3 @@ y a présence de recrues du groupe d'espèce. Cette fonction corespond à la
 deuxième portion de la fonction zero-inflated de prévision du nombre
 de recrues de Rijal et al. 2023.
 }
-\examples{
- #resultat <- rec_count_Gaules(Rec,RecGaules,t,st_tot0,Iterj,RandomPlacGaules,Para.rec_gaules)
-print(resultat)
-}

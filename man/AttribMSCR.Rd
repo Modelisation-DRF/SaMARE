@@ -23,9 +23,3 @@ Fonction qui attribue la classe MSCR. La fonction
 applique les équations de 2006 pour les feuillus puis celle de SaMARE2018
 pour les résineux puisqu'elle sépare les épinettes des résineux.
 }
-\examples{
-# Attribution de la classe MSCR
-resultat <- AttribMSCR(Data, Para.ConvVigMSCR)
-print(resultat)
-
-}

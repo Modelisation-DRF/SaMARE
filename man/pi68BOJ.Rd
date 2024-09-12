@@ -55,9 +55,3 @@ de 6 ou 8 cm de diamètre. Cette fonction utilise une variante des paramètre
 publiée par Rijal et al. 2023 Journal canadien de la recherche forestière.
 Les prévisions sont basées sur un modèle de type Zero inflated.
 }
-\examples{
-# calcul de la probabilité d'absence de gaules de bouleau jaune
-resultat <- pi68BOJ(RecGaules,Ratio,Rec,trt,t0_aj_,altitude,Iterj,RandomPlacGaules,Para.68_BOJ)
-print(resultat)
-
-}

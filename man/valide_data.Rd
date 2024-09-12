@@ -18,12 +18,12 @@ le fichier des arbres et retourne une liste des erreurs trouvées.
 }
 \examples{
 \dontrun{
-# Supposons que nous ayons un dataframe `data` représentant le fichier des arbres
+# Supposons que nous ayons un dataframe data représentant le fichier des arbres
 
 # Appel de la fonction
-erreurs <- valide_data(data)
+# erreurs <- valide_data(data)
 
-# La fonction retournera une liste des erreurs trouvées dans le dataframe `data`
+# La fonction retournera une liste des erreurs trouvées dans le dataframe erreurs
 }
 
 }

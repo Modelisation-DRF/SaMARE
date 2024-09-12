@@ -29,12 +29,21 @@
 #'         et chaque iteration.
 #'
 #' @examples
-#' result <- SimulSaMARE(NbIter = 10, Horizon = 6, RecruesGaules = 1, Data = data_arbre, Gaules = data_gaules, MCH = 0)
-#' print(result)
+#' \dontrun{
+#' # Simulation sur 10 ans, recrutement de base
+#' result <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 0, Data = Test2500m2)
+#' # Simulation sur 10 ans, recrutement avec les gaules
+#' result <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2,
+#' Gaules=GaulesTest2500m2)
+#' }
 #' @export
 
 
 SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
+
+  # NbIter=2; Horizon=2; RecruesGaules=1; Data = Test400m2Coupe; Gaules = GaulesTest2500m2; MCH = 0;
+  # NbIter=2; Horizon=2; RecruesGaules=0; Data = Test2500m2; Gaules = NULL; MCH = 0;
+
   select=dplyr::select
   ################################ Lecture des fichiers de placette et de parametres ###################
   Data <- renommer_les_colonnes(Data)
@@ -89,7 +98,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
               "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt","ABCD")
 
   Data<-Data %>%
-    left_join(ListeSp)
+    left_join(ListeSp, by="Espece")
 
   Data<-Data[ColOrdre]
 
@@ -100,7 +109,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
     ColOrdre<-c("Placette","Espece","GrEspece","DHPcm","Nombre","Sup_PE")
 
     Gaules<-Gaules %>%
-      inner_join(ListeSp) #%>%
+      inner_join(ListeSp, by="Espece") #%>%
       #filter(!Espece %in% c("ERE","ERP","PRP","SAL","SOA","SOD","AME","AUR","ERE")) #Retirait les gaules d'essences non commerciales
     Gaules<-Gaules[ColOrdre]
 
@@ -111,7 +120,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
       group_by(Placette) %>%
       summarise()
     Data<-Data %>%
-      inner_join(IndexGaules)
+      inner_join(IndexGaules, by="Placette")
   }
 
   #########Selection nombre d'iteration et de l'horizon de simulation#############
@@ -145,7 +154,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
   registerDoFuture()
   plan(multisession)
 
-  list_plot <- unique(ListeIter$PlacetteID)
+  list_plot <- unique(ListeIter$PlacetteID) # liste de placette/iter, donc on parallélise les placettes/iter
 
   Simul<- bind_rows(
     foreach(x = list_plot) %dorng%   ######utilisation de doRNG permet de controler la seed
@@ -192,7 +201,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
 
   # renommer les variables pour l'équation de ht
   Simul<-Simul %>%
-    inner_join(VarEco, relationship="many-to-many") %>%
+    inner_join(VarEco, relationship="many-to-many", by="Placette") %>%
     mutate(nb_tige=Nombre/Sup_PE/25, step= (Annee-AnneeDep)/5 +1) %>%   #Conversion pour relation HD
     rename(id_pe=Placette, dhpcm=DHPcm, no_arbre=ArbreID,          #IA: j'ai enlevé essence=GrEspece
            altitude=Altitude,p_tot=Ptot,t_ma=Tmoy, iter=Iter)
@@ -201,7 +210,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
   # faire l'association d'essence pour l'équation de hauteur et de volume: le data ass_ess_ht_vol est un fihcier rda sous data\
   # utiliser GrEspece pour faire l'association
   ass_ess_ht_vol2 <- ass_ess_ht_vol %>% group_by(GrEspece) %>% slice(1) %>% dplyr::select(-Espece)
-  Simul <- left_join(Simul,ass_ess_ht_vol2)
+  Simul <- left_join(Simul,ass_ess_ht_vol2, by="GrEspece")
 
 
   SimulHtVol1<-Simul[which(Simul$Residuel==0),]
@@ -209,11 +218,11 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
   nb_periodes <- Horizon+1
 
   SimulHtVol1<- SimulHtVol1 %>% rename(essence=essence_hauteur) #IA: ajout
-  ht <- relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5) %>%
+  ht <- TarifQC::relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5) %>%
     dplyr::select(-essence) # IA ajout
 
   ht <- ht %>% rename(essence=essence_volume) #IA: ajout
-  SimulHtVol2 <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes) %>%
+  SimulHtVol2 <- TarifQC::cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes) %>%
     dplyr::select(-essence) #IA: ajout
 
 
@@ -227,7 +236,8 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
     left_join(SimulHtVol2, by=c("id_pe","Annee","no_arbre","iter")) %>%
     rename(Placette=id_pe, DHPcm=dhpcm,ArbreID=no_arbre,                #IA : j'ai enlevé GrEspece=essence
            Altitude=altitude,Ptot=p_tot,Tmoy=t_ma, Iter=iter) %>%
-    mutate(PlacetteID=paste(Placette,"_",Iter, sep=""))
+    mutate(PlacetteID=paste(Placette,"_",Iter, sep="")) %>%
+    dplyr::select(-milieu, -veg_pot, -essence_hauteur, -essence_volume, -step, -nb_tige) # enlever les variables qui étaient nécessaire seulement pour tarifqc
 
 
   return(SimulHtVol)

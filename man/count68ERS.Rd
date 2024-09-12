@@ -21,20 +21,16 @@ count68ERS(
 
 \item{Ratio}{Un dataframe qui contient la répartition du nombre de gaule prédit entre les groupes d'espèces}
 
+\item{dens_tot0}{Densité totale}
+
+\item{grwd}{nombre de jours dans la saison de croissance}
+
 \item{Iterj}{Itération en cours}
 
 \item{RandomPlacGaules}{Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 recrutement basé sur les gaules et du module d'évolution des gaules}
 
-\item{Rec}{Un dataframe qui contient la prévision du nombre de recrues par groupes d'espèces}
-
-\item{trt}{Variable distinguant les peuplements traités des témoins, si St >26 = TEM}
-
-\item{t0_aj_}{Temps écoulé depuis la dernière coupe partielle}
-
-\item{altitude}{Altitude de la placette}
-
-\item{Para.68_BOJ}{Paramètres de l'équation de prévision du nombre de gaules d'érable à sucre de 6 et 8 cm de diamètre}
+\item{Para.68_ERS}{Paramètres de l'équation de prévision du nombre de gaules d'érable à sucre de 6 et 8 cm de diamètre}
 }
 \value{
 Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP d'érable à sucre lorsquelles sont présentes
@@ -43,10 +39,4 @@ Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP d'érable à suc
 Fonction qui calcul le nombre de Gaules d'érable à sucre classes de 6 ou 8 cm de diamètre lorsquelle sont présente.
 Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière.
 Les prévisions sont basées sur un modèle de type Zero inflated
-}
-\examples{
-# calcul du nombre de Gaules d'érable à sucre
-resultat <- count68ERS(RecGaules,Ratio,dens_tot0,grwd,Iterj,RandomPlacGaules,Para.68_ERS)
-print(resultat)
-
 }

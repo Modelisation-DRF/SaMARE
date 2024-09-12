@@ -15,13 +15,11 @@
 #' @param st_tot0  Surface terrière marchande (DHP >9.0cm) de la placette
 #'                 au début du pas de simulation.
 #' @param t  La longueur du pas de simulation en annee (en annees).
+#' @param Para.rec_n Paramètres de l'équation de prévivion du nombre de
+#'                        recrues sans utiliser le nombre de gaules.
 #' @return  Retourne le prédicteur linéaire de l'équation de la prévision
 #'          de la présence de recrues par groupe d'espèce.
-#' @examples
-#'
-#'  #resultat <- rec_pi(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n)
-#' print(resultat)
-
+#' @export
 rec_pi<-function(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n){
   select=dplyr::select
   n<-nrow(Rec)

@@ -22,11 +22,7 @@
 #' @param Para.ratio_gaules Paramètres de l'équation de la prévision du ratio du
 #'                         nombre de gaules par espèce.
 #' @return  Retourne une probabilité d'absence de gaules par groupe d'espèces.
-#' @examples
-#'  #resultat <- ratio_pi_Gaules(Ratio,Rec,RecGaules,t,st_tot0,latitude,longitude,Iterj,RandomPlacGaules,Para.ratio_gaules)
-#' print(resultat)
-
-
+#' @export
 ratio_pi_Gaules<-function(Ratio,Rec,RecGaules,t,st_tot0,latitude,longitude,
                           Iterj,RandomPlacGaules,Para.ratio_gaules){
   select=dplyr::select

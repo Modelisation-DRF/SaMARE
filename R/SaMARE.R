@@ -45,15 +45,16 @@
 #'                    la matrice de variance-covariance.
 #' @return Retourne un dataframe avec une liste d'arbres vivants et mort ainsi que
 #'        leur DHP pour chaque étape de 5 ans de l'horizon de simulation.
-#' @examples
-#'
-#'  #resultat <- SaMARE(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horizon, RecruesGaules,MCH,CovParms,CovParmsGaules,Para,ParaGaules,Omega,OmegaGaules)
-#' print(resultat)
-
+#' @export
 
 SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horizon, RecruesGaules,
                   MCH,CovParms,CovParmsGaules,Para,ParaGaules,Omega,OmegaGaules){
-   select=dplyr::select
+  # x='TEM23APC5000_1'
+  # Random=RandPlacStep; RandomGaules=RandPlacStepGaules; Data=Data; Gaules=Gaules; ListeIter=ListeIter[ListeIter$PlacetteID==x,];
+  # AnneeDep=AnneeDep; Horizon=Horizon; RecruesGaules=RecruesGaules; MCH=MCH;
+  # CovParms=CovParms; CovParmsGaules=CovParmsGaules; Para=Para; ParaGaules=ParaGaules; Omega=Omega; OmegaGaules=OmegaGaules;
+
+  select=dplyr::select
   t<-5
 
 
@@ -280,7 +281,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   for (k in 1:Horizon){
 
-
+    # k=2
     ##################Mise à jour des variable pour la période se simulation########
 
     # Si premier pas de simulation, on utilise le fichier de depart de la placette

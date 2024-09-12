@@ -11,11 +11,6 @@ valide_Etat(data)
 }
 \value{
 retourne vrai ou faux s'il détecte des erreurs.
-}
-\description{
-Fonction pour vérifier que les valeurs saisies dans la colonne 'Etat' sont correctes.
-}
-\examples{
 # Exemple avec un dataframe valide
 valide_Etat(data) # Devrait retourner TRUE
 
@@ -27,4 +22,7 @@ valide_Etat(data) # Devrait retourner FALSE
 
 # Exemple avec un dataframe invalide (valeurs NA)
 valide_Etat(data) # Devrait retourner FALSE
+}
+\description{
+Fonction pour vérifier que les valeurs saisies dans la colonne 'Etat' sont correctes.
 }

@@ -22,11 +22,6 @@
 #'                           d'évolution des gaules.
 #' @param Para.nb_gaules Paramètres de l'équation de la prévision du nombre total de gaules.
 #' @return Retourne une prévision du nombre total de gaules à la fin du pas de simulation.
-#' @examples
-#'  #  prévoit le nombre total de gaules à la fin du pas de simulation
-#' resultat <- nb_Gaules(Rec,RecGaules,t,st_tot0,altitude,latitude,trt,t0_aj_,longitude,temp,pente,Iterj,RandomPlacGaules,Para.nb_gaules)
-#' print(resultat)
-#'
 #' @export
 
 

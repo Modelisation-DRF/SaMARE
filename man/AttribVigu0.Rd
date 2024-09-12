@@ -25,10 +25,3 @@ cherche dabord si le classement vigueur 1,2,3,4,5,6 est fourni sinon
 elle cherche le classement MSCR pour attribuer la vigeur sinon il classe l'arbre
 comme vigoureux.
 }
-\examples{
-
-#l'attribution de la vigueur
-resultat <- AttribVigu0(Data,Para.ConvMSCRVig)
-print(resultat)
-
-}

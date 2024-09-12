@@ -4,20 +4,13 @@
 #'
 #' @param RecGaules Dataframe qui contient les information sur la distribution des gaules dans la placette
 #' @param Ratio   Un dataframe qui contient la répartition du nombre de gaule prédit entre les groupes d'espèces
-#' @param Rec    Un dataframe qui contient la prévision du nombre de recrues par groupes d'espèces
-#' @param trt    Variable distinguant les peuplements traités des témoins, si St >26 = TEM
-#' @param t0_aj_     Temps écoulé depuis la dernière coupe partielle
-#' @param altitude Altitude de la placette
+#' @param Rec    Un dataframe qui contient la prévision du nombre de recrues par
+#'               groupes d'espèces.
 #' @param Iterj  Itération en cours
 #' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 #'                          recrutement basé sur les gaules et du module d'évolution des gaules
-#' @param Para.68_BOJ Paramètres de l'équation de prévision du nombre de gaules de hêtre à grande feuille de 6 et 8 cm de diamètre
+#' @param Para.68_HEG Paramètres de l'équation de prévision du nombre de gaules de hêtre à grande feuille de 6 et 8 cm de diamètre
 #' @return Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de hêtre à grande feuille
-#' @examples
-#'  # calcul de la probabilité d'absence de gaules de hêtre à grande feuille
-#' resultat <- pi68HEG(RecGaules,Ratio,Rec,Iterj,RandomPlacGaules,Para.68_HEG)
-#' print(resultat)
-#'
 #' @export
 
 pi68HEG<-function(RecGaules,Ratio,Rec,Iterj,RandomPlacGaules,Para.68_HEG){
@@ -56,19 +49,11 @@ pi68HEG<-function(RecGaules,Ratio,Rec,Iterj,RandomPlacGaules,Para.68_HEG){
 #' @param RecGaules Dataframe qui contient les information sur la distribution des gaules dans la placette
 #' @param Ratio   Un dataframe qui contient la répartition du nombre de gaule prédit entre les groupes d'espèces
 #' @param Rec    Un dataframe qui contient la prévision du nombre de recrues par groupes d'espèces
-#' @param trt    Variable distinguant les peuplements traités des témoins, si St >26 = TEM
-#' @param t0_aj_     Temps écoulé depuis la dernière coupe partielle
-#' @param altitude Altitude de la placette
 #' @param Iterj  Itération en cours
 #' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 #'                          recrutement basé sur les gaules et du module d'évolution des gaules
-#' @param Para.68_BOJ Paramètres de l'équation de prévision du nombre de gaules de hêtre à grande feuille de 6 et 8 cm de diamètre
+#' @param Para.68_HEG Paramètres de l'équation de prévision du nombre de gaules de hêtre à grande feuille de 6 et 8 cm de diamètre
 #' @return Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP de hêtre à grande feuille lorsquelles sont présentes
-#' @examples
-#' # calcul du nombre de Gaules de hêtre à grande feuille
-#' resultat <- count68HEG(RecGaules,Ratio,Rec,Iterj,RandomPlacGaules,Para.68_HEG)
-#' print(resultat)
-#'
 #' @export
 
 

@@ -10,12 +10,6 @@
 #'                   seront simulés.
 #' @return Retourne une liste d'effets aléatoires à l'échelle de la placette et
 #'          de la période de simulation.
-#' @examples
-#'
-#' #resultat <- RandomPlacStep(CovParms, Data, NbIter, NbPeriodes)
-#' print(resultat)
-
-
 RandomPlacStep<-function (CovParms, Data, NbIter, NbPeriodes) {
 
   select=dplyr::select
@@ -105,10 +99,7 @@ return(Random)
 #'               placette sera extraite afin d'y générer des effets aléatoire
 #' @param NbIter Nombre d'itérations de la simulation
 #' @return Retourne une liste d'effets aléatoires à l'échelle de la placette
-#' @examples
-#'  #resultat <- RandomPlacStepGaules(CovParms, Data, NbIter)
-#' print(resultat)
-#'
+#' @export
 RandomPlacStepGaules<-function (CovParms, Data, NbIter) {
 
   select=dplyr::select

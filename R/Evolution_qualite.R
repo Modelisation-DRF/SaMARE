@@ -18,11 +18,6 @@
 #' @param Para.EvolQualTot Un dataframe  contenant les paramétrés du module d'évolution
 #'                 de la qualité des arbres.
 #' @return  Le numéro d'arbre avec la qualité prédite".
-#' @examples
-#'# prévision de la classe de qualité
-#' resultat <- EvolQual(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot)
-#' print(resultat)
-#'
 #' @export
 #'
 

@@ -12,12 +12,6 @@ valide_Nombre_gaules(data)
 }
 \value{
 Retourne TRUE si les valeurs dans la colonne 'Nombre' sont valides pour chaque 'Placette', FALSE sinon.
-}
-\description{
-Cette fonction vérifie si la colonne 'Nombre' dans le fichier de données contient des valeurs valides pour chaque 'Placette'.
-Elle s'assure que la colonne existe, qu'elle n'est pas vide, qu'elle ne contient pas de valeurs manquantes (NA), et que la somme des valeurs pour chaque 'Placette' est supérieure à zéro.
-}
-\examples{
 
 # Exemple avec un dataframe valide
 valide_Nombre_gaules(data) # Devrait retourner TRUE
@@ -33,4 +27,8 @@ valide_Nombre_gaules(data) # Devrait retourner FALSE
 
 # Exemple avec un dataframe invalide (somme de 'Nombre' par 'Placette' égale à zéro)
 valide_Nombre_gaules(data) # Devrait retourner FALSE
+}
+\description{
+Cette fonction vérifie si la colonne 'Nombre' dans le fichier de données contient des valeurs valides pour chaque 'Placette'.
+Elle s'assure que la colonne existe, qu'elle n'est pas vide, qu'elle ne contient pas de valeurs manquantes (NA), et que la somme des valeurs pour chaque 'Placette' est supérieure à zéro.
 }

@@ -9,14 +9,7 @@
 #'                     soit vigoureuses.
 #' @return  Retourne le prédicteur linéaire de l'équation de prévision de la
 #'         probabilité qu'une recrue soit vigoureuse.
-#' @examples
-#'  #resultat <- rec_vig(RecSelect,latitude,Iterj,Para.rec_vig)
-#' print(resultat)
-
-#'
-
-
-
+#' @export
 rec_vig<-function(RecSelect,latitude,Iterj,Para.rec_vig){
   select=dplyr::select
   n<-nrow(RecSelect)

@@ -69,8 +69,3 @@ de simulation suivante. Cette fonction est la deuxième partie du modèle zero-i
 de Rijal et al. 2023 et prévoit un ratio par groupe d'espèce lorsqu'il y a
 présence de gaules.
 }
-\examples{
-
- #resultat <- ratio_count_Gaules(Ratio,Rec,RecGaules,t,st_tot0,latitude,longitude,prec,trt,t0_aj_,Iterj,RandomPlacGaules,Para.ratio_gaules)
-print(resultat)
-}

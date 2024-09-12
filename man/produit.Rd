@@ -30,8 +30,3 @@ Retourne le prédicteur linéaire de l'équation de la probabilité que
 Fonction qui prévoit l'évolution de la classe de produit des tiges feuillus.
  Produit qui est contenu dans les classes "sciage" ou "pate".
 }
-\examples{
- #resultat <- produit(Prod,type_pe_Plac,rid1,Iterj,Para.prod)
-print(resultat)
-
-}

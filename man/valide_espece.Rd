@@ -11,11 +11,6 @@ valide_espece(data)
 }
 \value{
 retourne vrai ou faux s'il détecte des erreurs.
-}
-\description{
-Fonction pour vérifier que les valeurs saisies dans la colonne 'Espece' sont correctes.
-}
-\examples{
 
 # Exemple avec un dataframe valide
 valide_espece(data) # Devrait retourner TRUE
@@ -28,4 +23,7 @@ valide_espece(data) # Devrait retourner FALSE
 
 # Exemple avec un dataframe invalide (valeurs NA)
 valide_espece(data) # Devrait retourner FALSE
+}
+\description{
+Fonction pour vérifier que les valeurs saisies dans la colonne 'Espece' sont correctes.
 }

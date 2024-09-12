@@ -26,8 +26,3 @@ Retourne le prédicteur linéaire de l'équation de prévision de la
 Fonction qui prevoit le prédicteur linéaire de l'équation de prévision
 de la probabilité qu'une recrue soit vigoureuse.
 }
-\examples{
- #resultat <- rec_vig(RecSelect,latitude,Iterj,Para.rec_vig)
-print(resultat)
-
-}

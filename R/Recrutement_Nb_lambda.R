@@ -14,11 +14,6 @@
 #'                   pas les recrues comme prédicteurs.
 #' @return  Retourne le prédicteur linéaire du paramètre delta de la fonction
 #'          de prévision du nombre de recrues.
-#' @examples
-#'
-#'  #resultat <- rec_lambda(Rec,type_pe_Plac,st_tot0,t,Iterj,Para.rec_n)
-#' print(resultat)
-
 
 rec_lambda<-function(Rec,type_pe_Plac,st_tot0,t,Iterj,Para.rec_n){
   select=dplyr::select

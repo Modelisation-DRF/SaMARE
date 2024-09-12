@@ -18,12 +18,12 @@ le fichier des gaules et retourne une liste des erreurs trouvées.
 }
 \examples{
 \dontrun{
-# Supposons que nous ayons un dataframe `data` représentant le fichier des gaules
+# Supposons que nous ayons un dataframe data représentant le fichier des gaules
 
 # Appel de la fonction
-erreurs <- valide_data_gaules(data)
+# erreurs <- valide_data_gaules(data)
 
-# La fonction retournera une liste des erreurs trouvées dans le dataframe `data`
+# La fonction retournera une liste des erreurs trouvées dans le dataframe erreurs
 }
 
 }

@@ -27,7 +27,3 @@ Fonction qui structure un dataframe de sortie dont chaque ligne correspond
 classe de DHP et année. La sortie présente donc un sommaire de la table de peuplement simulée
 pour chacune des placettes.
 }
-\examples{
- #resultat <- Sommaire_Classes_DHP(SimulHtVol ,simplifier=FALSE)
-print(resultat)
-}
