@@ -1,6 +1,6 @@
-[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0) [![R-CMD-check](https://github.com/Modelisation-DRF/RNatura2014/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Modelisation-DRF/RNatura2014/actions/workflows/R-CMD-check.yaml)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0) [![R-CMD-check](https://github.com/Modelisation-DRF/Package-SaMARE-version-2.1.0/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Modelisation-DRF/Package-SaMARE-version-2.1.0/actions/workflows/R-CMD-check.yaml)
 
-## Le package SaMARE-version-2.1.0
+## Le package SimulateurSaMARE
 
 Auteurs: 
 Hugues Power - Ministère des Ressources Naturelles et des Forêts du Québec
@@ -15,11 +15,14 @@ Un package pour la simulation de l'accroissement, de la mortalité et du recrute
 Non disponibles pour l'instant.
 
 ## Dépendences
-Ce package dépend des packages ExtractMap et TarifQC.
+Ce package dépend des packages ExtractMap, TarifQC et Billonage.
 
 TarifQC est disponible ici: https://github.com/Modelisation-DRF/TarifQC
 
 ExtractMap est disponible ici: https://github.com/Modelisation-DRF/ExtractMap
+
+Billonage est disponible ici: https://github.com/Modelisation-DRF/Billonage
+
 
 ## Comment installer le package dans R
 ```{r eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}

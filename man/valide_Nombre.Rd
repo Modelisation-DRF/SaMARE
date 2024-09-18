@@ -11,11 +11,6 @@ valide_Nombre(data)
 }
 \value{
 retourne vrai ou faux s'il détecte des erreurs.
-}
-\description{
-Fonction pour vérifier que les valeurs saisies dans la colonne 'nombre' sont correctes.
-}
-\examples{
  # Exemple avec un dataframe valide
 valide_Nombre(data) # Devrait retourner TRUE
 
@@ -27,4 +22,7 @@ valide_Nombre(data) # Devrait retourner FALSE
 
 # Exemple avec un dataframe invalide (valeurs NA)
 valide_Nombre(data) # Devrait retourner FALSE
+}
+\description{
+Fonction pour vérifier que les valeurs saisies dans la colonne 'nombre' sont correctes.
 }

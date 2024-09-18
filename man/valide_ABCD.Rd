@@ -11,11 +11,6 @@ valide_ABCD(data)
 }
 \value{
 retourne vrai ou faux s'il détecte des erreurs.
-}
-\description{
-Fonction pour vérifier que les valeurs saisies dans la colonne 'ABCD' sont correctes.
-}
-\examples{
 
 # Exemple avec un dataframe valide
 valide_ABCD(data) # Devrait retourner TRUE
@@ -31,5 +26,7 @@ valide_ABCD(data) # Devrait retourner FALSE
 
 # Exemple avec un dataframe invalide (conditions spécifiques non respectées)
 valide_ABCD(data) # Devrait retourner FALSE
-
+}
+\description{
+Fonction pour vérifier que les valeurs saisies dans la colonne 'ABCD' sont correctes.
 }

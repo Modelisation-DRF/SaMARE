@@ -8,9 +8,6 @@
 #'                  que la première et la dernière année de la simulation. Par défaut, \code{FALSE}.
 #' @return  Retourne un dataframe contenant l'ensemble des arbres pour chacune des
 #'          placettes, années, itérations.
-#' @examples
-#' #resultat <- SortieArbreSamare(SimulHtVol ,simplifier=FALSE)
-#' print(resultat)
 #' @export
 
 

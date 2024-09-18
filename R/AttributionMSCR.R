@@ -7,11 +7,7 @@
 #' @param Para.ConvVigMSCR Un dataframe contenant les paramètres des équations
 #'                         de conversion de vigueur en MSCR.
 #' @return Retourne le classement MSCR de l'arbre.
-#' @examples
-#' # Attribution de la classe MSCR
-#' resultat <- AttribMSCR(Data, Para.ConvVigMSCR)
-#' print(resultat)
-#'
+
 #' @export
 
 

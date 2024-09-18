@@ -19,12 +19,7 @@
 #'                        recrues utilisant le nombre de gaules.
 #' @return  Retourne une prévision de la probabilité d'absence de recrues,
 #'           prévisions basées sur les informations provenant des recrues.
-#' @examples
-#'
-#'  #resultat <- rec_pi_Gaules(Rec,RecGaules,t,st_tot0,Iterj,RandomPlacGaules,Para.rec_gaules)
-#' print(resultat)
-
-
+#' @export
 rec_pi_Gaules<-function(Rec,RecGaules,t,st_tot0,Iterj,RandomPlacGaules,Para.rec_gaules){
 
   select=dplyr::select

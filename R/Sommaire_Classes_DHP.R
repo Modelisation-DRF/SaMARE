@@ -10,9 +10,6 @@
 #'                  que la première et la dernière année de la simulation. Par défaut, \code{FALSE}.
 #' @return Retourne un dataframe contenant le sommaire des itérations par placette,
 #'          groupe d'espèce, classe de DHP et année.
-#' @examples
-#'  #resultat <- Sommaire_Classes_DHP(SimulHtVol ,simplifier=FALSE)
-#' print(resultat)
 #' @export
 
 Sommaire_Classes_DHP <- function(SimulHtVol ,simplifier=FALSE){

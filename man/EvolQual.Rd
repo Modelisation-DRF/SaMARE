@@ -35,9 +35,3 @@ La fonction se base sur les équation des Filip Havreljuk pour SaMARE 2018
 elle ne prévoit pas la qualité des arbre qu n'ont pas de valeur de qualité dans
 les données d'origines (ex. arbres qui passent le seuil de la classe de 24 cm".
 }
-\examples{
-# prévision de la classe de qualité
-resultat <- EvolQual(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot)
-print(resultat)
-
-}

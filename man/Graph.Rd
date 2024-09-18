@@ -18,6 +18,8 @@ ou le code "TOT" pour l'ensemble des espèces.}
 
 \item{Variable}{La variable pour laquelle le graphique d'évolution sera créé. Cette variable doit être une des
 variable de la sortie "Dendro-SaMARE" soit "Vol_HA", "ST_HA", "DQM","HDomM" ou "nbTi_HA"}
+
+\item{listePlacette}{Vecteur contenant la liste des placettes à inclure dans le graphique}
 }
 \value{
 Retourne une liste de deux graphiques, le premier montrant l'évolution d'une variables
@@ -27,10 +29,4 @@ Retourne une liste de deux graphiques, le premier montrant l'évolution d'une va
 \description{
 Fonction qui prépare les graphiques à insérer dans l'interface utilisateur
 cette function prend en parametre une sortie de la fonction SimulSaMARE
-}
-\examples{
- # prépare les graphiques à insérer dans l'interface
-resultat <- Graph(SimulHtVol, Espece="TOT", Variable='ST_HA',listePlacette)
-print(resultat)
-
 }

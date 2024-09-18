@@ -9,14 +9,10 @@
 #'              ou le code "TOT" pour l'ensemble des espèces.
 #'@param Variable  La variable pour laquelle le graphique d'évolution sera créé. Cette variable doit être une des
 #'          variable de la sortie "Dendro-SaMARE" soit "Vol_HA", "ST_HA", "DQM","HDomM" ou "nbTi_HA"
+#'@param listePlacette Vecteur contenant la liste des placettes à inclure dans le graphique
 #' @return  Retourne une liste de deux graphiques, le premier montrant l'évolution d'une variables
 #'          dendrométrique et le second la distribution en diamètre au début et à la fin de la simulation
 #'          moyen quadratique et la hauteur dominante.
-#' @examples
-#'  # prépare les graphiques à insérer dans l'interface
-#' resultat <- Graph(SimulHtVol, Espece="TOT", Variable='ST_HA',listePlacette)
-#' print(resultat)
-#'
 #' @export
 #'
 Graph<-function (SimulHtVol, Espece="TOT", Variable='ST_HA',listePlacette){
@@ -38,12 +34,12 @@ if (Variable=='Vol_HA'){
 
 if (Variable=='ST_HA'){
   Data$Yvar<-Data$ST_HA
-  Etiquette="Surface terrière marchande (m2/ha)"
+  Etiquette="Surface terri\uE8re marchande (m2/ha)"
 }
 
 if (Variable=='DQM'){
   Data$Yvar<-Data$DQM
-  Etiquette="Diamètre quadratique moyen (cm)"
+  Etiquette="Diam\uE8tre quadratique moyen (cm)"
 }
 
 if (Variable=='HDomM'){
@@ -53,19 +49,19 @@ if (Variable=='HDomM'){
 
 if (Variable=='nbTi_HA'){
   Data$Yvar<-Data$nbTi_HA
-  Etiquette="Densité (nb/ha)"
+  Etiquette="Densit\uE9 (nb/ha)"
 }
 
 if (Espece=="TOT"){Essence="Toutes essences"}
 if (Espece=="BOJ"){Essence="Bouleau jaune"}
-if (Espece=="ERR"){Essence="Érable rouge"}
-if (Espece=="ERS"){Essence="Érable à sucre"}
+if (Espece=="ERR"){Essence="\uC9rable rouge"}
+if (Espece=="ERS"){Essence="\uC9rable \uE0 sucre"}
 if (Espece=="FEN"){Essence="Feuillus nobles"}
-if (Espece=="FIN"){Essence="Feuillus intollérants"}
-if (Espece=="EPX"){Essence="Épinettes"}
+if (Espece=="FIN"){Essence="Feuillus intol\uE9rants"}
+if (Espece=="EPX"){Essence="\uC9pinettes"}
 if (Espece=="SAB"){Essence="Sapin baumier"}
-if (Espece=="RES"){Essence="Résineux"}
-if (Espece=="HEG"){Essence="Hêtre à grandes feuilles"}
+if (Espece=="RES"){Essence="R\uE9sineux"}
+if (Espece=="HEG"){Essence="H\uEAtre \uE0 grandes feuilles"}
 if (Espece=="AUT"){Essence="Autres essences"}
 
 ymax<-max(Data$Yvar)
@@ -82,7 +78,7 @@ GraphEvol<-Data%>%
              ggplot(aes(x=Annee,y=Yvar,group=Placette, label = Placette))+
              geom_line(aes(),show.legend=FALSE, lwd=1.25, colour="#008000")+
              ylim(0,ymax+5)+
-             xlab(bquote(bold("Année de la simulation")))+ ylab(paste(Etiquette))+
+             xlab(bquote(bold("Ann\uE9\u65 de la simulation")))+ ylab(paste(Etiquette))+
              scale_x_continuous(breaks = seq(AnneeDep, AnneeFin, by = 5))+
              theme_bw() +
              ggtitle(paste(Etiquette,"  ",Essence))+
@@ -113,7 +109,7 @@ GraphDist<-Sommaire %>%
            mutate(NbHa=ifelse(is.na(NbHa)==TRUE,0,NbHa),Annee=as.factor(Annee)) %>%
            ggplot(aes(x=DHP_cl, y=NbHa, fill=Annee))+
             geom_bar(position=position_dodge(preserve="single"), stat="identity", color="black", width=3)+
-           ggtitle(paste("Distribution diamétrale","  ",Essence))+
+           ggtitle(paste("Distribution diam\uE9trale","  ",Essence))+
           xlab(bquote(bold("Classe de DHP (cm)")))+ ylab("Nombre de tiges par hectare")+
           scale_x_continuous(breaks = seq(10, 70, by = 5))+
           scale_fill_manual(values=c("#D95F02" ,"#008000"))+
@@ -125,7 +121,7 @@ GraphDist<-Sommaire %>%
           strip.text = element_text(size = 10,face="bold"),
           legend.text= element_text(size = 12),
           legend.title= element_text(size = 12))+
-          labs(fill="Année")+
+          labs(fill="Ann\uE9\u65")+
           theme(legend.position="top")
 GraphDist
 

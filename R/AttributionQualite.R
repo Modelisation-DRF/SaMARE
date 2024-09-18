@@ -9,12 +9,6 @@
 #'                      durant la période de simulation en cours sont présents
 #' @param rid1 Variable contenant le code de la région écologique
 #' @return Retourne un dataframe avec le no de l'arbre et sa classe de qualité prédite
-#' @examples
-#' #'l'attribution de la qualité aux tiges feuillues qui n'ont pas de valeurs de qualité
-#'
-#' resultat <- AttribQualFct(PlacSansQual,rid1)
-#' print(resultat)
-#'
 #' @export
 #'
 AttribQualFct<-function(PlacSansQual,rid1){

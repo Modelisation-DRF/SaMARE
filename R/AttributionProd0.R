@@ -10,11 +10,6 @@
 #'@param Para.ConvMSCRProd24 Un dataframe  contenant les paramettres des équations
 #'                         de conversion du classement MSCR en produits pour les arbres de plus de 23 cm.
 #' @return Retourne la classe de produit de l'arbre.
-#' @examples
-#'
-#'#l'attribution des produits
-#' resultat <- AttribProd0(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24)
-#' print(resultat)
 #'
 #' @export
 #'

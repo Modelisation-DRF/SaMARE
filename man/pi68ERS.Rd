@@ -19,14 +19,6 @@ pi68ERS(RecGaules, Ratio, Iterj, RandomPlacGaules, Para.68_ERS)
 recrutement basé sur les gaules et du module d'évolution des gaules}
 
 \item{Para.68_ERS}{Paramètres de l'équation de prévision du nombre de gaules d'érable à sucre de 6 et 8 cm de diamètre}
-
-\item{Rec}{Un dataframe qui contient la prévision du nombre de recrues par groupes d'espèces}
-
-\item{trt}{Variable distinguant les peuplements traités des témoins, si St >26 = TEM}
-
-\item{t0_aj_}{Temps écoulé depuis la dernière coupe partielle}
-
-\item{altitude}{Altitude de la placette}
 }
 \value{
 Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP d'érable à sucre
@@ -35,10 +27,4 @@ Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP d'érable à s
 Fonction qui calcul la probabilité d'absence de Gaules d'érable à sucre classes de 6 ou 8 cm de diamètre.
 Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière
 Les prévisions sont basées sur un modèle de type Zero inflated
-}
-\examples{
- # calcul de la probabilité d'absence de gaules d'érable à sucre
-resultat <- pi68ERS(RecGaules,Ratio,Iterj,RandomPlacGaules,Para.68_ERS)
-print(resultat)
-
 }

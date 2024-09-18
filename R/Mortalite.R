@@ -13,6 +13,7 @@
 #'                     une autre dimension.
 #' @param fact_red  Facteur de correction appliqué lorsqu'une coupe partielle a
 #'                   été effectuée 3 ans ou moins avant la prévision.
+#' @param t La longueur du pas de simulation en annee (en annees).
 #' @param Iterj  Itération en cours.
 #' @param MCH Variable prenant la veleur de 1 en présence de maladie corticale du hêtre dans
 #'            la placette et 0 lorsque la maladie est absente. Lorsque la maladie corticale
@@ -23,12 +24,6 @@
 #'         risque de mortalité. Les valeurs présites sont faites sans effets
 #'         aléatoires, ceux-ci sont ajoutés dans la fonction SaMARE avant
 #'         de convertir le prédicteur linéaire en probabilité de mortalité.
-#' @examples
-#'
-#' # prévoit la probabilité de mortalité
-#' resultat <- mort(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,MCH,Para.mort)
-#' print(resultat)
-#'
 #' @export
 
 mort<-function(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,MCH,Para.mort){

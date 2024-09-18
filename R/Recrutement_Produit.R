@@ -14,10 +14,7 @@
 #' @return Retourne le prédicteur linéaire de l'équation de prévision de la
 #'         probabilité de présence de potentiel sciage pour les recrues de groupes
 #'         d'essences feuillues.
-#' @examples
-#'  #resultat <- rec_prod(RecSelect,type_pe_Plac,rid1,Iterj,Para.rec_prod)
-#' print(resultat)
-
+#' @export
 rec_prod<-function(RecSelect,type_pe_Plac,rid1,Iterj,Para.rec_prod){
   select=dplyr::select
   n<-nrow(RecSelect)

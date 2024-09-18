@@ -23,9 +23,3 @@ paramètres que l'on veut obtenir.}
 Fonction qui ajuste les paramètre des chaque itération en fonction de leur
 variance-covariance.
 }
-\examples{
-# ajuste les paramètre des chaque itération
-resultat <- ParaOmega(ModuleID,ParaOri,ParaIter,Omega,NbIter)
-print(resultat)
-
-}

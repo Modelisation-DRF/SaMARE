@@ -27,10 +27,3 @@ aux arbres qui en croissant atteignent le seuil de 23.1cm. La qualité est
 attribuée sur la base du document AttribQual qui documente la proportion de tiges
 C et D dans les tiges feuillues de 23.1 à 33.0 cm
 }
-\examples{
-#'l'attribution de la qualité aux tiges feuillues qui n'ont pas de valeurs de qualité
-
-resultat <- AttribQualFct(PlacSansQual,rid1)
-print(resultat)
-
-}

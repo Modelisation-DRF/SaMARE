@@ -12,18 +12,6 @@
 #'
 #' @return Un dataframe contenant, pour chaque placette, groupe d'espèce, année et itération,
 #' la surface terrière, le volume marchand brut, le diamètre moyen quadratique et la hauteur dominante.
-#'
-#' @examples
-#' \dontrun{
-#' # Supposons que nous ayons un dataframe `SimulHtVol` contenant les résultats de simulation
-#'
-#' # Appel de la fonction
-#' resultats <- SortieDendroIterSamare(SimulHtVol)
-#'
-#' # Pour simplifier les résultats
-#' resultats_simplifies <- SortieDendroIterSamare(SimulHtVol, simplifier = TRUE)
-#' }
-#'
 #' @export
 
 SortieDendroIterSamare <- function(SimulHtVol,simplifier=FALSE){

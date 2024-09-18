@@ -33,7 +33,3 @@ Fonction qui prevoit le prédicteur linéaire de l'équation de prévision
 de la probabilité qu'une recrue de groupe d'essence feuillue ait un potentiel
 de production de sciage.
 }
-\examples{
- #resultat <- rec_prod(RecSelect,type_pe_Plac,rid1,Iterj,Para.rec_prod)
-print(resultat)
-}

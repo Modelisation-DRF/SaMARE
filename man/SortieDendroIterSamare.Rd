@@ -23,15 +23,3 @@ on rapporte, pour chaque placette, année, groupe d'espèce et itération, le di
 quadratique moyen, la surface terrière, le volume et la hauteur dominante.
 Cette fonction prend en paramètre un dataframe qui a déjà été simulé.
 }
-\examples{
-\dontrun{
-# Supposons que nous ayons un dataframe `SimulHtVol` contenant les résultats de simulation
-
-# Appel de la fonction
-resultats <- SortieDendroIterSamare(SimulHtVol)
-
-# Pour simplifier les résultats
-resultats_simplifies <- SortieDendroIterSamare(SimulHtVol, simplifier = TRUE)
-}
-
-}
