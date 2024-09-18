@@ -13,8 +13,6 @@
 
 
 
-#### LE TEST NE PASSE PAS
-
 test_that("simulateur SaMARE return the expected data with Gaules and coupe MCH=0", {
   set.seed(NULL)
   set.seed(3)
