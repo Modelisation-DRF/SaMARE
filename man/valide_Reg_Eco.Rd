@@ -11,11 +11,6 @@ valide_Reg_Eco(data)
 }
 \value{
 retourne vrai ou faux s'il détecte des erreurs.
-}
-\description{
-Fonction pour vérifier que les valeurs saisies dans la colonne 'Reg_Eco' sont correctes.
-}
-\examples{
 # Exemple avec un dataframe valide
 valide_Reg_Eco(data) # Devrait retourner TRUE
 
@@ -30,5 +25,7 @@ valide_Reg_Eco(data) # Devrait retourner FALSE
 
 # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Reg_Eco' par 'Placette')
 valide_Reg_Eco(data) # Devrait retourner FALSE
-
+}
+\description{
+Fonction pour vérifier que les valeurs saisies dans la colonne 'Reg_Eco' sont correctes.
 }

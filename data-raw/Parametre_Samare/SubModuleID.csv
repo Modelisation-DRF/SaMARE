@@ -1,0 +1,22 @@
+SubModuleID;ModuleName
+1;Mortalite
+2;Accroissement DHP
+3;Evolution vigueur
+4;Evolution produits
+5;Nombre de recrues
+6;DHP des recrues
+7;Vigueur des recrues
+8;Produits des recrues
+9;Evolution MSCR
+10;Nombre de recrues avec gaules
+11;Evolution nombre de gaules
+12;Ratio de densite des gaules
+13; nombre de gaules ERS 6 et 8 cm
+14; nombre de gaules HEG 6 et 8 cm
+15; nombre de gaules BOJ 6 et 8 cm
+16; nombre de gaules SAB 6 et 8 cm
+17;Conversion MSCR en vigueur
+18;Converssion MSCR en produits 10 a 24 cm
+19;Conversion MSCR en produits 24 cm et plus
+20;Attribution MSCR Feuillus
+21;Attribution MSCR Resineux

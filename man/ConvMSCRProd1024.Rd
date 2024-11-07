@@ -20,9 +20,3 @@ Retourne un vecteur de probabilité que l'arbre soit de classe de produit sciage
 Fonction qui permet de convertir le classement MSCR Boulet-2007 en produits pour les arbres feuillus de
 9,1 à 23,0 cm de diamètre selon le classement de Majcen-1990
 }
-\examples{
-# convertisseur du classement MSCR en produits
-resultat <- ConvMSCRProd1024(Data,Para.ConvMSCRProd1024)
-print(resultat)
-
-}

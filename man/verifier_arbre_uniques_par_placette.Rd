@@ -11,11 +11,6 @@ verifier_arbre_uniques_par_placette(data)
 }
 \value{
 Retourne vrai ou faux s'il y a des arbres qui se répètent.
-}
-\description{
-Fonction pour vérifier que chaque arbres est unique dans chaque placette
-}
-\examples{
  # Exemple avec un dataframe valide
 verifier_arbre_uniques_par_placette(data) # Devrait retourner TRUE
 
@@ -27,5 +22,7 @@ verifier_arbre_uniques_par_placette(data) # Devrait retourner FALSE
 
 # Exemple avec un dataframe invalide (arbres non uniques dans une placette)
 verifier_arbre_uniques_par_placette(data) # Devrait retourner FALSE
-
+}
+\description{
+Fonction pour vérifier que chaque arbres est unique dans chaque placette
 }

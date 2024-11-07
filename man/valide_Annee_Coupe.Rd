@@ -11,11 +11,6 @@ valide_Annee_Coupe(data)
 }
 \value{
 retourne vrai ou faux s'il détecte des erreurs.
-}
-\description{
-Fonction pour vérifier que les valeurs saisies dans la colonne 'Annee_Coupe' sont correctes.
-}
-\examples{
 
 # Exemple avec un dataframe valide
 valide_Annee_Coupe(data) # Devrait retourner TRUE
@@ -28,4 +23,7 @@ valide_Annee_Coupe(data) # Devrait retourner FALSE
 
 # Exemple avec un dataframe valide (toutes les valeurs de 'Annee_Coupe' sont NA pour une 'Placette')
 valide_Annee_Coupe(data) # Devrait retourner TRUE
+}
+\description{
+Fonction pour vérifier que les valeurs saisies dans la colonne 'Annee_Coupe' sont correctes.
 }

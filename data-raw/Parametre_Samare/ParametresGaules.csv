@@ -1,0 +1,108 @@
+SubModuleID;ParameterEstimate;Effect;Ess_groupe;response;...6;...7
+10;-0.3303;Intercept;NA;count;NA;NA
+10;-0.0784;St_Tot_Ha;NA;count;NA;NA
+10;-4.8104;St_Ess_Ha;AUT;count;NA;NA
+10;-0.4603;St_Ess_Ha;FEN;count;NA;NA
+10;1.4844;lnNb_Ess_Ha+1;AUT;count;NA;NA
+10;0.3089;lnNb_Ess_Ha+1;SAB;count;NA;NA
+10;0.3759;lnNb_Gaules_Ess_Ha+1;EPX;count;NA;NA
+10;0.3872;lnNb_Gaules_Ess_Ha+1;ERR;count;NA;NA
+10;0.6202;lnNb_Gaules_Ess_Ha+1;FEN;count;NA;NA
+10;0.4673;lnNb_Gaules_Ess_Ha+1;FIN;count;NA;NA
+10;0.6869;lnNb_Gaules_68_Ess_Ha+1;ERS;count;NA;NA
+10;0.7654;lnNb_Gaules_68_Ess_Ha+1;HEG;count;NA;NA
+10;0.8023;lnNb_Gaules_68_Ess_Ha+1;BOJ;count;NA;NA
+10;0.4466;lnNb_Gaules_68_Ess_Ha+1;SAB;count;NA;NA
+10;0.1181;St_Tot_Ha;NA;pi;NA;NA
+10;-0.1478;t;NA;pi;NA;NA
+10;-0.9892;lnNb_Ess_Ha+1;AUT;pi;NA;NA
+10;-0.5917;lnNb_Ess_Ha+1;EPX;pi;NA;NA
+10;-0.6395;lnNb_Ess_Ha+1;ERR;pi;NA;NA
+10;-1.0272;lnNb_Ess_Ha+1;FEN;pi;NA;NA
+10;-0.9362;lnNb_Ess_Ha+1;FIN;pi;NA;NA
+10;-0.7499;lnNb_Ess_Ha+1;HEG;pi;NA;NA
+10;-1.6005;lnNb_Ess_Ha+1;RES;pi;NA;NA
+10;-1.9476;lnNb_Gaules_Ess_Ha+1;BOJ;pi;NA;NA
+10;-1.1691;lnNb_Gaules_68_Ess_Ha+1;ERS;pi;NA;NA
+10;-0.4572;lnNb_Gaules_68_Ess_Ha+1;HEG;pi;NA;NA
+10;1.4109;lnNb_Gaules_68_Ess_Ha+1;BOJ;pi;NA;NA
+10;-1.9782;lnNb_Gaules_68_Ess_Ha+1;SAB;pi;NA;NA
+11;9.082369278;Intercept;NA;NA;NA;NA
+11;0.265611656;lnNb_Gaules_Ha+1;NA;NA;NA;NA
+11;-0.724407858;lnNb_Tot_Ha;NA;NA;NA;NA
+11;0.09084774;lnNb_Ess_Ha+1;HEG;NA;NA;NA
+11;0.168516444;lnNb_Ess_Ha+1;ERS;NA;NA;NA
+11;-0.089365167;lnNb_Ess_Ha+1;BOJ;NA;NA;NA
+11;-0.044793009;lnNb_Ess_Ha+1;SAB;NA;NA;NA
+11;-0.300876717;Temoins;NA;NA;NA;NA
+11;-0.012284945;trt*t0_aj;NA;NA;NA;NA
+11;0.027079042;t;NA;NA;NA;NA
+12;3.498289508;Ratio_Gaules_Ess;NA;count;NA;NA
+12;0.314289229;lnNb_Gaules_Ess_Ha+1;NA;count;NA;NA
+12;-0.008530798;St_Tot_Ha;NA;count;NA;NA
+12;0.305957946;lnNb_Tot_ha;NA;count;NA;NA
+12;0.349795342;lnNb_Ess_Ha+1;AUT;count;NA;NA
+12;0.211985792;lnNb_Ess_Ha+1;BOJ;count;NA;NA
+12;-0.117504448;lnNb_Ess_Ha+1;EPX;count;NA;NA
+12;0.227846024;lnNb_Ess_Ha+1;ERR;count;NA;NA
+12;0.143232692;lnNb_Ess_Ha+1;ERS;count;NA;NA
+12;0.075489865;lnNb_Ess_Ha+1;FEN;count;NA;NA
+12;-0.101216887;lnNb_Ess_Ha+1;FIN;count;NA;NA
+12;0.381547805;lnNb_Ess_Ha+1;HEG;count;NA;NA
+12;0.101666383;lnNb_Ess_Ha+1;RES;count;NA;NA
+12;0.128343721;lnNb_Ess_Ha+1;SAB;count;NA;NA
+12;-0.001321954;Ptot;NA;count;NA;NA
+12;-0.024896155;trt*t0_aj;NA;count;NA;NA
+12;0.023907541;t;NA;count;NA;NA
+12;0.069635139;Longitude;NA;count;NA;NA
+12;-1.664744944;lnNb__Ess_Gaules_Ha+1;NA;pi;NA;NA
+12;-0.19828051;lnNb_Ess_Ha+1;AUT;pi;NA;NA
+12;-1.02154498;lnNb_Ess_Ha+1;BOJ;pi;NA;NA
+12;-0.759068666;lnNb_Ess_Ha+1;EPX;pi;NA;NA
+12;-0.216365587;lnNb_Ess_Ha+1;ERR;pi;NA;NA
+12;-0.275985934;lnNb_Ess_Ha+1;FEN;pi;NA;NA
+12;-0.292131382;lnNb_Ess_Ha+1;FIN;pi;NA;NA
+12;-0.636572967;lnNb_Ess_Ha+1;SAB;pi;NA;NA
+12;-0.118676866;t;NA;pi;NA;NA
+12;0.074939585;Longitude;NA;pi;NA;NA
+12;0.19500833;Latitude;NA;pi;NA;NA
+13;-0.2883;log(TotDen_Sap_T1);NA;count;NA;NA
+13;0.3542;log(SapSpecies_TotDensityT1 + 1);NA;count;NA;NA
+13;0.3571;log(SapSpecies_DBH68DensityT0 + 1);NA;count;NA;NA
+13;0.2136;log(DenTot_Ha);NA;count;NA;NA
+13;0.0097;GrowingDays;NA;count;NA;NA
+13;16.2601;Intercept;NA;pi;NA;NA
+13;-1.6395;log(TotDen_Sap_T1);NA;pi;NA;NA
+13;-1.2454;log(SapSpecies_TotDensityT1 + 1);NA;pi;NA;NA
+13;-0.9676;log(SapSpecies_DBH68DensityT0 + 1);NA;pi;NA;NA
+14;1.3251;Intercept;NA;count;NA;NA
+14;0.2517;log(SapSpecies_DBH68DensityT0 + 1);NA;count;NA;NA
+14;0.3924;log(SapSpecies_DBH24DensityT0 + 1);NA;count;NA;NA
+14;2.9393;Intercept;NA;pi;NA;NA
+14;-0.7562;log(SapSpecies_TotDensityT0 + 1);NA;pi;NA;NA
+14;-0.9475;log(SapSpecies_DBH68DensityT0 + 1);NA;pi;NA;NA
+15;9.3346;Intercept;NA;count;NA;NA
+15;0.6016;log(SapSpecies_TotDensityT1 + 1);NA;count;NA;NA
+15;0.3232;log(SapSpecies_DBH68DensityT0 + 1);NA;count;NA;NA
+15;0.0307;Time interval;NA;count;NA;NA
+15;0.4115;trtTEM;NA;count;NA;NA
+15;0.0213;I(dummy_traitement * TimeSinceLastTreatment);NA;count;NA;NA
+15;-0.219;Latitude;NA;count;NA;NA
+15;9.0859;Intercept;NA;pi;NA;NA
+15;-0.54603;log(TotDen_Sap_T1);NA;pi;NA;NA
+15;-0.87249;log(SapSpecies_TotDensityT1 + 1);NA;pi;NA;NA
+15;-1.14212;log(SapSpecies_DBH68DensityT0 + 1);NA;pi;NA;NA
+15;-0.2229;BA_Species_Ha_BOJ;NA;pi;NA;NA
+15;0.31666;log(Den_Species_Ha_BOJ + 1);NA;pi;NA;NA
+15;-0.04744;I(dummy_traitement * TimeSinceLastTreatment);NA;pi;NA;NA
+15;-0.00434;altitude;NA;pi;NA;NA
+16;3.5191;Intercept;NA;count;NA;NA
+16;0.6626;log(SapSpecies_TotDensityT1 + 1);NA;count;NA;NA
+16;0.1835;log(SapSpecies_DBH68DensityT0 + 1);NA;count;NA;NA
+16;-0.627;log(DenTot_Ha);NA;count;NA;NA
+16;0.1586;BA_Species_Ha_SAB;NA;count;NA;NA
+16;0.0134;I(dummy_traitement * TimeSinceLastTreatment);NA;count;NA;NA
+16;-1.2963;log(TotDen_Sap_T1);NA;pi;NA;NA
+16;-2.6113;log(SapSpecies_TotDensityT1 + 1);NA;pi;NA;NA
+16;-1.335;log(SapSpecies_DBH68DensityT0 + 1);NA;pi;NA;NA
+16;2.9779;log(DenTot_Ha);NA;pi;NA;NA

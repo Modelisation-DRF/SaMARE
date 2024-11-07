@@ -13,20 +13,15 @@ pi68HEG(RecGaules, Ratio, Rec, Iterj, RandomPlacGaules, Para.68_HEG)
 
 \item{Ratio}{Un dataframe qui contient la répartition du nombre de gaule prédit entre les groupes d'espèces}
 
-\item{Rec}{Un dataframe qui contient la prévision du nombre de recrues par groupes d'espèces}
+\item{Rec}{Un dataframe qui contient la prévision du nombre de recrues par
+groupes d'espèces.}
 
 \item{Iterj}{Itération en cours}
 
 \item{RandomPlacGaules}{Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 recrutement basé sur les gaules et du module d'évolution des gaules}
 
-\item{trt}{Variable distinguant les peuplements traités des témoins, si St >26 = TEM}
-
-\item{t0_aj_}{Temps écoulé depuis la dernière coupe partielle}
-
-\item{altitude}{Altitude de la placette}
-
-\item{Para.68_BOJ}{Paramètres de l'équation de prévision du nombre de gaules de hêtre à grande feuille de 6 et 8 cm de diamètre}
+\item{Para.68_HEG}{Paramètres de l'équation de prévision du nombre de gaules de hêtre à grande feuille de 6 et 8 cm de diamètre}
 }
 \value{
 Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de hêtre à grande feuille
@@ -35,10 +30,4 @@ Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de hêtre à g
 Fonction qui calcul la probabilité d'absence de Gaules de hêtre à grande feuille classes de 6 ou 8 cm de diamètre.
 Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière
 Les prévisions sont basées sur un modèle de type Zero inflated
-}
-\examples{
- # calcul de la probabilité d'absence de gaules de hêtre à grande feuille
-resultat <- pi68HEG(RecGaules,Ratio,Rec,Iterj,RandomPlacGaules,Para.68_HEG)
-print(resultat)
-
 }

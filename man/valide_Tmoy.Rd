@@ -11,11 +11,6 @@ valide_Tmoy(data)
 }
 \value{
 retourne vrai ou faux s'il détecte des erreurs.
-}
-\description{
-Fonction pour vérifier que les valeurs saisies dans la colonne 'Tmoy' sont correctes.
-}
-\examples{
 
 # Exemple avec un dataframe valide
 valide_Tmoy(data) # Devrait retourner TRUE
@@ -31,5 +26,7 @@ valide_Tmoy(data) # Devrait retourner FALSE
 
 # Exemple avec un dataframe invalide (plusieurs valeurs différentes pour 'Tmoy' par 'Placette')
 valide_Tmoy(data) # Devrait retourner FALSE
-
+}
+\description{
+Fonction pour vérifier que les valeurs saisies dans la colonne 'Tmoy' sont correctes.
 }

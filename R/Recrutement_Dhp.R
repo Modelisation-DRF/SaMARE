@@ -14,11 +14,7 @@
 #' @param Para.rec_dhp  Un dataframe  contenant les paramettres du module
 #'                      de prévision du DHP des recrues.
 #' @return  Retourne le prédicteur linéaire de l'équation du DHP des recrues
-#' @examples
-#'  #resultat <- rec_dhp(RecSelect,st_tot0,dens_tot0,t,ntrt,Iterj,Para.rec_dhp)
-#' print(resultat)
-
-
+#' @export
 rec_dhp<-function(RecSelect,st_tot0,dens_tot0,t,ntrt,Iterj,Para.rec_dhp){
   select=dplyr::select
   n<-nrow(RecSelect)

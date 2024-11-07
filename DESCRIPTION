@@ -15,24 +15,22 @@ Description: Le simulateur SaMARE est un modèle de croissance à l'échelle de 
 License: LGPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
+Imports:
+    Billonage,
+    TarifQC
 Depends: mvtnorm,
+        dplyr,
         tidyverse,
         iterators,
         doFuture,
         doRNG,
-        readxl,
-        sas7bdat,
         miceadds,
-        TarifQC,
-        dplyr,
         future.apply,
         data.table,
         rlang,
         rockchalk,
-        Billonage,
         R (>= 2.10)
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-

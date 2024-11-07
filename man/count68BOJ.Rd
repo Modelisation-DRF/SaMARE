@@ -23,9 +23,13 @@ count68BOJ(
 
 \item{Ratio}{Un dataframe qui contient la répartition du nombre de gaule prédit entre les groupes d'espèces}
 
+\item{t}{longueur d'un pas de simulation}
+
 \item{trt}{Variable distinguant les peuplements traités des témoins, si St >26 = TEM}
 
 \item{t0_aj_}{Temps écoulé depuis la dernière coupe partielle}
+
+\item{latitude}{Latitude de la placette}
 
 \item{Iterj}{Itération en cours}
 
@@ -33,10 +37,6 @@ count68BOJ(
 recrutement basé sur les gaules et du module d'évolution des gaules}
 
 \item{Para.68_BOJ}{Paramètre de l'équation de prévision du nombre de gaules de bouleau jaune de 6 et 8 cm de diamètre}
-
-\item{Rec}{Un dataframe qui contient la prévision du nombre de recrues par groupes d'espèces}
-
-\item{altitude}{Altitude de la placette}
 }
 \value{
 Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP de bouleau jaune lorsquelles sont présentes
@@ -45,10 +45,4 @@ Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP de bouleau jaune
 Fonction qui calcul le nombre de Gaules de bouleau jaune classes de 6 ou 8 cm de diamètre lorsquelle sont présente.
 Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière.
 Les prévisions sont basées sur un modèle de type Zero inflated
-}
-\examples{
- # calcul du nombre de Gaules de bouleau jaune
-resultat <- count68BOJ(RecGaules,Ratio,t,trt,t0_aj_,latitude,Iterj,RandomPlacGaules,Para.68_BOJ)
-print(resultat)
-
 }

@@ -4,20 +4,11 @@
 #'
 #' @param RecGaules Dataframe qui contient les information sur la distribution des gaules dans la placette
 #' @param Ratio   Un dataframe qui contient la répartition du nombre de gaule prédit entre les groupes d'espèces
-#' @param Rec    Un dataframe qui contient la prévision du nombre de recrues par groupes d'espèces
-#' @param trt    Variable distinguant les peuplements traités des témoins, si St >26 = TEM
-#' @param t0_aj_     Temps écoulé depuis la dernière coupe partielle
-#' @param altitude Altitude de la placette
 #' @param Iterj  Itération en cours
 #' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 #'                          recrutement basé sur les gaules et du module d'évolution des gaules
 #' @param Para.68_ERS Paramètres de l'équation de prévision du nombre de gaules d'érable à sucre de 6 et 8 cm de diamètre
 #' @return Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP d'érable à sucre
-#' @examples
-#'  # calcul de la probabilité d'absence de gaules d'érable à sucre
-#' resultat <- pi68ERS(RecGaules,Ratio,Iterj,RandomPlacGaules,Para.68_ERS)
-#' print(resultat)
-#'
 #' @export
 
 pi68ERS<-function(RecGaules,Ratio,Iterj,RandomPlacGaules,Para.68_ERS){
@@ -55,20 +46,13 @@ pi68ERS<-function(RecGaules,Ratio,Iterj,RandomPlacGaules,Para.68_ERS){
 #'
 #' @param RecGaules Dataframe qui contient les information sur la distribution des gaules dans la placette
 #' @param Ratio   Un dataframe qui contient la répartition du nombre de gaule prédit entre les groupes d'espèces
-#' @param Rec    Un dataframe qui contient la prévision du nombre de recrues par groupes d'espèces
-#' @param trt    Variable distinguant les peuplements traités des témoins, si St >26 = TEM
-#' @param t0_aj_     Temps écoulé depuis la dernière coupe partielle
-#' @param altitude Altitude de la placette
+#' @param dens_tot0 Densité totale
+#' @param grwd nombre de jours dans la saison de croissance
 #' @param Iterj  Itération en cours
 #' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 #'                          recrutement basé sur les gaules et du module d'évolution des gaules
-#' @param Para.68_BOJ Paramètres de l'équation de prévision du nombre de gaules d'érable à sucre de 6 et 8 cm de diamètre
+#' @param Para.68_ERS Paramètres de l'équation de prévision du nombre de gaules d'érable à sucre de 6 et 8 cm de diamètre
 #' @return Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP d'érable à sucre lorsquelles sont présentes
-#' @examples
-#' # calcul du nombre de Gaules d'érable à sucre
-#' resultat <- count68ERS(RecGaules,Ratio,dens_tot0,grwd,Iterj,RandomPlacGaules,Para.68_ERS)
-#' print(resultat)
-#'
 #' @export
 
 

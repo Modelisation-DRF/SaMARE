@@ -24,6 +24,8 @@ une autre dimension.}
 \item{fact_red}{Facteur de correction appliqué lorsqu'une coupe partielle a
 été effectuée 3 ans ou moins avant la prévision.}
 
+\item{t}{La longueur du pas de simulation en annee (en annees).}
+
 \item{Iterj}{Itération en cours.}
 
 \item{MCH}{Variable prenant la veleur de 1 en présence de maladie corticale du hêtre dans
@@ -42,11 +44,4 @@ Retourne le prédicteur linéaire de l'équation de la prévision du
 \description{
 Fonction qui prévoit la probabilité de mortalité de chacun des arbres
 durant un pas de simulation.
-}
-\examples{
-
-# prévoit la probabilité de mortalité
-resultat <- mort(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,MCH,Para.mort)
-print(resultat)
-
 }

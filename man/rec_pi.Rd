@@ -27,6 +27,9 @@ effectuées sur la placette.}
 une autre dimension.}
 
 \item{Iterj}{Itération en cours.}
+
+\item{Para.rec_n}{Paramètres de l'équation de prévivion du nombre de
+recrues sans utiliser le nombre de gaules.}
 }
 \value{
 Retourne le prédicteur linéaire de l'équation de la prévision
@@ -36,9 +39,4 @@ Retourne le prédicteur linéaire de l'équation de la prévision
 Fonction qui prévoie la probabilité de présence de recrues par grouoe d'espèce.
 Cette fonction corespond à la première portion de la fonction zero-inflated
 de prévision du nombre de recrues non basé sur les gaules.
-}
-\examples{
-
- #resultat <- rec_pi(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n)
-print(resultat)
 }

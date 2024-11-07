@@ -57,7 +57,3 @@ de simulation suivante. Cette fonction est la première partie du modèle zero-i
 de Rijal et al. 2023 et prévoit une probabilité d'absence de gaules par
 groupe d'espèce.
 }
-\examples{
- #resultat <- ratio_pi_Gaules(Ratio,Rec,RecGaules,t,st_tot0,latitude,longitude,Iterj,RandomPlacGaules,Para.ratio_gaules)
-print(resultat)
-}

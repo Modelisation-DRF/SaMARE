@@ -46,6 +46,11 @@ Fonction qui sert à appeler le simulateur SaMARE et qui fournit les données
 initiales ainsi qu'un choix de paramètres pour la simulation.
 }
 \examples{
-result <- SimulSaMARE(NbIter = 10, Horizon = 6, RecruesGaules = 1, Data = data_arbre, Gaules = data_gaules, MCH = 0)
-print(result)
+\dontrun{
+# Simulation sur 10 ans, recrutement de base
+result <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 0, Data = Test2500m2)
+# Simulation sur 10 ans, recrutement avec les gaules
+result <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2,
+Gaules=GaulesTest2500m2)
+}
 }

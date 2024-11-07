@@ -29,14 +29,14 @@ count68SAB(
 
 \item{t0_aj_}{Temps écoulé depuis la dernière coupe partielle}
 
+\item{dens_tot0}{Densité totale}
+
 \item{Iterj}{Itération en cours}
 
 \item{RandomPlacGaules}{Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 recrutement basé sur les gaules et du module d'évolution des gaules}
 
-\item{altitude}{Altitude de la placette}
-
-\item{Para.68_BOJ}{Paramètres de l'équation de prévision du nombre de gaules de sapin baumier de 6 et 8 cm de diamètre}
+\item{Para.68_SAB}{Paramètres de l'équation de prévision du nombre de gaules de sapin baumier de 6 et 8 cm de diamètre}
 }
 \value{
 Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP de sapin baumier lorsqu'elles sont présentes.
@@ -45,10 +45,4 @@ Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP de sapin baumier
 Fonction qui calcul le nombre de Gaules de sapin baumier classes de 6 ou 8 cm de diamètre lorsquelle sont présente.
 Cette fonction utilise une variante des paramètre publiée par Rijal et al. 2023 Journal canadien de la recherche forestière.
 Les prévisions sont basées sur un modèle de type Zero inflated
-}
-\examples{
- # calcul du nombre de Gaules de hêtre à grande feuille
-resultat <- count68SAB(RecGaules,Ratio,Rec,trt,t0_aj_,dens_tot0,Iterj,RandomPlacGaules,Para.68_SAB)
-print(resultat)
-
 }

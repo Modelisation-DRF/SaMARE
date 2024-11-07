@@ -30,7 +30,3 @@ Retourne le prédicteur linéaire de l'équation de la probabilité que
 Fonction qui prévoit l'évolution de la classe de vigueur des arbres.
 La vigueur peut prendre 2 valeurs soit "vigoureux" ou "non-vigoureux".
 }
-\examples{
-#resultat <- vig(Vig,type_pe_Plac,rid1,Iterj,Para.vig)
-print(resultat)
-}

@@ -32,7 +32,3 @@ Retourne le prédicteur linéaire de l'équation du DHP des recrues
 \description{
 Fonction qui prévoit le prédicteur linéaire de l'équation du DHP des recrues
 }
-\examples{
- #resultat <- rec_dhp(RecSelect,st_tot0,dens_tot0,t,ntrt,Iterj,Para.rec_dhp)
-print(resultat)
-}

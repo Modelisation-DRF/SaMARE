@@ -12,10 +12,7 @@
 #'                 des produits des tiges feuillues.
 #' @return Retourne le prédicteur linéaire de l'équation de la probabilité que
 #'         la tige contienne un produit de type "sciage".
-#' @examples
-#'  #resultat <- produit(Prod,type_pe_Plac,rid1,Iterj,Para.prod)
-#' print(resultat)
-#'
+#' @export
 
 produit<-function(Prod,type_pe_Plac,rid1,Iterj,Para.prod){
   select=dplyr::select

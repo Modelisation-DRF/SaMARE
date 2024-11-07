@@ -23,7 +23,3 @@ Retourne un dataframe contenant l'ensemble des arbres pour chacune des
 Fonction qui structure un dataframe de sortie dont chaque ligne correspond
 à chacun des arbres par placette, par itération et par année.
 }
-\examples{
-#resultat <- SortieArbreSamare(SimulHtVol ,simplifier=FALSE)
-print(resultat)
-}

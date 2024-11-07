@@ -11,11 +11,6 @@ valide_DHPcm_gaules(data)
 }
 \value{
 retourne vrai ou faux s'il détecte des erreurs.
-}
-\description{
-Fonction pour vérifier que les valeurs saisies dans la colonne 'DHPcm' sont correctes.
-}
-\examples{
 
 # Exemple avec un dataframe valide
 valide_DHPcm_gaules(data) # Devrait retourner TRUE
@@ -28,4 +23,7 @@ valide_DHPcm_gaules(data) # Devrait retourner FALSE
 
 # Exemple avec un dataframe invalide (valeurs NA)
 valide_DHPcm_gaules(data) # Devrait retourner FALSE
+}
+\description{
+Fonction pour vérifier que les valeurs saisies dans la colonne 'DHPcm' sont correctes.
 }

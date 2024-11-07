@@ -12,9 +12,6 @@
 #' @return  Retourne un dataframe contenant par placette, groupe d'espèce, année
 #'          et iteration la surface terrière le volume marchand brut, le diamètre
 #'          moyen quadratique et la hauteur dominante.
-#' @examples
-#' #resultat <- SortieDendroSamare(SimulHtVol ,simplifier=FALSE)
-#' print(resultat)
 #' @export
 
 

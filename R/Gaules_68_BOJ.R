@@ -22,11 +22,6 @@
 #'                   de bouleau jaune de 6 et 8 cm de diamètre.
 #' @return Retourne une probabilité d'absence de gaules de 6 et 8 cm de DHP de
 #'         bouleau jaune.
-#' @examples
-#' # calcul de la probabilité d'absence de gaules de bouleau jaune
-#' resultat <- pi68BOJ(RecGaules,Ratio,Rec,trt,t0_aj_,altitude,Iterj,RandomPlacGaules,Para.68_BOJ)
-#' print(resultat)
-#'
 #' @export
 #'
 
@@ -70,20 +65,15 @@ pi68BOJ<-function(RecGaules,Ratio,Rec,trt,t0_aj_,altitude,Iterj,RandomPlacGaules
 #'
 #' @param RecGaules Dataframe qui contient les information sur la distribution des gaules dans la placette
 #' @param Ratio   Un dataframe qui contient la répartition du nombre de gaule prédit entre les groupes d'espèces
-#' @param Rec    Un dataframe qui contient la prévision du nombre de recrues par groupes d'espèces
+#' @param t    longueur d'un pas de simulation
 #' @param trt    Variable distinguant les peuplements traités des témoins, si St >26 = TEM
 #' @param t0_aj_     Temps écoulé depuis la dernière coupe partielle
-#' @param altitude Altitude de la placette
+#' @param latitude Latitude de la placette
 #' @param Iterj  Itération en cours
 #' @param RandomPlacGaules  Un dataframe contenant les effets aléatoires à l'échelle de la placette du module de
 #'                          recrutement basé sur les gaules et du module d'évolution des gaules
 #' @param Para.68_BOJ Paramètre de l'équation de prévision du nombre de gaules de bouleau jaune de 6 et 8 cm de diamètre
 #' @return Retourne une prévision du nombre de gaules de 6 et 8 cm de DHP de bouleau jaune lorsquelles sont présentes
-#' @examples
-#'  # calcul du nombre de Gaules de bouleau jaune
-#' resultat <- count68BOJ(RecGaules,Ratio,t,trt,t0_aj_,latitude,Iterj,RandomPlacGaules,Para.68_BOJ)
-#' print(resultat)
-#'
 #' @export
 #'
 
