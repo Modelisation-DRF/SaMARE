@@ -35,7 +35,7 @@ valide_data <- function(data) {
     verifier_arbre_uniques_par_placette = "plusieurs noarbre identiques pour la m\uEAme placette",
     # valide_Ptot = "Ptot non valide",
     # valide_Tmoy = "Tmoy non valide",
-    valide_Type_Eco = "valeur Type_Eco null",
+    valide_Type_Eco = "valeur Type_Eco non valide",
     valide_MSCR = "MSCR non valide",
     valide_Reg_Eco = "Valeur non permise pour Reg_Eco",
     valide_ABCD = "ABCD non valide",
@@ -751,7 +751,7 @@ valide_Type_Eco <- function(data){
                         'RS10', 'RS11', 'RS12', 'RS12P', 'RS13', 'RS14', 'RS15', 'RS15P', 'RS16', 'RS18', 'RS20', 'RS20M',
                         'RS20P', 'RS21', 'RS22', 'RS22M', 'RS22P', 'RS22S', 'RS23', 'RS23M', 'RS24', 'RS24V', 'RS25', 'RS25M',
                         'RS25P', 'RS25Q', 'RS25S', 'RS26', 'RS34', 'RS35', 'RS37', 'RS37P', 'RS38', 'RS39', 'RS40', 'RS42', 'RS50',
-                        'RS51', 'RS52', 'RS53', 'RS54', 'RS55', 'RS56', 'RS75', 'RT10', 'RT11', 'RT12', 'RT12P', 'RT14', 'RT15', 'RT16')
+                        'RS51', 'RS52', 'RS53', 'RS54', 'RS55', 'RS56', 'RS75', 'RT10', 'RT11', 'RT12', 'RT12P', 'RT13','RT14', 'RT15', 'RT16')
 
   if(!all(data$Type_Eco %in% valeurs_autorisees)){
     return (FALSE)
