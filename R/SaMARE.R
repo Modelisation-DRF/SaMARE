@@ -123,7 +123,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   Plac<-PlacOri %>%
     filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
-    mutate(Etat=ifelse(Etat==11,"martele","vivant"),ArbreID=seq(1:n())) %>%
+    mutate(Etat=ifelse(Etat==c(11,71,72),"martele","vivant"),ArbreID=seq(1:n())) %>%
     select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
            DHPcm,Nombre,Vigueur,Iter,MSCR,ABCD)
 
@@ -544,7 +544,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
     ##############################Attribution Qualite###########################
 
-   if (length(PlacOri$ABCD[which(PlacOri$ABCD %in% c("A","B","C","D"))])>0){
+   if (length(PlacOri$ABCD[which(PlacOri$ABCD %in% c("A","B","C","D") & PlacOri$Etat %in% c(10,12,40,42,30,32,50,52,70))])>0){
 
      PlacSansQual<-Plac %>%
       filter(GrEspece %in% c("BOJ","ERR","ERS","FEN","FIN","HEG") & (is.na(ABCD)==TRUE | is.null(ABCD)==TRUE | ABCD=="") & DHPcm1>=23.05 & DHPcm<23.05)
