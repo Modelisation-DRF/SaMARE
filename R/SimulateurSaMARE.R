@@ -217,19 +217,70 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
   nb_iter <- length(unique(SimulHtVol1$iter))
   nb_periodes <- Horizon+1
 
-  SimulHtVol1<- SimulHtVol1 %>% rename(essence=essence_hauteur) #IA: ajout
-  ht <- TarifQC::relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5) %>%
-    dplyr::select(-essence) # IA ajout
 
-  ht <- ht %>% rename(essence=essence_volume) #IA: ajout
-  SimulHtVol2 <- TarifQC::cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes) %>%
-    dplyr::select(-essence) #IA: ajout
+
+
+  SimulHtVol1<- SimulHtVol1 %>% rename(essence=essence_hauteur) #IA: ajout
+
+
+  SimulHtVol1$milieu <- as.character(SimulHtVol1$milieu)
+
+  taille_lot = 5e6
+  n <- nrow(SimulHtVol1)
+  nb_lots <- ceiling(n / taille_lot)
+
+  resultats <- vector("list", nb_lots)
+
+  for (i in seq_len(nb_lots)) {
+    debut <- (i - 1) * taille_lot + 1
+    fin <- min(i * taille_lot, n)
+    lot <- SimulHtVol1[debut:fin, ]
+    resultats[[i]] <- TarifQC::relation_h_d(fic_arbres=lot, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5)
+  }
+
+  resultats<-do.call(rbind, resultats)
+  rm(SimulHtVol1)
+
+
+  resultats <-  resultats %>%  dplyr::select(-essence)
+  SimulHtVol1 <-  resultats %>%rename(essence=essence_volume)
+  rm(resultats)
+  rm(taille_lot)
+  rm(n)
+  rm(nb_lots)
+  rm(lot)
+
+
+  taille_lot = 3e6
+  n <- nrow(SimulHtVol1)
+  nb_lots <- ceiling(n / taille_lot)
+
+  resultats <- vector("list", nb_lots)
+
+  for (i in seq_len(nb_lots)) {
+    debut <- (i - 1) * taille_lot + 1
+    fin <- min(i * taille_lot, n)
+    lot <- SimulHtVol1[debut:fin, ]
+    resultats[[i]] <- TarifQC::cubage(fic_arbres=lot, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes)
+  }
+
+  resultats<-do.call(rbind, resultats)
+
+
+
+
+  resultats<- resultats %>%  dplyr::select(-essence) #IA: ajout
 
 
 
 
   rm(SimulHtVol1)
-  SimulHtVol2<-SimulHtVol2[,c("id_pe","Annee","iter","no_arbre","hauteur_pred","vol_dm3")] ###Garde juste les variables de hauteur et volume pour
+  rm(taille_lot)
+  rm(n)
+  rm(nb_lots)
+  rm(lot)
+
+  SimulHtVol2<-resultats[,c("id_pe","Annee","iter","no_arbre","hauteur_pred","vol_dm3")] ###Garde juste les variables de hauteur et volume pour
   ###joindre avec Simul pour garder les morts
 
   SimulHtVol<-Simul %>%
