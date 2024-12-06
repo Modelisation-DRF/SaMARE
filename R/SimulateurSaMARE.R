@@ -52,7 +52,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
 
 
   Data <- Data %>% filter(DHPcm>=9)
-  AnneeDep <- as.numeric(format(Sys.Date(), "%Y"))
+  Data <- valide_Annee_depart(Data)
 
   # Fichier des effets aleatoires
   CovParms<-MatchModuleCovparms
@@ -95,7 +95,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
   # Fichier des arbres
   ColOrdre<-c("Placette","NoArbre","Espece","GrEspece","Etat","DHPcm","Vigueur","Nombre",
               "Sup_PE","Annee_Coupe","Latitude","Longitude","Altitude","Pente","Ptot","Tmoy",
-              "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt","ABCD")
+              "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt","ABCD", "AnneeDep")
 
   Data<-Data %>%
     left_join(ListeSp, by="Espece")
@@ -151,16 +151,21 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
     arrange(PlacetteID)
 
 
+  # liste_anne_dep <- Data %>%
+  #   group_by(Placette, AnneeDep) %>%
+  #   summarise( .groups = "drop")
+
   registerDoFuture()
   plan(multisession)
 
   list_plot <- unique(ListeIter$PlacetteID) # liste de placette/iter, donc on parallélise les placettes/iter
+  list_annedep <- substr(list_plot, 1, nchar(list_plot) - 2)
 
   Simul<- bind_rows(
-    foreach(x = list_plot) %dorng%   ######utilisation de doRNG permet de controler la seed
+    foreach(x = list_plot , y=list_annedep) %dorng%   ######utilisation de doRNG permet de controler la seed
       {SaMARE(Random=RandPlacStep,RandomGaules=RandPlacStepGaules,Data=Data,
               Gaules=Gaules, ListeIter=ListeIter[ListeIter$PlacetteID==x,],
-              AnneeDep=AnneeDep,Horizon=Horizon,RecruesGaules=RecruesGaules, MCH=MCH,
+              AnneeDep= unique(Data$AnneeDep[Data$Placette == y]),Horizon=Horizon,RecruesGaules=RecruesGaules, MCH=MCH,
               CovParms=CovParms,CovParmsGaules=CovParmsGaules,
               Para=Para,ParaGaules=ParaGaules,Omega=Omega, OmegaGaules=OmegaGaules)}
   )
@@ -202,7 +207,10 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
   # renommer les variables pour l'équation de ht
   Simul<-Simul %>%
     inner_join(VarEco, relationship="many-to-many", by="Placette") %>%
-    mutate(nb_tige=Nombre/Sup_PE/25, step= (Annee-AnneeDep)/5 +1) %>%   #Conversion pour relation HD
+    mutate(nb_tige=Nombre/Sup_PE/25) %>%   #Conversion pour relation HD
+    group_by(Placette) %>%
+    mutate(step= (Annee-min(Annee))/5 +1) %>%
+    ungroup() %>%
     rename(id_pe=Placette, dhpcm=DHPcm, no_arbre=ArbreID,          #IA: j'ai enlevé essence=GrEspece
            altitude=Altitude,p_tot=Ptot,t_ma=Tmoy, iter=Iter)
 
