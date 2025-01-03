@@ -159,7 +159,8 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
   plan(multisession)
 
   list_plot <- unique(ListeIter$PlacetteID) # liste de placette/iter, donc on parallélise les placettes/iter
-  list_annedep <- substr(list_plot, 1, nchar(list_plot) - 2)
+  #list_annedep <- substr(list_plot, 1, nchar(list_plot) - 2)
+  list_annedep <- sub("(_[0-9]+)$", "", list_plot)
 
   Simul<- bind_rows(
     foreach(x = list_plot , y=list_annedep) %dorng%   ######utilisation de doRNG permet de controler la seed
