@@ -1057,6 +1057,33 @@ if(any(is.na(data$Placette))){
 
 }
 
+valide_Annee_depart <- function(data){
+
+  if (!all(c("AnneeDep") %in% names(data))) {
+
+    data<- data %>% mutate(AnneeDep = as.numeric(format(Sys.Date(), "%Y")))
+  }
+
+
+  placette_a_modifie <- data %>%
+    group_by(Placette) %>%
+    reframe(annees_uniques = n_distinct(AnneeDep, na.rm = TRUE)) %>%
+    filter(annees_uniques > 1) %>%
+    pull(Placette)
+
+  # Appliquer les changements au dataframe
+  data <- data %>%
+    mutate(
+      AnneeDep = case_when(
+        Placette %in% placette_a_modifie ~ as.numeric(format(Sys.Date(), "%Y")),  # Remplacer les années incohérentes
+        is.na(AnneeDep) ~ as.numeric(format(Sys.Date(), "%Y")),            # Remplacer les années manquantes
+        TRUE ~ AnneeDep
+      )
+    )
+
+  return(data)
+}
+
 
 #' Valide la correspondance des placettes entre les arbres et les gaules
 #'

@@ -52,7 +52,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
 
 
   Data <- Data %>% filter(DHPcm>=9)
-  AnneeDep <- as.numeric(format(Sys.Date(), "%Y"))
+  Data <- valide_Annee_depart(Data)
 
   # Fichier des effets aleatoires
   CovParms<-MatchModuleCovparms
@@ -95,7 +95,7 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
   # Fichier des arbres
   ColOrdre<-c("Placette","NoArbre","Espece","GrEspece","Etat","DHPcm","Vigueur","Nombre",
               "Sup_PE","Annee_Coupe","Latitude","Longitude","Altitude","Pente","Ptot","Tmoy",
-              "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt","ABCD")
+              "GrwDays","Reg_Eco","Type_Eco", "MSCR","ntrt","ABCD", "AnneeDep")
 
   Data<-Data %>%
     left_join(ListeSp, by="Espece")
@@ -151,16 +151,22 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
     arrange(PlacetteID)
 
 
+  # liste_anne_dep <- Data %>%
+  #   group_by(Placette, AnneeDep) %>%
+  #   summarise( .groups = "drop")
+
   registerDoFuture()
   plan(multisession)
 
   list_plot <- unique(ListeIter$PlacetteID) # liste de placette/iter, donc on parallélise les placettes/iter
+  #list_annedep <- substr(list_plot, 1, nchar(list_plot) - 2)
+  list_annedep <- sub("(_[0-9]+)$", "", list_plot)
 
   Simul<- bind_rows(
-    foreach(x = list_plot) %dorng%   ######utilisation de doRNG permet de controler la seed
+    foreach(x = list_plot , y=list_annedep) %dorng%   ######utilisation de doRNG permet de controler la seed
       {SaMARE(Random=RandPlacStep,RandomGaules=RandPlacStepGaules,Data=Data,
               Gaules=Gaules, ListeIter=ListeIter[ListeIter$PlacetteID==x,],
-              AnneeDep=AnneeDep,Horizon=Horizon,RecruesGaules=RecruesGaules, MCH=MCH,
+              AnneeDep= unique(Data$AnneeDep[Data$Placette == y]),Horizon=Horizon,RecruesGaules=RecruesGaules, MCH=MCH,
               CovParms=CovParms,CovParmsGaules=CovParmsGaules,
               Para=Para,ParaGaules=ParaGaules,Omega=Omega, OmegaGaules=OmegaGaules)}
   )
@@ -202,7 +208,10 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
   # renommer les variables pour l'équation de ht
   Simul<-Simul %>%
     inner_join(VarEco, relationship="many-to-many", by="Placette") %>%
-    mutate(nb_tige=Nombre/Sup_PE/25, step= (Annee-AnneeDep)/5 +1) %>%   #Conversion pour relation HD
+    mutate(nb_tige=Nombre/Sup_PE/25) %>%   #Conversion pour relation HD
+    group_by(Placette) %>%
+    mutate(step= (Annee-min(Annee))/5 +1) %>%
+    ungroup() %>%
     rename(id_pe=Placette, dhpcm=DHPcm, no_arbre=ArbreID,          #IA: j'ai enlevé essence=GrEspece
            altitude=Altitude,p_tot=Ptot,t_ma=Tmoy, iter=Iter)
 
@@ -217,19 +226,70 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
   nb_iter <- length(unique(SimulHtVol1$iter))
   nb_periodes <- Horizon+1
 
-  SimulHtVol1<- SimulHtVol1 %>% rename(essence=essence_hauteur) #IA: ajout
-  ht <- TarifQC::relation_h_d(fic_arbres=SimulHtVol1, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5) %>%
-    dplyr::select(-essence) # IA ajout
 
-  ht <- ht %>% rename(essence=essence_volume) #IA: ajout
-  SimulHtVol2 <- TarifQC::cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes) %>%
-    dplyr::select(-essence) #IA: ajout
+
+
+  SimulHtVol1<- SimulHtVol1 %>% rename(essence=essence_hauteur) #IA: ajout
+
+
+  SimulHtVol1$milieu <- as.character(SimulHtVol1$milieu)
+
+  taille_lot = 5e6
+  n <- nrow(SimulHtVol1)
+  nb_lots <- ceiling(n / taille_lot)
+
+  resultats <- vector("list", nb_lots)
+
+  for (i in seq_len(nb_lots)) {
+    debut <- (i - 1) * taille_lot + 1
+    fin <- min(i * taille_lot, n)
+    lot <- SimulHtVol1[debut:fin, ]
+    resultats[[i]] <- TarifQC::relation_h_d(fic_arbres=lot, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes, reg_eco = TRUE, dt =5)
+  }
+
+  resultats<-do.call(rbind, resultats)
+  rm(SimulHtVol1)
+
+
+  resultats <-  resultats %>%  dplyr::select(-essence)
+  SimulHtVol1 <-  resultats %>%rename(essence=essence_volume)
+  rm(resultats)
+  rm(taille_lot)
+  rm(n)
+  rm(nb_lots)
+  rm(lot)
+
+
+  taille_lot = 3e6
+  n <- nrow(SimulHtVol1)
+  nb_lots <- ceiling(n / taille_lot)
+
+  resultats <- vector("list", nb_lots)
+
+  for (i in seq_len(nb_lots)) {
+    debut <- (i - 1) * taille_lot + 1
+    fin <- min(i * taille_lot, n)
+    lot <- SimulHtVol1[debut:fin, ]
+    resultats[[i]] <- TarifQC::cubage(fic_arbres=lot, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_periodes)
+  }
+
+  resultats<-do.call(rbind, resultats)
+
+
+
+
+  resultats<- resultats %>%  dplyr::select(-essence) #IA: ajout
 
 
 
 
   rm(SimulHtVol1)
-  SimulHtVol2<-SimulHtVol2[,c("id_pe","Annee","iter","no_arbre","hauteur_pred","vol_dm3")] ###Garde juste les variables de hauteur et volume pour
+  rm(taille_lot)
+  rm(n)
+  rm(nb_lots)
+  rm(lot)
+
+  SimulHtVol2<-resultats[,c("id_pe","Annee","iter","no_arbre","hauteur_pred","vol_dm3")] ###Garde juste les variables de hauteur et volume pour
   ###joindre avec Simul pour garder les morts
 
   SimulHtVol<-Simul %>%

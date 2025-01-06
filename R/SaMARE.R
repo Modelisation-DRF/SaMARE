@@ -123,7 +123,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   Plac<-PlacOri %>%
     filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
-    mutate(Etat=ifelse(Etat==c(11,71,72),"martele","vivant"),ArbreID=seq(1:n())) %>%
+    mutate(Etat=ifelse(Etat %in% c(11,71,72),"martele","vivant"),ArbreID=seq(1:n())) %>%
     select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
            DHPcm,Nombre,Vigueur,Iter,MSCR,ABCD)
 
