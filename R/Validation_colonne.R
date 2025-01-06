@@ -935,8 +935,9 @@ valide_Pente <- function(data){
     group_by(Placette) %>%
     reframe(
 
-      valeur_unique = n_distinct(Pente) == 1 && (all(Pente >= 0 & Pente <= 100)|| is.na(Pente))
+      valeur_unique = n_distinct(Pente) == 1 && (all((Pente >= 0 & Pente <= 100)| is.na(Pente)==TRUE))
     )
+
   return(all(resultats$valeur_unique))
 }
 
