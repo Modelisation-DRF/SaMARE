@@ -1,7 +1,7 @@
 Package: SimulateurSaMARE 
 Type: Package
 Title: Simulateur de l'accroissement, de la mortalité et du recrutement pour les forêts feuillues et mixtes du Québec (SaMARE)
-Version: 2.3.0
+Version: 2.3.1
 Author: c(
     person("Huges", "Power", email = "hugues.power@mrnf.gouv.qc.ca", role = c("aut", "cre")),
     person("Junior", "Peumi", email = "junior.peumi@mrnf.gouv.qc.ca", role = c("ctb")))
