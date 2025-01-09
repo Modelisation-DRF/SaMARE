@@ -37,26 +37,6 @@ SortieArbreSamare <- function(SimulHtVol ,simplifier=FALSE){
     relocate(PlacetteID,Annee,Iter,Residuel,ArbreID,origTreeID, Espece,GrEspece, Etat, Nombre,DHPcm,Hautm,
                ST_m2,Vol_dm3, MSCR, ABCD, Vigueur)
 
-  # summarise(DQM=(mean(DHPcm^2,na.rm=TRUE))^0.5,ST_HA=sum(Stm2ha),VolM3Ha=sum(vol_dm3)/1000,
-  #           nbTi_HA=sum(Nombre/Sup_PE),HDomM=ifelse(nbTi_HA>100,mean(DHPcm[1:100],na.rm = TRUE),mean(DHPcm)), .groups="drop")%>%
-
-
-  #
-  # if(ArbreSamare$vigu0=="ViG"&&ArbreSamare$prod0=="sciage"){
-  #   ArbreSamare$Vigueur = 1
-  #
-  # }else if(ArbreSamare$vigu0=="ViG"&&ArbreSamare$prod0=="pate"){
-  #   ArbreSamare$Vigueur = 2
-  #
-  # }else if(ArbreSamare$vigu0=="NONVIG"&&ArbreSamare$prod0=="sciage"){
-  #   ArbreSamare$Vigueur = 3
-  #
-  # }else if(ArbreSamare$vigu0=="NONVIG"&&ArbreSamare$prod0=="pate"){
-  #   ArbreSamare$Vigueur = 4
-  #
-  # }
-  #
-
 
   if(simplifier == TRUE){
     ArbreSamare_simp_min <-ArbreSamare %>% filter(Annee==MinAnnee )

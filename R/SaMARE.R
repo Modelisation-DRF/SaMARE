@@ -49,10 +49,7 @@
 
 SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horizon, RecruesGaules,
                   MCH,CovParms,CovParmsGaules,Para,ParaGaules,Omega,OmegaGaules){
-  # x='TEM23APC5000_1'
-  # Random=RandPlacStep; RandomGaules=RandPlacStepGaules; Data=Data; Gaules=Gaules; ListeIter=ListeIter[ListeIter$PlacetteID==x,];
-  # AnneeDep=AnneeDep; Horizon=Horizon; RecruesGaules=RecruesGaules; MCH=MCH;
-  # CovParms=CovParms; CovParmsGaules=CovParmsGaules; Para=Para; ParaGaules=ParaGaules; Omega=Omega; OmegaGaules=OmegaGaules;
+
 
   select=dplyr::select
   t<-5
@@ -60,13 +57,6 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
  #####################################################################
   ################## convertion MSCR #################################
-
-  # Para.ConvMSCRVig<-Para %>%
-  #   filter(SubModuleID==17)  #parametres pour vigueur
-  # Para.ConvMSCRProd1024<-Para %>%
-  #   filter(SubModuleID==18)  #parametres pour produits<24 cm
-  # Para.ConvMSCRProd24<-Para %>%
-  #   filter(SubModuleID==19)  #parametre pour produits>24cm
 
   #Liste d'Especes
   Especes<- c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB")
@@ -350,24 +340,11 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
   ########################### Résidus de l'arbre####################################
 
-      # Periodes<-c("ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
-      #
-      # Residus<-matrix(0,nrow=nrow(Plac),ncol=Horizon+1)
-      #
-      # colnames(Residus)<-Periodes
-      #
-      # Residus[,1]<-Plac$ArbreID
-
       Residual<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Residual")]
 
        Rho<-CovParms$ParameterEstimate[which(CovParms$CovParm=="RHO")]
 
        Gamma<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Gamma")]
-
-      # for (i in 1:Horizon){
-      #
-      #   Residus[,i+1]<-rnorm(nrow(Residus),mean=0,sqrt(Residual*Gamma*(Rho^(i-1))))
-      # }
 
       # fonction pour générer un element de la matrice de var-cov ARMA(1,1)
       f <- function(i, j, var_res, gamma, rho) { (((i-j)!=0)*(var_res * gamma*rho^(abs(j-i)-1)))+( ((i-j)==0)*var_res) } # correlation arma
@@ -457,10 +434,11 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
              Etat1=as.character(ifelse(Alea<=pred_mort,"mort",Etat))) %>%
       select(-pred_mort,-Alea)
 
+    #Plac<- Plac %>% mutate(Etat1 = ifelse(k==2,"mort", Etat1))
+
     ##################### Accroissement en diamètre#################################
 
     # fonction d'accroissement en dhp pour etre appliquee a un arbre
-    #accijk=(Xijk*B+bi+bik/Dt^0.5)2
 
     # fichier des arbres de la placette pour appliquer le module d'accroissement
     Accrois <- Plac
@@ -566,7 +544,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
     ##################RECRUTEMENT##################################################
 
-    #################Nombre de  Recrues
+    ################# Nombre de  Recrues ##########################################
+
     Rec<-data.frame("GrEspece"=c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB"))
 
     if (RecruesGaules==1){
@@ -732,7 +711,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
     if (nrow(Plac[which(Plac$Etat1=="vivant"),])==0){
 
       break
-    }######Arrete simulation et écris les valeurs dans un fichier log
+    }
+    ###### Arrete simulation et écris les valeurs dans un fichier log ##############
 
 
     if (nrow(RecSelect)>=1){  ######Si présence de recrues sinon on saute cette partie de code
@@ -745,7 +725,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
           mutate(ArbreID=c(1:n())+last(Plac$ArbreID)))
 
 
-      #############DHP Recrues
+      #############DHP Recrues #################################################
       RandomRecDhp<-RandPlacetteStep %>% filter(SubModuleID==6)
 
       varRecDhp<-CovParms$ParameterEstimate[which(CovParms$CovParm=="sigma2_res")]
@@ -794,13 +774,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
       # Résidus de l'arbre
       if (k < Horizon){
-        # ResidusRec<-matrix(0,nrow=nrow(RecSelect),ncol=Horizon+1)
-        # ResidusRec[,1]<-RecSelect$ArbreID
-        #
-        # for (i in (k+1):Horizon){
-        #   ResidusRec[,i+1]<-rnorm(nrow(ResidusRec),
-        #                           mean=0,sqrt(Residual*Gamma*(Rho^(i-k-1))))
-        # }
+
         # créer et remplir la matrice de var-cov ARMA(1,1)
         varcov <- expand.grid(i=1:(Horizon-k), j=1:(Horizon-k))
         varcov <- matrix(f(varcov$i, varcov$j, Residual, Gamma, Rho), nrow=Horizon-k)

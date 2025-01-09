@@ -151,15 +151,11 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
     arrange(PlacetteID)
 
 
-  # liste_anne_dep <- Data %>%
-  #   group_by(Placette, AnneeDep) %>%
-  #   summarise( .groups = "drop")
 
   registerDoFuture()
   plan(multisession)
 
   list_plot <- unique(ListeIter$PlacetteID) # liste de placette/iter, donc on parallélise les placettes/iter
-  #list_annedep <- substr(list_plot, 1, nchar(list_plot) - 2)
   list_annedep <- sub("(_[0-9]+)$", "", list_plot)
 
   Simul<- bind_rows(
@@ -173,30 +169,6 @@ SimulSaMARE<-function(NbIter,Horizon,RecruesGaules,Data,Gaules ,MCH=0){
 
   plan(sequential)
 
-  #
-  # plan(multisession) # Vous pouvez spécifier le nombre de workers si nécessaire, par exemple, plan(multisession, workers = 4)
-  #
-  # # Unique list of PlacetteID
-  # list_plot <- unique(ListeIter$PlacetteID)
-  #
-  # # Définition de la fonction pour être utilisée dans lapply pour traiter chaque PlacetteID
-  # processPlacetteID <- function(x, RandPlacStep, RandPlacStepGaules, Data, Gaules, ListeIter, AnneeDep, Horizon, RecruesGaules, CovParms, CovParmsGaules, Para, ParaGaules, Omega, OmegaGaules) {
-  #   filteredListeIter <- ListeIter[ListeIter$PlacetteID == x, ]
-  #   SaMARE(Random = RandPlacStep, RandomGaules = RandPlacStepGaules, Data = Data,
-  #          Gaules = Gaules, ListeIter = filteredListeIter,
-  #          AnneeDep = AnneeDep, Horizon = Horizon, RecruesGaules = RecruesGaules,
-  #          CovParms = CovParms, CovParmsGaules = CovParmsGaules,
-  #          Para = Para, ParaGaules = ParaGaules, Omega = Omega, OmegaGaules = OmegaGaules)
-  # }
-  #
-  # # Utilisation de future_lapply pour exécuter la fonction en parallèle
-  # Simul <- future_lapply(list_plot, processPlacetteID, RandPlacStep, RandPlacStepGaules, Data, Gaules, ListeIter, AnneeDep, Horizon, RecruesGaules, CovParms, CovParmsGaules, Para, ParaGaules, Omega, OmegaGaules, future.seed = TRUE)
-  #
-  # # Combinaison des résultats en un seul dataframe
-  # Simul <- bind_rows(Simul)
-  #
-  #
-  #
 
 
   VarEco<-Data %>%
