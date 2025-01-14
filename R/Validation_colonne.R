@@ -264,10 +264,16 @@ valide_Etat <- function(data){
     return (FALSE)
   }
 
-  valeurs_autorisees<-c(10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27,
+
+  valeurs_autorises<-c(10, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27,
                         28, 29, 30, 32, 34, 36, 40, 42, 43, 44, 46, 50, 52, 54, 56 )
 
-  return(all(data$Etat %in% valeurs_autorisees))
+  valeurs_samare <- c(10,11,12,40,42,30,32,50,52,70,71,72)
+
+  verifier_Etat_samare<- any(data$Etat %in% valeurs_samare)
+  verifier_Etat<- all(data$Etat %in% valeurs_autorises)
+
+  return(verifier_Etat_samare&verifier_Etat)
 
 }
 
