@@ -1,4 +1,4 @@
-[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0) [![R-CMD-check](https://github.com/Modelisation-DRF/Package-SaMARE-version-2.1.0/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Modelisation-DRF/Package-SaMARE-version-2.1.0/actions/workflows/R-CMD-check.yaml)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0) [![R-CMD-check](https://github.com/Modelisation-DRF/SaMARE/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Modelisation-DRF/SaMARE/actions/workflows/R-CMD-check.yaml)
 
 ## Le package SimulateurSaMARE
 
@@ -12,7 +12,7 @@ Non disponibles pour l'instant.
 ## Dépendences
 Ce package dépend des packages OutilsDRF et Billonnage.
 
-OutilsDRF est disponible ici: https://github.com/Modelisation-DRF/TarifQC
+OutilsDRF est disponible ici: https://github.com/Modelisation-DRF/OutilsDRF
 
 Billonage est disponible ici: https://github.com/Modelisation-DRF/Billonnage
 
@@ -20,7 +20,7 @@ Billonage est disponible ici: https://github.com/Modelisation-DRF/Billonnage
 ## Comment installer le package dans R
 ```{r eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
 require(remotes)
-install_github("https://github.com/Modelisation-DRF/Package-SaMARE-version-2.1.0", ref="main", auth_token = "demander_un_token")
+install_github("https://github.com/Modelisation-DRF/SaMARE")
 ```
 
 ## Historique des versions
