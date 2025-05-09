@@ -24,15 +24,14 @@ reconstruct <- function(m_lower, diag = TRUE, symmetric = TRUE) {
               }
                return(m)
 }
-#' Fonction qui ajuste les paramètre des chaque itération en fonction de leur
+#' Fonction qui simule les paramètres des effets fixe d'une équation pour chaque itération en fonction de leur
 #' variance-covariance.
 #'
 #' @param ModuleID Numéro du module pour lequel on veut simuler les paramètres.
 #' @param ParaOri Dataframe qui contient les paramètres de base que l'on veut simuler.
 #' @param ParaIter Copie du dataframe ParaOri répliqué n=NbIter fois.
 #' @param Omega Dataframe qui contient les valeurs des matrices de variance-covariance.
-#' @param NbIter Nombre d'iterations, corespond au nombre de version des
-#'               paramètres que l'on veut obtenir.
+#' @inheritParams SimulSaMARE
 #' @export
 #'
 #'

@@ -2,16 +2,13 @@
 % Please edit documentation in R/AttributionProd0.R
 \name{AttribProd0}
 \alias{AttribProd0}
-\title{Fonction qui attribut les produits au début de la simulation. La fonction
-cherche dabord si la tige est résineuse ensuite si le classement
-vigueur 1,2,3,4,5,6 est fourni sinon elle cherche le classement MSCR pour
-attribuer le produit sinon il classe l'arbre comme pate.}
+\title{Fonction qui extrait le produit à partir du code de vigueur au début de la simulation.
+Si pas de code de vigueur, utilise les équations de conversion MSCR à produit}
 \usage{
 AttribProd0(Data, Para.ConvMSCRProd1024, Para.ConvMSCRProd24)
 }
 \arguments{
-\item{Data}{Un dataframe contenant une ligne par arbre pour lesquels on
-veut attribuer le vigueur.}
+\item{Data}{Un dataframe contenant une ligne par arbre avec au minimum les colonnes Placette, ArbreID, Vigueur, GrEspece, MSCR, DHPcm}
 
 \item{Para.ConvMSCRProd1024}{Un dataframe  contenant les paramettres des équations
 de conversion du classement MSCR en produits pour les arbres de moins de 23.1 cm.}
@@ -20,11 +17,9 @@ de conversion du classement MSCR en produits pour les arbres de moins de 23.1 cm
 de conversion du classement MSCR en produits pour les arbres de plus de 23 cm.}
 }
 \value{
-Retourne la classe de produit de l'arbre.
+Retourne Data avec la colonne prod0 ("sciage" ou "pate" ou "resineux").
 }
 \description{
-Fonction qui attribut les produits au début de la simulation. La fonction
-cherche dabord si la tige est résineuse ensuite si le classement
-vigueur 1,2,3,4,5,6 est fourni sinon elle cherche le classement MSCR pour
-attribuer le produit sinon il classe l'arbre comme pate.
+Fonction qui extrait le produit à partir du code de vigueur au début de la simulation.
+Si pas de code de vigueur, utilise les équations de conversion MSCR à produit
 }

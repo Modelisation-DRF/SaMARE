@@ -2,24 +2,27 @@
 % Please edit documentation in R/AttributionMSCR.R
 \name{AttribMSCR}
 \alias{AttribMSCR}
-\title{Fonction qui attribue la classe MSCR. La fonction
-applique les équations de 2006 pour les feuillus puis celle de SaMARE2018
-pour les résineux puisqu'elle sépare les épinettes des résineux.}
+\title{Fonction qui attribue la classe MSCR d'un arbre à partir de son code de vigueur.}
 \usage{
-AttribMSCR(Data, Para.ConvVigMSCR)
+AttribMSCR(Data, Para.ConvVigMSCR, seed_value = NULL)
 }
 \arguments{
 \item{Data}{Un dataframe contenant une ligne par arbre pour lesquels on
-veut attribuer la vigueur.}
+veut attribuer le code MSCR (au minimum les variables Placette, ArbreID, Residuel, GrEspece, vigu0, prod0, DHPcm)}
 
 \item{Para.ConvVigMSCR}{Un dataframe contenant les paramètres des équations
 de conversion de vigueur en MSCR.}
+
+\item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
 }
 \value{
-Retourne le classement MSCR de l'arbre.
+Retourne Data avec les colonnes MSCR, probM, probS, probC.
 }
 \description{
-Fonction qui attribue la classe MSCR. La fonction
-applique les équations de 2006 pour les feuillus puis celle de SaMARE2018
-pour les résineux puisqu'elle sépare les épinettes des résineux.
+Fonction qui attribue la classe MSCR d'un arbre à partir de son code de vigueur.
+}
+\details{
+L'équation pour les 6 feuillus ("BOJ","ERR","ERS","FEN","FIN","HEG") est celle calibrée par François Guillemette en 2013 :
+Voir fichier Modèles de conversion de format ABCD MSCR 1234_20130814.xls, feuille "MSCR selon vigueur - Feuillu.
+Pour les résineux (SAB, RES, EPX), c'est aussi une équation par FG, dans la feuille "MSCR selon vigueur - Rés-EPX"
 }

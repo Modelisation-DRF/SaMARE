@@ -2,28 +2,22 @@
 % Please edit documentation in R/AttributionQualite.R
 \name{AttribQualFct}
 \alias{AttribQualFct}
-\title{Fonction qui attribut la qualité aux tiges feuillues qui n'ont pas de valeurs de qualité.
+\title{Fonction qui attribut la qualité ABCD aux tiges feuillues qui n'ont pas de valeurs de qualité.
 La qualité est attribuée soit aux arbres dont la qualité n'a pas été évaluée ou
-aux arbres qui en croissant atteignent le seuil de 23.1cm. La qualité est
-attribuée sur la base du document AttribQual qui documente la proportion de tiges
-C et D dans les tiges feuillues de 23.1 à 33.0 cm}
+aux arbres qui en croissant atteignent le seuil de 23.1cm.}
 \usage{
-AttribQualFct(PlacSansQual, rid1)
+AttribQualFct(PlacSansQual, seed_value = NULL)
 }
 \arguments{
-\item{PlacSansQual}{Un dataframe contenant une ligne par arbre pour lequel
-seulement les arbres qui ont atteint le seuil de 23.1 cm
-durant la période de simulation en cours sont présents}
+\item{PlacSansQual}{Un dataframe contenant une ligne par arbre avec au minimum les colonnes Placette, ArbreID, GrEspece, ABCD, DHPcm1, rid1}
 
-\item{rid1}{Variable contenant le code de la région écologique}
+\item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
 }
 \value{
-Retourne un dataframe avec le no de l'arbre et sa classe de qualité prédite
+Retourne PlacSansQual avec la colonne ABCD et PredQual
 }
 \description{
-Fonction qui attribut la qualité aux tiges feuillues qui n'ont pas de valeurs de qualité.
+Fonction qui attribut la qualité ABCD aux tiges feuillues qui n'ont pas de valeurs de qualité.
 La qualité est attribuée soit aux arbres dont la qualité n'a pas été évaluée ou
-aux arbres qui en croissant atteignent le seuil de 23.1cm. La qualité est
-attribuée sur la base du document AttribQual qui documente la proportion de tiges
-C et D dans les tiges feuillues de 23.1 à 33.0 cm
+aux arbres qui en croissant atteignent le seuil de 23.1cm.
 }

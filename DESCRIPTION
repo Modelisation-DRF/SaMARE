@@ -1,10 +1,12 @@
 Package: SimulateurSaMARE 
 Type: Package
 Title: Simulateur de l'accroissement, de la mortalité et du recrutement pour les forêts feuillues et mixtes du Québec (SaMARE)
-Version: 2.3.1
+Version: 3.0.0
 Author: c(
-    person("Huges", "Power", email = "hugues.power@mrnf.gouv.qc.ca", role = c("aut", "cre")),
-    person("Junior", "Peumi", email = "junior.peumi@mrnf.gouv.qc.ca", role = c("ctb")))
+    person("Hugues", "Power", email = "hugues.power@mrnf.gouv.qc.ca", role = c("aut", "cre")),
+    person("Junior", "Peumi", email = "junior.peumi@mrnf.gouv.qc.ca", role = c("ctb")),
+    person("Isabelle", "Auger", email = "isabelle.auger@mrnf.gouv.qc.ca", role = c("ctb"))
+    )
 Maintainer: The package maintainer <hugues.power@mrnf.gouv.qc.ca>
 Description: Le simulateur SaMARE est un modèle de croissance à l'échelle de l'arbre. Il prévoit l'accroissement, 
              la mortalité et le recrutement des arbres de dimension marchande. Le simulateur est basé sur une mise
@@ -18,7 +20,7 @@ LazyData: true
 RoxygenNote: 7.3.2
 Imports:
     Billonage,
-    TarifQC
+    OutilsDRF
 Depends: mvtnorm,
         dplyr,
         tidyverse,
@@ -28,9 +30,13 @@ Depends: mvtnorm,
         miceadds,
         future.apply,
         data.table,
+        dtplyr,
         rlang,
         rockchalk,
         R (>= 2.10)
+Remotes:
+    Modelisation-DRF/Billonnage,
+    Modelisation-DRF/OutilsDRF
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

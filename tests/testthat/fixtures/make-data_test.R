@@ -1,5 +1,7 @@
 # Fichier pour les tests
 
+# Les dataframes sont tous des data que Junior a créé pour les tests, mais sans laisser de trace de comment ils ont été créés
+# Je les sauvergarde ici en rds suivre la façon de faire pour les tests
 saveRDS(expect_test_for_Simulateur_Samare, "tests/testthat/fixtures/expect_test_for_Simulateur_Samare.rds")
 saveRDS(expect_test_for_Simulateur_Samare_MCH, "tests/testthat/fixtures/expect_test_for_Simulateur_Samare_MCH.rds")
 

@@ -7,19 +7,18 @@
 SortieDendroIterSamare(SimulHtVol, simplifier = FALSE)
 }
 \arguments{
-\item{SimulHtVol}{Un dataframe contenant les résultats de simulation pour chacune des
-itérations du simulateur SaMARE. Typiquement un résultat retourné par la fonction \code{SimulSaMARE}.}
+\item{SimulHtVol}{Un dataframe produit par la fonction \code{SimulSaMARE}.}
 
 \item{simplifier}{Un booléen indiquant si les résultats doivent être simplifiés pour ne garder
 que la première et la dernière année de la simulation. Par défaut, \code{FALSE}.}
 }
 \value{
-Un dataframe contenant, pour chaque placette, groupe d'espèce, année et itération,
-la surface terrière, le volume marchand brut, le diamètre moyen quadratique et la hauteur dominante.
+Un dataframe contenant, pour chaque placette, groupe d'espèces, année et itération,
+la surface terrière (ST_m2ha), le volume marchand brut (Vol_m3ha), le diamètre moyen quadratique (DQM_cm) et la hauteur dominante (Hdom_m).
 }
 \description{
 La fonction \code{SortieDendroIterSamare} structure un dataframe de sortie pour lequel
-on rapporte, pour chaque placette, année, groupe d'espèce et itération, le diamètre
-quadratique moyen, la surface terrière, le volume et la hauteur dominante.
-Cette fonction prend en paramètre un dataframe qui a déjà été simulé.
+on rapporte, pour chaque placette, année, groupe d'espèces et itération, le diamètre
+quadratique moyen, la surface terrière, le volume et la hauteur dominante à l'ha.
+Cette fonction prend en paramètre un dataframe produit par la fonction \code{SimulSaMARE}
 }

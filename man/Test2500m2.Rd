@@ -35,7 +35,7 @@ A data frame with 93 lignes et 21 colonnes:
 Test2500m2
 }
 \description{
-Une placette de 2500 m2 avec la liste d'arbres
+Une placette de 2500 m2 témoin avec la liste d'arbres
 }
 \examples{
 Test2500m2

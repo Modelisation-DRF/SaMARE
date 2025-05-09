@@ -15,7 +15,7 @@ lien avec leur module respectif}
 \item{Data}{Un dataframe contenant les informations sur les gaules pour lesquels la
 placette sera extraite afin d'y générer des effets aléatoire}
 
-\item{NbIter}{Nombre d'itérations de la simulation}
+\item{NbIter}{Nombre d'iterations à effectuer (>=2 et un nombre pair).}
 }
 \value{
 Retourne une liste d'effets aléatoires à l'échelle de la placette

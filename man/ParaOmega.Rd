@@ -2,7 +2,7 @@
 % Please edit documentation in R/OmegaPara.R
 \name{ParaOmega}
 \alias{ParaOmega}
-\title{Fonction qui ajuste les paramètre des chaque itération en fonction de leur
+\title{Fonction qui simule les paramètres des effets fixe d'une équation pour chaque itération en fonction de leur
 variance-covariance.}
 \usage{
 ParaOmega(ModuleID, ParaOri, ParaIter, Omega, NbIter)
@@ -16,10 +16,9 @@ ParaOmega(ModuleID, ParaOri, ParaIter, Omega, NbIter)
 
 \item{Omega}{Dataframe qui contient les valeurs des matrices de variance-covariance.}
 
-\item{NbIter}{Nombre d'iterations, corespond au nombre de version des
-paramètres que l'on veut obtenir.}
+\item{NbIter}{Nombre d'iterations à effectuer (>=2 et un nombre pair).}
 }
 \description{
-Fonction qui ajuste les paramètre des chaque itération en fonction de leur
+Fonction qui simule les paramètres des effets fixe d'une équation pour chaque itération en fonction de leur
 variance-covariance.
 }

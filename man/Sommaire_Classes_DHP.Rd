@@ -2,9 +2,8 @@
 % Please edit documentation in R/Sommaire_Classes_DHP.R
 \name{Sommaire_Classes_DHP}
 \alias{Sommaire_Classes_DHP}
-\title{Fonction qui structure un dataframe de sortie dont chaque ligne correspond
-à la moyenne des itérations du nombre d'arbres par placette, groupe d'espèce,
-classe de DHP et année. La sortie présente donc un sommaire de la table de peuplement simulée
+\title{Fonction qui compile une sortie de SimulSAMARE par classe de DHP, par placette, groupe d'espèces, vigueur,
+et fait la moyenne des itérations. La sortie présente donc un sommaire de la table de peuplement simulée
 pour chacune des placettes.}
 \usage{
 Sommaire_Classes_DHP(SimulHtVol, simplifier = FALSE)
@@ -18,12 +17,11 @@ par la fonction "SimulSaMARE".}
 que la première et la dernière année de la simulation. Par défaut, \code{FALSE}.}
 }
 \value{
-Retourne un dataframe contenant le sommaire des itérations par placette,
-         groupe d'espèce, classe de DHP et année.
+Retourne un dataframe contenant le sommaire des itérations par placette, année
+         groupe d'espèce, vigueur, classe de DHP.
 }
 \description{
-Fonction qui structure un dataframe de sortie dont chaque ligne correspond
-à la moyenne des itérations du nombre d'arbres par placette, groupe d'espèce,
-classe de DHP et année. La sortie présente donc un sommaire de la table de peuplement simulée
+Fonction qui compile une sortie de SimulSAMARE par classe de DHP, par placette, groupe d'espèces, vigueur,
+et fait la moyenne des itérations. La sortie présente donc un sommaire de la table de peuplement simulée
 pour chacune des placettes.
 }

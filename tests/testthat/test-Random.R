@@ -4,6 +4,6 @@ test_that("RandomPlacStepGaules return the expected data frame ", {
 
   RandPlacStepGaules <-RandomPlacStepGaules(CovparmGaules,GaulesTest2500m2,2)
   set.seed(NULL)
-  expected_for_RandomPlacStepGaules <- readRDS(test_path("fixtures", "expected_for_RandomPlacStepGaules.rds"))
+  expected_for_RandomPlacStepGaules <- readRDS(test_path("fixtures/recrues_avec_gaules", "expected_for_RandomPlacStepGaules.rds"))
   expect_equal(RandPlacStepGaules , expected_for_RandomPlacStepGaules)
 })

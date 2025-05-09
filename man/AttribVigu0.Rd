@@ -2,26 +2,21 @@
 % Please edit documentation in R/AttributionVig0.R
 \name{AttribVigu0}
 \alias{AttribVigu0}
-\title{Fonction qui attribut la vigueur au début de la simulation. La fonction
-cherche dabord si le classement vigueur 1,2,3,4,5,6 est fourni sinon
-elle cherche le classement MSCR pour attribuer la vigeur sinon il classe l'arbre
-comme vigoureux.}
+\title{Fonction qui extrait la vigueur à partir du code de vigueur au début de la simulation.
+Si pas de code de vigueur, utilise les équations de conversion MSCR à vigueur}
 \usage{
 AttribVigu0(Data, Para.ConvMSCRVig)
 }
 \arguments{
-\item{Data}{Un dataframe contenant une ligne par arbre pour lesquels on
-veut attribuer le vigueur.}
+\item{Data}{Un dataframe contenant une ligne par arbre avec au minimum les colonnes Vigueur, GrEspece, MSCR, DHPcm}
 
 \item{Para.ConvMSCRVig}{Un dataframe  contenant les paramettres des équations
 de conversion du classement MSCR en vigueur.}
 }
 \value{
-Retourne la vigueur de l'arbre vigoureux ("ViG")ou non vigoureux ("NONVIG").
+Retourne Data avec la colonne vigu0 ("ViG" ou "NONVIG").
 }
 \description{
-Fonction qui attribut la vigueur au début de la simulation. La fonction
-cherche dabord si le classement vigueur 1,2,3,4,5,6 est fourni sinon
-elle cherche le classement MSCR pour attribuer la vigeur sinon il classe l'arbre
-comme vigoureux.
+Fonction qui extrait la vigueur à partir du code de vigueur au début de la simulation.
+Si pas de code de vigueur, utilise les équations de conversion MSCR à vigueur
 }

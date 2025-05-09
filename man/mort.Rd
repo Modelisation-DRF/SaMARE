@@ -5,41 +5,25 @@
 \title{Fonction qui prévoit la probabilité de mortalité de chacun des arbres
 durant un pas de simulation.}
 \usage{
-mort(Mort, trt, temp, type_pe_Plac, fact_red, t, Iterj, MCH, Para.mort)
+mort(Mort, t, MCH, Para.mort, RandomMort, seed_value = NULL)
 }
 \arguments{
-\item{Mort}{Un dataframe qui contient la liste des arbres pour lesquels
-la probabilité de mortalité doit être évaluée ainsi que les
-caractéristiques de ses arbres qui seront utilisées
-pour en prévoir le risque de mortalité.}
-
-\item{trt}{Variable distinguant les peuplements traités des témoins, si St >26 = TEM.}
-
-\item{temp}{Température annuelle moyenne de la placette.}
-
-\item{type_pe_Plac}{Variable indicatrice de la taille de la placette soit
-400 m2, entre 2500 et 5000 m2 inclusivement ou
-une autre dimension.}
-
-\item{fact_red}{Facteur de correction appliqué lorsqu'une coupe partielle a
-été effectuée 3 ans ou moins avant la prévision.}
+\item{Mort}{Un dataframe qui contient la liste des arbres avec au minimum les colonnes Placette, GrEspece, DHPcm,
+vigu0, prod0, trt, temp, type_pe_Plac, fact_red}
 
 \item{t}{La longueur du pas de simulation en annee (en annees).}
 
-\item{Iterj}{Itération en cours.}
-
-\item{MCH}{Variable prenant la veleur de 1 en présence de maladie corticale du hêtre dans
-la placette et 0 lorsque la maladie est absente. Lorsque la maladie corticale
-est présente,la probabilité de mortalié des hêtres est estimée avec
-l'équation de l'avis technique AT-SSRF 20 de la Direction de la recherche forestière.}
+\item{MCH}{Binaire. 1 = indique la présence de la maladie corticale du hêtre durant tout l'horizon de simulation.
+0 = absence de la maladie (par défaut).}
 
 \item{Para.mort}{Un dataframe  contenant les paramettres du module de mortalité.}
+
+\item{RandomMort}{Un dataframe contenant les effets aléatoires du module de mortalité}
+
+\item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
 }
 \value{
-Retourne le prédicteur linéaire de l'équation de la prévision du
-        risque de mortalité. Les valeurs présites sont faites sans effets
-        aléatoires, ceux-ci sont ajoutés dans la fonction SaMARE avant
-        de convertir le prédicteur linéaire en probabilité de mortalité.
+Retourne Mort avec les colonnes prob_mort , xb_mort et Etat1
 }
 \description{
 Fonction qui prévoit la probabilité de mortalité de chacun des arbres

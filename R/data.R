@@ -20,9 +20,9 @@
 
 #' Fichier d'intrant des arbres marchands
 #'
-#' Trois placettes de 400 m2 avec leur liste d'arbres
+#' Trois placettes témoin de 400 m2 avec leur liste d'arbres
 #'
-#' @format ## `Test400m2`
+#' @format ## `Test400m2Temoin`
 #' A data frame with 54 lignes et 21 colonnes:
 #' \describe{
 #'   \item{Espece}{Code d'essence}
@@ -48,15 +48,15 @@
 #'   \item{Pente}{Classe de pente de la placette}
 #' }
 #' @examples
-#' Test400m2
-"Test400m2"
+#' Test400m2Temoin
+"Test400m2Temoin"
 
 
 #' Fichier d'intrant des arbres marchands avec coupe
 #'
-#' Une placette de 400 m2 avec leur liste d'arbres
+#' Une placette de 400 m2 traité en coupe partielle avec leur liste d'arbres
 #'
-#' @format ## `Test400m2Coupe`
+#' @format ## `Test400m2CP`
 #' A data frame with 18 lignes et 21 colonnes:
 #' \describe{
 #'   \item{Espece}{Code d'essence}
@@ -82,13 +82,13 @@
 #'   \item{Pente}{Classe de pente de la placette}
 #' }
 #' @examples
-#' Test400m2Coupe
-"Test400m2Coupe"
+#' Test400m2CP
+"Test400m2CP"
 
 
 #' Fichier d'intrant des arbres marchands
 #'
-#' Une placette de 2500 m2 avec la liste d'arbres
+#' Une placette de 2500 m2 témoin avec la liste d'arbres
 #'
 #' @format ## `Test2500m2`
 #' A data frame with 93 lignes et 21 colonnes:

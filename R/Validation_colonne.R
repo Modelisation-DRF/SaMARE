@@ -23,12 +23,12 @@ valide_data <- function(data) {
   data <- renommer_les_colonnes(data)
   validations <- list(
     valide_espece = "Code d'essence non valide",
-    valide_Etat = "Code d'\uE9tat non valide",
+    valide_Etat = "Code d'\u00E9tat non valide",
     valide_DHPcm = "Valeur de DHP non permise",
     valide_Vigueur = "Code de vigueur non permis",
     valide_Sup_PE = "Superficie de la placette en ha non valide",
     valide_Nombre = "valeur de nombre null",
-    valide_Annee_Coupe = "Ann\uE9e de coupe non valide",
+    valide_Annee_Coupe = "Ann\u00E9e de coupe non valide",
     valide_Latitude = "Latitude non valide",
     valide_Longitude = "Longitude non valide",
     valide_Altitude = "Altitude non valide",
@@ -1066,25 +1066,25 @@ if(any(is.na(data$Placette))){
 
 valide_Annee_depart <- function(data){
 
-  if (!all(c("AnneeDep") %in% names(data))) {
+  if (!all(c("Annee_Inventaire") %in% names(data))) {
 
-    data<- data %>% mutate(AnneeDep = as.numeric(format(Sys.Date(), "%Y")))
+    data<- data %>% mutate(Annee_Inventaire = as.numeric(format(Sys.Date(), "%Y")))
   }
 
 
   placette_a_modifie <- data %>%
     group_by(Placette) %>%
-    reframe(annees_uniques = n_distinct(AnneeDep, na.rm = TRUE)) %>%
+    reframe(annees_uniques = n_distinct(Annee_Inventaire, na.rm = TRUE)) %>%
     filter(annees_uniques > 1) %>%
     pull(Placette)
 
   # Appliquer les changements au dataframe
   data <- data %>%
     mutate(
-      AnneeDep = case_when(
+      Annee_Inventaire = case_when(
         Placette %in% placette_a_modifie ~ as.numeric(format(Sys.Date(), "%Y")),  # Remplacer les années incohérentes
-        is.na(AnneeDep) ~ as.numeric(format(Sys.Date(), "%Y")),            # Remplacer les années manquantes
-        TRUE ~ AnneeDep
+        is.na(Annee_Inventaire) ~ as.numeric(format(Sys.Date(), "%Y")),            # Remplacer les années manquantes
+        TRUE ~ Annee_Inventaire
       )
     )
 

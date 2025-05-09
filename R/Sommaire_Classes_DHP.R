@@ -1,6 +1,5 @@
-#' Fonction qui structure un dataframe de sortie dont chaque ligne correspond
-#' à la moyenne des itérations du nombre d'arbres par placette, groupe d'espèce,
-#' classe de DHP et année. La sortie présente donc un sommaire de la table de peuplement simulée
+#' Fonction qui compile une sortie de SimulSAMARE par classe de DHP, par placette, groupe d'espèces, vigueur,
+#' et fait la moyenne des itérations. La sortie présente donc un sommaire de la table de peuplement simulée
 #' pour chacune des placettes.
 #'
 #' @param SimulHtVol Un dataframe contenant les résultats de simulation pour chacune des
@@ -8,54 +7,72 @@
 #'                    par la fonction "SimulSaMARE".
 #' @param simplifier Un booléen indiquant si les résultats doivent être simplifiés pour ne garder
 #'                  que la première et la dernière année de la simulation. Par défaut, \code{FALSE}.
-#' @return Retourne un dataframe contenant le sommaire des itérations par placette,
-#'          groupe d'espèce, classe de DHP et année.
+#' @return Retourne un dataframe contenant le sommaire des itérations par placette, année
+#'          groupe d'espèce, vigueur, classe de DHP.
 #' @export
 
-Sommaire_Classes_DHP <- function(SimulHtVol ,simplifier=FALSE){
+Sommaire_Classes_DHP <- function(SimulHtVol, simplifier=FALSE){
   select=dplyr::select
 
-  MinAnnee = min(SimulHtVol$Annee)
-  MaxAnnee = max(SimulHtVol$Annee)
+    NbIter <- length(unique(SimulHtVol$Iter))
 
-  NbIter<-length(unique(SimulHtVol$Iter))
+    # indicateur si le volume présent
+    vol_pres <- SimulHtVol %>% lazy_dt() %>% filter(!is.na(Vol_dm3)) %>% as.data.frame()
 
-    SommaireClassesDHPSp<-SimulHtVol %>%
-    filter(Etat!="mort") %>%
-    mutate(vigueur=ifelse(vigu0=="ViG" & prod0=="sciage",1,
-                          ifelse(vigu0=="ViG" & prod0=="pate",2,
-                                ifelse(vigu0=="NONVIG" & prod0=="sciage",3,
-                                       ifelse(vigu0=="NONVIG" & prod0=="pate",4,
-                                              ifelse(vigu0=="ViG" & prod0=="resineux",5,6)))))) %>%
-    mutate(Stm2ha=pi*(DHPcm/200)^2*Nombre/Sup_PE,      #Calcul surface terrière par ha
-           DHPcm2=DHPcm^2,
-           vol_dm3=ifelse(is.na(vol_dm3)==TRUE,0,vol_dm3*Nombre/Sup_PE),#volume par ha en dm3 a mettre en m3
-           DHP_cl=round(DHPcm/2)*2) %>%
-    group_by(Placette,GrEspece,DHP_cl,vigueur,Annee,Iter) %>%
-    summarise(StM2Ha=sum(Stm2ha), VolM3Ha=sum(vol_dm3)/1000, .groups="drop") %>%
-    group_by(Placette,Annee,GrEspece,DHP_cl,vigueur) %>%
-    summarise(StM2Ha=sum(StM2Ha)/NbIter,
-              VolM3Ha=sum(VolM3Ha)/NbIter, .groups="drop") %>%
-    mutate(NbHa=StM2Ha/((DHP_cl/200)^2*pi)) %>%
-    arrange(Placette,Annee,GrEspece,DHP_cl,vigueur)
+    # préparer le data
+    prep_data <- SimulHtVol %>% lazy_dt() %>%
+      filter(Etat!="mort") %>%
+      mutate(Vol = ifelse(is.na(Vol_dm3), 0, as.numeric(Vol_dm3)),
+             DHP_cl = round(DHPcm/2)*2)
 
-suppressMessages(
-SommaireClassesDHP<-SommaireClassesDHPSp %>%
-    group_by(Placette,Annee,DHP_cl,vigueur) %>%
-    summarise(NbHa=sum(NbHa), StM2Ha=sum(StM2Ha),VolM3Ha=sum(VolM3Ha)) %>%
-    mutate(GrEspece="TOT") %>%
-    rbind(SommaireClassesDHPSp) %>%
-    arrange(Placette,Annee,GrEspece,DHP_cl,vigueur))
+    # sommaire par iter de chaque placette/annee par essence/vig/cl-dhp
+    by_vars <-  c('Placette', 'Annee', 'Temps', 'GrEspece', 'DHP_cl', 'Vigueur', 'Iter')
+    dendro_cl_dhp <- calcul_var_dendro(prep_data, DHPcm, Vol, Nombre, Sup_PE, by_vars) %>% select(-DQM_cm, -Ti_ha)
 
-SommaireClassesDHP<-SommaireClassesDHP[,c(1,2,8,3,4,5,6,7)]
+    # moyenne des itérations
+    dendro_cl_dhp <- dendro_cl_dhp %>% lazy_dt() %>%
+      group_by(Placette, Annee, Temps, GrEspece, DHP_cl, Vigueur) %>%
+      summarise(ST_m2ha = sum(ST_m2ha)/NbIter,  # on n'utilise pas mean car il peut y avoir des essences absente pour certaines iter
+                Vol_m3ha = sum(Vol_m3ha)/NbIter,
+                .groups="drop") %>%
+      mutate(Ti_ha = round(ST_m2ha/((DHP_cl/200)^2*pi))) %>%
+      arrange(Placette, Annee, GrEspece, DHP_cl, Vigueur) %>%
+      as.data.frame()
+
+    # sommaire toutes essences à partir de la moyenne des itérations
+    dendro_cl_dhp_tot <- dendro_cl_dhp %>%
+      lazy_dt() %>%
+      group_by(Placette, Annee, Temps, DHP_cl, Vigueur) %>%
+      summarise(Ti_ha = sum(Ti_ha),
+                ST_m2ha = sum(ST_m2ha),
+                Vol_m3ha = sum(Vol_m3ha),
+                .groups="drop") %>%
+      mutate(GrEspece="TOT") %>%
+      as.data.frame() %>%
+      rbind(dendro_cl_dhp) %>%
+      arrange(Placette, Annee, Temps, GrEspece, DHP_cl, Vigueur) %>%
+      relocate(Placette, Annee, Temps, GrEspece, DHP_cl, Vigueur, Ti_ha, ST_m2ha, Vol_m3ha) %>%
+      as.data.frame()
+
+    # si le volume était absent remettre à NA (car c'est maintenant des 0)
+    if (nrow(vol_pres)==0){
+      dendro_cl_dhp_tot <- dendro_cl_dhp_tot %>%
+        lazy_dt() %>%
+        mutate(Vol_m3ha = NA) %>%
+        as.data.frame()
+    }
+    #SommaireClassesDHP <- SommaireClassesDHP[,c(1,2,8,3,4,5,6,7)]
 
 if(simplifier == TRUE){
 
-  SommaireClassesDHP_simp_min <-SommaireClassesDHP %>% filter(Annee==MinAnnee )
-  SommaireClassesDHP_simp_max <-SommaireClassesDHP %>% filter(Annee==MaxAnnee )
-  SommaireClassesDHP <-rbind(SommaireClassesDHP_simp_min,SommaireClassesDHP_simp_max)
+  MinAnnee = min(SimulHtVol$Temps) # il faut utiliser Temps, car Annee peut être différente pour chaque placette
+  MaxAnnee = max(SimulHtVol$Temps)
+
+  SommaireClassesDHP_simp_min <- dendro_cl_dhp_tot %>% lazy_dt() %>% filter(Temps==MinAnnee) %>% as.data.frame()
+  SommaireClassesDHP_simp_max <- dendro_cl_dhp_tot %>% lazy_dt() %>% filter(Temps==MaxAnnee) %>% as.data.frame()
+  dendro_cl_dhp_tot <- rbind(SommaireClassesDHP_simp_min, SommaireClassesDHP_simp_max)
 
 }
 
-  return(SommaireClassesDHP)
+  return(dendro_cl_dhp_tot)
 }

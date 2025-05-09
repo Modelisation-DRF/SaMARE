@@ -5,9 +5,9 @@
 #'                  lien avec leur module respectif.
 #' @param Data  Un dataframe contenant les arbres à simuler pour lesquels la
 #'               placette sera extraite afin d'y générer des effets aléatoire.
-#' @param NbIter Nombre d'itérations de la simulation.
 #' @param NbPeriodes Nombre de périodes pour lesquelles les effets aléatoires
 #'                   seront simulés.
+#' @inheritParams SimulSaMARE
 #' @return Retourne une liste d'effets aléatoires à l'échelle de la placette et
 #'          de la période de simulation.
 RandomPlacStep<-function (CovParms, Data, NbIter, NbPeriodes) {
@@ -97,7 +97,8 @@ return(Random)
 #'                  lien avec leur module respectif
 #' @param Data Un dataframe contenant les informations sur les gaules pour lesquels la
 #'               placette sera extraite afin d'y générer des effets aléatoire
-#' @param NbIter Nombre d'itérations de la simulation
+#' @inheritParams SimulSaMARE
+#'
 #' @return Retourne une liste d'effets aléatoires à l'échelle de la placette
 #' @export
 RandomPlacStepGaules<-function (CovParms, Data, NbIter) {

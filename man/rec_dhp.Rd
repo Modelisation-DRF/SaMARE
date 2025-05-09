@@ -2,33 +2,37 @@
 % Please edit documentation in R/Recrutement_Dhp.R
 \name{rec_dhp}
 \alias{rec_dhp}
-\title{Fonction qui prévoit le prédicteur linéaire de l'équation du DHP des recrues}
+\title{Fonction qui estime le DHP des recrues}
 \usage{
-rec_dhp(RecSelect, st_tot0, dens_tot0, t, ntrt, Iterj, Para.rec_dhp)
+rec_dhp(
+  RecSelect,
+  t,
+  Para.rec_dhp,
+  RandomRecDhp,
+  varRecDhp,
+  theta,
+  seed_value = NULL
+)
 }
 \arguments{
-\item{RecSelect}{Dataframe qui contient les préviions du nomobre de recrues par
-groupe d'espèces.}
-
-\item{st_tot0}{La surface terrière marchande de la placette en m2/ha au
-début du pas de simulation.}
-
-\item{dens_tot0}{Densitée totale de la placette en nb de tiges marchandes
-(>9.0cm) par hectare au début du pas de simulation.}
+\item{RecSelect}{Dataframe qui contient les prévisions du nombre de recrues par groupe d'espèces, avec au minimum les
+colonnes Placette, GrEspece, st_tot0, dens_tot0, ntrt}
 
 \item{t}{La longueur du pas de simulation en annees (en annees).}
 
-\item{ntrt}{Nombre de traitements de coupes partielles précédement
-effectuées sur la placette.}
+\item{Para.rec_dhp}{Un dataframe  contenant les paramettres du module de prévision du DHP des recrues.}
 
-\item{Iterj}{Itération en cours.}
+\item{RandomRecDhp}{Effet aléatoires du modèle de dhp des recrues}
 
-\item{Para.rec_dhp}{Un dataframe  contenant les paramettres du module
-de prévision du DHP des recrues.}
+\item{varRecDhp}{Variance résiduelle du modèle de dhp des recrues}
+
+\item{theta}{Paramètre de la fonction de variance résiduelle du modèle de dhp des recrues}
+
+\item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
 }
 \value{
-Retourne le prédicteur linéaire de l'équation du DHP des recrues
+Retourne RecSelect avec la colonne DHPcm1 et pred_dhp
 }
 \description{
-Fonction qui prévoit le prédicteur linéaire de l'équation du DHP des recrues
+Fonction qui estime le DHP des recrues
 }

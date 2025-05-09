@@ -81,4 +81,52 @@ usethis::use_data(MatchModuleCovparms, AttribQual, EffetCovParms, MatchModuleOme
                   internal=TRUE, overwrite = TRUE)
 
 
+# Ajout de t et Especes dans sysdata
+# Pas de temps
+t <- 5
+# Liste d'Especes
+Especes <- c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB")
+
+# Créer un environnement temporaire
+temp_env <- new.env()
+# Charger le fichier sysdata.rda dans cet environnement
+load("R/sysdata.rda", envir = temp_env)
+# Vérifier les objets actuellement dans sysdata.rda
+ls(envir = temp_env)
+# Ajouter les nouveaux objets à l'environnement temporaire
+
+temp_env$ass_ess_ht_vol <- ass_ess_ht_vol
+
+#view(temp_env$t)
+
+# Sauvegarder tous les objets présents dans l'environnement temporaire
+save(list = ls(envir = temp_env), file = "R/sysdata.rda", envir = temp_env)
+
+rm(temp_env)
+
+
+
+# ajouter 2 fichiers d'exemples
+load("data-raw/Fichiers_exemple/Test400m2.rda")
+load("data-raw/Fichiers_exemple/Test400m2Coupe.rda")
+
+# Créer un environnement temporaire
+temp_env <- new.env()
+# Charger le fichier sysdata.rda dans cet environnement
+load("R/sysdata.rda", envir = temp_env)
+# Vérifier les objets actuellement dans sysdata.rda
+ls(envir = temp_env)
+# Ajouter les nouveaux objets à l'environnement temporaire
+
+temp_env$Test400m2 <- Test400m2
+temp_env$Test400m2Coupe <- Test400m2Coupe
+
+view(temp_env$Test400m2)
+view(temp_env$Test400m2Coupe)
+
+# Sauvegarder tous les objets présents dans l'environnement temporaire
+save(list = ls(envir = temp_env), file = "R/sysdata.rda", envir = temp_env)
+
+rm(temp_env)
+
 

@@ -2,55 +2,100 @@
 % Please edit documentation in R/SimulateurSaMARE.R
 \name{SimulSaMARE}
 \alias{SimulSaMARE}
-\title{Fonction qui sert à appeler le simulateur SaMARE et qui fournit les données
-initiales ainsi qu'un choix de paramètres pour la simulation.}
+\title{Fonction principale pour une simulation de la croissance d'un peuplement avec le simulateur SaMARE}
 \usage{
-SimulSaMARE(NbIter, Horizon, RecruesGaules, Data, Gaules, MCH = 0)
+SimulSaMARE(
+  NbIter,
+  Horizon,
+  RecruesGaules = 0,
+  Data,
+  Gaules,
+  MCH = 0,
+  cubage = TRUE
+)
 }
 \arguments{
-\item{NbIter}{Valeur numérique du nombre d'iterations à effectuer (ex: 30).}
+\item{NbIter}{Nombre d'iterations à effectuer (>=2 et un nombre pair).}
 
-\item{Horizon}{Valeur numérique du nombre de périodes de 5 ans sur lesquelles
-le simulateur effectuera ses simulations (ex: 6 pour 30 ans de simulation).}
+\item{Horizon}{Nombre de périodes de 5 ans sur à simuler, valeur de 1 à 12 (ex: 6 pour 30 ans de simulation).}
 
-\item{RecruesGaules}{Variable prenant la valeur de "1" pour utiliser les
-paramètres de recrutement basé sur l'inventaire des gaules
-de la placette et de "0" pour utiliser le module de
-recrutement basé sur les arbres de dimension marchande.}
+\item{RecruesGaules}{Identification du module de recrutement à utiliser
+\itemize{
+   \item 0 pour utiliser le module de recrutement basé sur les arbres de dimension marchande (par défaut).
+   \item 1 pour utiliser le module de recrutement basé sur l'inventaire des gaules. Le paramètre \code{Gaules} doit être aussi spécifié.
+}}
 
-\item{Data}{Un dataframe contenant les valeurs de départ pour une liste
-d'arbres à simuler. Les champs: "Placette","NoArbre","Espece",
-"Etat","DHPcm","Vigueur","Nombre","Sup_PE","Annee_Coupe",
-"Latitude","Longitude","Altitude","Pente","Ptot","Tmoy","GrwDays",
-"Reg_Eco","Type_Eco", "MSCR","ntrt" doivent être présents. Si l'information
-sur certains champs n'est pas disponible, on peut le laisser vide.}
+\item{Data}{Un dataframe contenant une liste d'arbres de dimension marchande regroupés en placette à simuler.
+            Les colonnes suivantes doivent être dans le dataframe:
+\itemize{
+   \item Placette: identifiant de la placette
+   \item NoArbre: identifiant de l'arbre dans la placette
+   \item Espece: code à 3 caractères de l'essence de l'arbre  (ex: ERS)
+   \item Etat: code de l'état de l'arbre, numérique (ex: 10 pour vivant, 11 pour martelé et 14 pour mort)
+   \item DHPcm: DHP de l'arbre en cm (>9 cm)
+   \item Vigueur: code de vigueur de l'arbre, un entier de 1 à 6. Facultatif, mettre NA. Si non fourni, la colonne MSCR doit être fournie.
+   \item Nombre: nombre d'arbres que représente cet arbre dans la placette de superficie \code{Sup_PE}
+   \item Sup_PE: superficie de la placette en ha
+   \item Annee_Coupe: si la placette est dans un peuplement qui a subi une coupe partielle, l'année de la coupe, sinon NA
+   \item ntrt: si la placette est dans un peuplement qui a subi une coupe partielle, nombre de coupes, sinon 0 ou NA
+   \item MSCR: code MSCR. Facultatif, mettre NA non utilisé. Si non fourni, la colonne Vigueur doit être fournie.
+   \item Latitude, Longitude: coordonnées de la placette en degrés décimaux
+   \item Altitude: altitude de la placette en mètres
+   \item Pente: pourcentage de pente de la placette (ex: 10)
+   \item Reg_Eco: code de la région écologique de la placette (ex: 3a)
+   \item Type_Eco: code du type écologique de la placette (ex: FE23)
+   \item Ptot: précipitations totales annuelles de la placette en mm
+   \item Tmoy: température moyenne annuelle de la placette en degrés celcius
+   \item GrwDays: Nombre de jours de la saison de croissance de la placette
+}}
 
-\item{Gaules}{Un dataframe contenant les valeurs de départ du nombre de gaules
-par espèce et par classe de diamètre. Cette information doit être
-fournie si le paramètre "RecruesGaules=1.
-Les champs: "Placette","Espece","DHPcm",#' "Nombre","Sup_PE"
-doivent être présents.}
+\item{Gaules}{Un dataframe contenant la liste des gaules par essence et par classe de diamètre.
+              Cette information doit être fournie si le paramètre \code{RecruesGaules}=1.
+              Les colonnes suivantes doivent être présentes:
+\itemize{
+   \item Placette: identifiant de la placette, doivent être les mêmes que ceux de \code{Data}
+   \item Espece: code à 3 caractères de l'essence de l'arbre  (ex: ERS)
+   \item DHPcm: classe de DHP de 2 cm de l'arbre (2, 4, 6 ou 8 cm)
+   \item Nombre: nombre de gaules dans la classe de DHP pour cette essence dans la placette de superficie \code{Sup_PE}
+   \item Sup_PE: superficie de la placette de gaules en ha
+}}
 
-\item{MCH}{Variable prenant la valeur de 1 en présence de maladie corticale du hêtre dans
-la placette et 0 lorsque la maladie est absente. Lorsque la maladie corticale
-est présente,la probabilité de mortalié des hêtres est estimée avec
-l'équation de l'avis technique AT-SSRF 20 de la Direction de la recherche forestière.}
+\item{MCH}{Binaire. 1 = indique la présence de la maladie corticale du hêtre durant tout l'horizon de simulation.
+0 = absence de la maladie (par défaut).}
+
+\item{cubage}{Booléen
+\itemize{
+   \item \code{TRUE}: pour estimer la hauteur et le volume des arbres à la fin de la simulation (par défaut)
+   \item \code{FALSE} pour ne pas les calculer.
+   }}
 }
 \value{
-Retourne un dataframe contenant la liste des arbres, leur état, leur DHP,
-        leur hauteur et leur volume pour chaque placette, chaque pas de simulation
+Un dataframe contenant la liste des arbres, leur état, leur DHP, pour chaque pas de simulation
         et chaque iteration.
 }
 \description{
-Fonction qui sert à appeler le simulateur SaMARE et qui fournit les données
-initiales ainsi qu'un choix de paramètres pour la simulation.
+\code{SimulSaMARE()} est la fonction principale pour exécuter une simulation de la croissance d'un peuplement avec le simulateur SaMARE
+}
+\details{
+Lorsque \code{MCH}=1, la probabilité de mortalié des hêtres est estimée avec l'équation de l'avis technique
+AT-SSRF 20 de la Direction de la recherche forestière.
+
+Les code de vigueurs sont
+\itemize{
+   \item 1: feuillu vigoureux avec potentiel de sciage
+   \item 2: feuillu vigoureux avec potentiel de pâte
+   \item 3: feuillu non-vigoureux avec potentiel de sciage
+   \item 4: feuillu non-vigoureux avec potentiel de pâte
+   \item 5: résineux vigoureux
+   \item 6: résineux non-vigoureux
+}
 }
 \examples{
 \dontrun{
 # Simulation sur 10 ans, recrutement de base
-result <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 0, Data = Test2500m2)
+result <- SimulSaMARE(NbIter = 10, Horizon = 2, Data = Test2500m2)
 # Simulation sur 10 ans, recrutement avec les gaules
-result <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2,
-Gaules=GaulesTest2500m2)
+result <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2, Gaules=GaulesTest2500m2)
 }
+
 }

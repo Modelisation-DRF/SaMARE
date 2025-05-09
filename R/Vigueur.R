@@ -1,26 +1,22 @@
 #' Fonction qui prévoit l'évolution de la classe de vigueur des arbres.
-#'La vigueur peut prendre 2 valeurs soit "vigoureux" ou "non-vigoureux".
-
-
-
-
-#' @param Vig Un dataframe qui contient les arbres pour lesquels on veut
-#'             prévoir l'évolution de la classe de vigueur des arbres.
-#' @param type_pe_Plac Variable indicatrice de la taille de la placette soit
-#'                      400 m2, soit entre 2500 et 5000 m2 inclusivement ou
-#'                      une autre dimension.
-#' @param Iterj Itération en cours.
-#' @param rid1 variable de groupement de variables écologiques.
+#' La vigueur peut prendre 2 valeurs soit "vigoureux" ou "non-vigoureux"
+#'
+#' @param Vig Un dataframe qui contient une liste d'arbres avec les colonnes Placette, GrEspece, DHPcm, vigu0, type_pe_Plac, rid1, aam
 #' @param Para.vig Un dataframe  contenant les parametres du module d'évolution
 #'                 de la vigueur des arbres.
-#' @return  Retourne le prédicteur linéaire de l'équation de la probabilité que
-#'         l'arbre soit de classe "vigoureux".
+#' @param RandomVig Un dataframe  contenant les effets aléatoires du module d'évolution
+#'                 de la vigueur des arbres.
+#' @param seed_value Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.
+#' @return  Retourne Vig avec les colonnes vigu1 et prob_vig et xb_vig.
 #'
 #' @export
-vig<-function(Vig,type_pe_Plac,rid1,Iterj,Para.vig){
+vig <- function(Vig, Para.vig, RandomVig, seed_value=NULL){
+
+  if (length(seed_value)>0) {set.seed(seed_value)} # on a besoin d'un seed pour les test, car cette fonction génère des nombres aléatoires
+
   select=dplyr::select
 
-  n<-nrow(Vig)
+  n <- nrow(Vig)
 
   #Liste des effets
   listeEss<-c(rep("AUT",n),rep("BOJ",n),rep("EPX",n),rep("ERR",n),rep("ERS",n),
@@ -44,22 +40,43 @@ vig<-function(Vig,type_pe_Plac,rid1,Iterj,Para.vig){
   Xvig[,8:17]<-(Vig$GrEspece==listeEss)*1
   Xvig[,18]<-Vig$DHPcm
   Xvig[,19:28]<-(Vig$GrEspece==listeEss)*rep(log(Vig$DHPcm),10)
-  Xvig[,29:31]<-(type_pe_Plac==listeTypePe)*1
-  Xvig[,32:40]<-(rid1==listeRid1)*1
-  Xvig[,41:130]<-(Vig$GrEspece==listeEssInter9 & rid1==listeRid1)*1
+  Xvig[,29:31]<-(Vig$type_pe_Plac==listeTypePe)*1
+  Xvig[,32:40]<-(Vig$rid1==listeRid1)*1
+  Xvig[,41:130]<-(Vig$GrEspece==listeEssInter9 & Vig$rid1==listeRid1)*1
   Xvig[,131]<-Vig$aam
 
 
   # selectionner les parametres de vigueur de l'itération
-  ParaVigi<-Para.vig %>%
-    filter(Iter==Iterj)
+  ParaVigi<-Para.vig
+  #%>%
+  #filter(Iter==Iterj)
 
   # Création matrice Beta
   BetaMat<-matrix(ParaVigi$ParameterEstimate,ncol=1)
 
   # Calcul de la probabilité de vigueur
   logit <- (Xvig %*% BetaMat)
+  Vig$xb_vig <- as.numeric(logit)
 
-  return(logit)
+  # ajouter les effets aléatoires
+  setDT(RandomVig)
+  setDT(Vig)
+  Vig <- RandomVig[, .(Placette, RandomPlac)][Vig, on = .(Placette)]
+
+  Vig[, `:=`(
+    prob_vig = xb_vig + RandomPlac)
+  ][, `:=`(
+    prob_vig = exp(prob_vig)/(1+exp(prob_vig)),
+    Alea = runif(.N)
+  )
+  ][, `:=`(
+    vigu1 = as.character(fifelse(Etat1=='mort', NA,
+                                 fifelse(Alea <= prob_vig, "ViG", "NONVIG")))
+  )
+  ]
+  Vig[, c("Alea", "RandomPlac") := NULL]
+
+
+  return(Vig)
 
 }

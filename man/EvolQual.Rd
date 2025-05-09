@@ -2,36 +2,22 @@
 % Please edit documentation in R/Evolution_qualite.R
 \name{EvolQual}
 \alias{EvolQual}
-\title{Fonction qui prévoit l'évolution de la classe de qualité des arbres.
-La fonction se base sur les équation des Filip Havreljuk pour SaMARE 2018
-elle ne prévoit pas la qualité des arbre qu n'ont pas de valeur de qualité dans
-les données d'origines (ex. arbres qui passent le seuil de la classe de 24 cm".}
+\title{Fonction qui prévoit l'évolution de la classe de qualité des arbres.}
 \usage{
-EvolQual(PlacQual, type_pe_Plac, prec, rid1, dens_tot0, Para.EvolQualTot)
+EvolQual(PlacQual, Para.EvolQualTot, seed_value = NULL)
 }
 \arguments{
-\item{PlacQual}{Un dataframe qui contient les arbres pour lesquels on veut
-prévoir l'évolution de la classe de qualité des arbres.}
+\item{PlacQual}{Un dataframe qui contient une liste d'arbres avec au minimum les colonnes Placette, ArbreID,
+GrEspece ABCD Etat1 DHPcm1 type_pe_Plac vigu0 prod0 aam rid1 prec.}
 
-\item{type_pe_Plac}{Variable indicatrice de la taille de la placette soit
-400 m2, soit entre 2500 et 5000 m2 inclusivement ou
-une autre dimension.}
-
-\item{prec}{Précipitations annuelles moyennes.}
-
-\item{rid1}{variable de groupement de variables écologiques.}
-
-\item{dens_tot0}{Densité totale en arbres marchands.}
-
-\item{Para.EvolQualTot}{Un dataframe  contenant les paramétrés du module d'évolution
+\item{Para.EvolQualTot}{Un dataframe  contenant les paramètres du module d'évolution
 de la qualité des arbres.}
+
+\item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
 }
 \value{
-Le numéro d'arbre avec la qualité prédite".
+PlacQual avec les colonnes ABCD, Intercept1, Intercept2, Intercept3.
 }
 \description{
 Fonction qui prévoit l'évolution de la classe de qualité des arbres.
-La fonction se base sur les équation des Filip Havreljuk pour SaMARE 2018
-elle ne prévoit pas la qualité des arbre qu n'ont pas de valeur de qualité dans
-les données d'origines (ex. arbres qui passent le seuil de la classe de 24 cm".
 }

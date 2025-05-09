@@ -2,34 +2,24 @@
 % Please edit documentation in R/Recrutement_Produit.R
 \name{rec_prod}
 \alias{rec_prod}
-\title{Fonction qui prevoit le prédicteur linéaire de l'équation de prévision
-de la probabilité qu'une recrue de groupe d'essence feuillue ait un potentiel
-de production de sciage.}
+\title{Fonction qui prevoit si une recrue a un potentiel de sciage ou de pate.}
 \usage{
-rec_prod(RecSelect, type_pe_Plac, rid1, Iterj, Para.rec_prod)
+rec_prod(RecSelect, Para.rec_prod, RandomRecProd, seed_value = NULL)
 }
 \arguments{
-\item{RecSelect}{Un dataframe qui contient la prévision du nombre de recrues
+\item{RecSelect}{Un dataframe qui contient une liste d'arbres avec les colonnes Placette, GrEspece, type_pe_Plac, rid1
 par groupe d'espèce.}
-
-\item{type_pe_Plac}{Variable indicatrice de la taille de la placette soit
-400 m2, soit entre 2500 et 5000 m2 inclusivement ou
-soit une autre dimension.}
-
-\item{rid1}{Variable de groupement de variables écologiques.}
-
-\item{Iterj}{Itération en cours.}
 
 \item{Para.rec_prod}{Paramètres de l'équation de la probabilité de présence
 de potentiel sciage des recrues de groupe d'essence feuillus.}
+
+\item{RandomRecProd}{Effets aléatoires du modèle de produit des recrues}
+
+\item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
 }
 \value{
-Retourne le prédicteur linéaire de l'équation de prévision de la
-        probabilité de présence de potentiel sciage pour les recrues de groupes
-        d'essences feuillues.
+Retourne RecSelect avec les colonnes prob_prod_rec et prod1.
 }
 \description{
-Fonction qui prevoit le prédicteur linéaire de l'équation de prévision
-de la probabilité qu'une recrue de groupe d'essence feuillue ait un potentiel
-de production de sciage.
+Fonction qui prevoit si une recrue a un potentiel de sciage ou de pate.
 }

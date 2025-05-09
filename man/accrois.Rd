@@ -2,41 +2,25 @@
 % Please edit documentation in R/Accroissement.R
 \name{accrois}
 \alias{accrois}
-\title{Fonction qui calcule de l'Accroissement du diamètre en mm pour une période de temps
- égale au pas de simulation 't'.}
+\title{Fonction qui calcule de l'accroissement du diamètre des arbres pour un pas de simulation}
 \usage{
-accrois(Accrois, st_tot0, t, fact_red, ntrt, type_pe_Plac, Iterj, Para.acc)
+accrois(Accrois, t, Para.acc, RandomAcc, Res)
 }
 \arguments{
-\item{Accrois}{Un dataframe qui contient la liste des arbres à simuler ainsi
-que les informations à l'échelle de l'arbre qui sont
-utilisées pour prévoir l'accroissement en diamètre.}
-
-\item{st_tot0}{La surface terrière marchande de la placette en m2/ha au
-début du pas de simulation.}
+\item{Accrois}{Un dataframe qui contient la liste des arbres et les variables nécessaire à
+l'équation d'accroissement (au minimum Placette, ArbreID, DHPcm, GrEspece, vigu0, prod0, st_tot0, fact_red, ntrt, type_pe_Plac)}
 
 \item{t}{La longueur du pas de simulation en annee (en annees).}
 
-\item{fact_red}{Facteur de correction appliqué lorsqu'une coupe partielle a
-été effectuée 3 ans ou moins avant la prévision.}
+\item{Para.acc}{Un dataframe contenant les paramettres du module d'accroissement.}
 
-\item{ntrt}{Nombre de traitements de coupes partielles précédement
-effectuées sur la placette.}
+\item{RandomAcc}{Un dataframe contenant les effets aléatoires du module d'accroissement.}
 
-\item{type_pe_Plac}{Variable indicatrice de la taille de la placette soit
-400 m2, soit entre 2500 et 5000 m2 inclusivement ou
-soit une autre dimension.}
-
-\item{Iterj}{Itération en cours.}
-
-\item{Para.acc}{Un dataframe  contenant les paramettres du module d'accroissement.}
+\item{Res}{Un dataframe d'une colonne contenant les erreurs residuelles du module d'accroissement.}
 }
 \value{
-Retourne la prévision d'accroissement diamétral en mm pour un pas de simulation.
-        Les    valeurs prédites sont faites sans effets aléatoires,
-        ceux-ci sont ajoutés dans la fonction SaMARE.
+Retourne Accrois avec les colonnes DHPcm1, aam et pred_acc.
 }
 \description{
-Fonction qui calcule de l'Accroissement du diamètre en mm pour une période de temps
- égale au pas de simulation 't'.
+Fonction qui calcule de l'accroissement du diamètre des arbres pour un pas de simulation
 }

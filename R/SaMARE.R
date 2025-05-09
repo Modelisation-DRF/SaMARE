@@ -1,8 +1,7 @@
-#' Fonction qui effectue la simulation de l'évolution des arbres d'une placette
-#' du simulateur SaMARE. Cette fonction effectue la simulation et
-#' appele chacune des fonction permettant de prévoir la mortalité, l'accroissement,
+#' Fonction qui effectue la simulation de l'évolution des arbres de plusieurs placettes
+#' avec le simulateur SaMARE pour une itération. Cette fonction effectue la simulation et
+#' appelle chacune des fonction permettant de prévoir la mortalité, l'accroissement,
 #' le recrutement et l'évolution des paramètres de simulation.
-#'
 #'
 #' @param Random Un dataframe contenant des effets aléatoires à l'échelle de
 #'               la placette et de la période de simulation pour les modules
@@ -10,24 +9,13 @@
 #' @param RandomGaules  Un dataframe contenant des effets aléatoires à l'échelle de
 #'                      la placette et de la période de simulation pour les modules
 #'                      de SaMARE qui utilisent les gaules.
-#' @param Data    Un dataframe contenant une liste des arbres de dimenssion marchande
-#'                d'une placette à simuler ainsi que des variables nécessaire à
+#' @param Data    Un dataframe contenant une liste des arbres de dimension marchande
+#'                des placettes à simuler ainsi que des variables nécessaires à
 #'                la simulation.
-#' @param Gaules  Un dataframe contenant la distribution du nombre de gaules par
-#'                classe de diamètre et par groupe d'essence d'une placette à
-#'                simuler ainsi que des variables nécessaire à la simulation.
-#' @param ListeIter Un dataframe contenant le numéro de la placette à simuler
-#'                  et le numéro de l'iteration à effecuer.
-#' @param AnneeDep Année de départ de la simulation.
-#' @param Horizon Nombre de pas de 5 ans de simulation à effectuer.
-#' @param RecruesGaules  Variable prenant la valeur de "1" pour utiliser les
-#'                       paramètres de recrutement basé sur l'inventaire des gaules
-#'                       de la placette et de "0" pour utiliser le module de
-#'                       recrutement basé sur les arbres de dimension marchande.
-#' @param MCH Variable prenant la veleur de 1 en présence de maladie corticale du hêtre dans
-#'            la placette et 0 lorsque la maladie est absente. Lorsque la maladie corticale
-#'            est présente,la probabilité de mortalié des hêtres est estimée avec
-#'            l'équation de l'avis technique AT-SSRF 20 de la Direction de la recherche forestière.
+#' @param Gaules  Un dataframe contenant le nombre de gaules par classe de diamètre
+#'                et par groupe d'essence d'une placette à
+#'                simuler ainsi que des variables nécessaires à la simulation.
+#' @param Iteration le numéro de l'itération
 #' @param CovParms Un dataframe contenant la variance des effets aléatoires des
 #'                  équations des modules de base de SaMARE (modules 1 à 9 et 17 à 19).
 #' @param CovParmsGaules Un dataframe contenant la variance des effets aléatoires des
@@ -35,7 +23,7 @@
 #'                        provenant des gaules (modules 10 à 16).
 #' @param Para  Un dataframe contenant les paramètres des modules de 1 à 9 et 17 à 19
 #'               (modules de base) de SaMARE.
-#' @param ParaGaules Un dataframe contenant les paramètres des modules 17à 19
+#' @param ParaGaules Un dataframe contenant les paramètres des modules 17 à 19
 #'               (modules basés sur les gaules) de SaMARE.
 #' @param Omega Un dataframe contenant pour chaque module de base de SaMARE
 #'              (modules 1 à 9 17 à 19) le éléments du triangle inférieur de
@@ -43,64 +31,78 @@
 #' @param OmegaGaules Un dataframe contenant pour chaque module basé sur les gaules
 #'                    de SaMARE (modules 10 à 16) les éléments du triangle inférieur de
 #'                    la matrice de variance-covariance.
-#' @return Retourne un dataframe avec une liste d'arbres vivants et mort ainsi que
-#'        leur DHP pour chaque étape de 5 ans de l'horizon de simulation.
+#' @param seed_value Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.
+#' @inheritParams SimulSaMARE
+#'
+#' @return Retourne un dataframe avec une liste d'arbres vivants et mort avec leur DHP
+#'         pour chaque étape de 5 ans de l'horizon de simulation.
+#' @import data.table
 #' @export
 
-SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horizon, RecruesGaules,
-                  MCH,CovParms,CovParmsGaules,Para,ParaGaules,Omega,OmegaGaules){
+SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, RecruesGaules,
+                  MCH, CovParms, CovParmsGaules, Para, ParaGaules, Omega, OmegaGaules,
+                  seed_value=NULL){
 
+  # Random =RandomTest; Data = data; Gaules =NA
+  # Horizon = 6 ; Iteration = 1;seed_value=3;
+  # RecruesGaules =0;CovParms=MatchModuleCovparms;CovParmsGaules=CovparmGaules;
+  # Para=MatchModuleParameters;ParaGaules=ParametresGaules;Omega=MatchModuleOmega; OmegaGaules=OmegaGaulesFormat; MCH = 0
+  # set.seed(NULL)
+  # set.seed(3)
+
+  if (length(seed_value)>0) {set.seed(seed_value)} # on a besoin d'un seed pour les test, car cette fonction génère des nombres aléatoires
 
   select=dplyr::select
-  t<-5
+
+  # Maintenant en fichiers interne dans sysdata
+  # t<-5
+  # Liste d'Especes
+  # Especes <- c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB")
 
 
- #####################################################################
-  ################## convertion MSCR #################################
-
-  #Liste d'Especes
-  Especes<- c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB")
-
-
-  ################################################################################
-  ######## Calcul des variables a l'echelle de la  placette #####################
-  ###############################################################################
-
-  #Création placette origine
-  # Selectionner la placette et initialiser l'annee de depart et la correction du biais
-
-  PlacOri <- Data %>%
-    filter(Placette==ListeIter$Placette) %>%
-    mutate(Annee = AnneeDep, Iter=ListeIter$Iter)
-
-  #########Creation paramètres
-
-  ParaTot<-map_dfr(seq_len(1), ~Para) %>%
-    mutate(Iter=1)
-
-  ##############Gaules
+  # Création du fichier de départ original
+  setDT(Data)
+  # PlacOri <- Data %>%
+  #   mutate(Annee = AnneeDep, Iter=Iteration)
+  PlacOri <- Data[, `:=`(
+    Annee = Annee_Inventaire,
+    Iter=Iteration
+  )]
 
 
-  ParaTotGaules<-map_dfr(seq_len(1), ~ParaGaules) %>%
-    mutate(Iter=1)
+  # Paramètres des effets fixes
+  ParaTot <- Para
+
+  # Paramètres des effets fixes du module de gaules
+  ParaTotGaules <- ParaGaules
+
+  #### 1. Génération aléatoire des parametres de chacun des modules ####
+
+  # Paramètres des effets fixes
+  # la fonction ParaOmega génère une serie de paramètres aléatoires en fonction de la matrice de covar et du vecteur de paramètres
+  # ces paramètres des effets fixes seront utilisés pour toutes les placettes et tous les pas de simulation, pour cette itération
+  # la fonction ParaOmega a été construite pour générer les paramètres pour plusieurs itérations, mais ici on en génère que pour une seule, donc ici ParaOri = ParaIter
+  Para.mort <- ParaOmega(ModuleID = 1, ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) #%>% mutate(Iter=PlacOri$Iter[1])
+  Para.acc <- ParaOmega(ModuleID = 2, ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) #%>% mutate(Iter=PlacOri$Iter[1])
+  Para.vig <- ParaOmega(ModuleID = 3, ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) #%>% mutate(Iter=PlacOri$Iter[1])
+  Para.prod <- ParaOmega(ModuleID = 4, ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) #%>% mutate(Iter=PlacOri$Iter[1])
+  Para.rec_n <- ParaOmega(ModuleID = 5, ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) #%>% mutate(Iter=PlacOri$Iter[1])
+  Para.rec_dhp <- ParaOmega(ModuleID = 6, ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) #%>% mutate(Iter=PlacOri$Iter[1])
+  Para.rec_vig <- ParaOmega(ModuleID = 7, ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) #%>% mutate(Iter=PlacOri$Iter[1])
+  Para.rec_prod <- ParaOmega(ModuleID = 8, ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) #%>% mutate(Iter=PlacOri$Iter[1])
+  Para.ConvMSCRVig <- ParaOmega(ModuleID = 17, ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) #%>% mutate(Iter=PlacOri$Iter[1])
+  Para.ConvMSCRProd1024 <- ParaOmega(ModuleID = 18, ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) #%>% mutate(Iter=PlacOri$Iter[1])
+  Para.ConvMSCRProd24 <- ParaOmega(ModuleID = 19, ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) #%>% mutate(Iter=PlacOri$Iter[1])
+
+  # Effets aleatoires de la placette de l'iteration en cours
+  #RandPlac<-Random %>% filter(Placette==PlacOri$Placette[1] & Iter==PlacOri$Iter[1])
+  RandPlac <- Random %>% filter(Iter==Iteration)
 
 
-  ########################Calcul des parametres des modules
+  #### 2. Préparation pour les modules d'évolution des gaules ####
+  if (RecruesGaules==1){
 
-  Para.mort<-ParaOmega(ModuleID = 1,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  Para.acc<-ParaOmega(ModuleID = 2,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  Para.vig<-ParaOmega(ModuleID = 3,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  Para.prod<-ParaOmega(ModuleID = 4,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  Para.rec_n<-ParaOmega(ModuleID = 5,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  Para.rec_dhp<-ParaOmega(ModuleID = 6,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  Para.rec_vig<-ParaOmega(ModuleID = 7,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  Para.rec_prod<-ParaOmega(ModuleID = 8,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  Para.ConvMSCRVig<-ParaOmega(ModuleID = 17,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  Para.ConvMSCRProd1024<-ParaOmega(ModuleID = 18,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-  Para.ConvMSCRProd24<-ParaOmega(ModuleID = 19,ParaOri=Para,ParaIter=ParaTot,Omega=Omega,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
-
-  ###################Calcul des parametres des gaules
-
+  # Génération aléatoire des parametres des effets fixes des modules de gaules
   Para.rec_gaules<-ParaOmega(ModuleID = 10,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.nb_gaules<-ParaOmega(ModuleID = 11,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.ratio_gaules<-ParaOmega(ModuleID = 12,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
@@ -109,22 +111,38 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
   Para.68_BOJ<-ParaOmega(ModuleID = 15,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
   Para.68_SAB<-ParaOmega(ModuleID = 16,ParaOri=ParaGaules,ParaIter=ParaTotGaules,Omega=OmegaGaules,NbIter=1) %>% mutate(Iter=PlacOri$Iter[1])
 
-  ##########################Création de la placette de simulation
+  # Création de la placette de simulation des gaules
+  PlacGaules <- Gaules %>%
+      #filter(Placette==ListeIter$Placette) %>%
+      mutate(Iter=Iteration)
 
-  Plac<-PlacOri %>%
+  # Générer les effets aleatoires placette Gaules
+  RandomPlacGaules <- RandomGaules %>% filter(Iter==Iteration)
+
+  }
+
+
+  #### 3. Création de la placette de simulation ####
+
+  Plac <- PlacOri %>%
     filter(Etat %in% c(10,11,12,40,42,30,32,50,52,70,71,72)) %>%
-    mutate(Etat=ifelse(Etat %in% c(11,71,72),"martele","vivant"),ArbreID=seq(1:n())) %>%
-    select(Placette,Annee,ArbreID,NoArbre,GrEspece,Espece,Etat,
-           DHPcm,Nombre,Vigueur,Iter,MSCR,ABCD)
+    mutate(Etat = ifelse(Etat %in% c(11,71,72), "martele", "vivant"),
+           ArbreID=seq(1:n()))
 
 
-
-  ###################Calcul des parametres d'es'evolution de la qualite
+  #### 4. Génération des paramètres aléatoires du module d'evolution de la qualite ####
 
   PlacQual<-Plac %>%
     filter(ABCD %in% c("A","B","C","D") & Etat=="vivant")
 
+  ABCD_pres <- NULL
   if (nrow(PlacQual)>=1){
+
+    # indiquer quelles placettes a la qualité fournie
+    ABCD_pres <- Plac %>%
+      group_by(Placette) %>%
+      summarise(ABCD_presence = ifelse(sum(ABCD %in% c("A","B","C","D") & Etat=="vivant")>0, 'oui', 'non'))
+
 
     ParaBOJ<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="BOJ"),]
     ParaERR<-ParametresEvolQual[which(ParametresEvolQual$Ess_groupe=="ERR"),]
@@ -139,26 +157,24 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
     OmegaHEG<-OmegaEvolQual[which(OmegaEvolQual$Ess_groupe=="HEG"),]
 
 
-    Para.EvolQualBOJ1<-ParaOmega(ModuleID = 1,ParaOri=ParaBOJ, ParaIter=ParaBOJ,Omega=OmegaBOJ,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualBOJ2<-ParaOmega(ModuleID = 2,ParaOri=ParaBOJ, ParaIter=ParaBOJ,Omega=OmegaBOJ,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualBOJ3<-ParaOmega(ModuleID = 3,ParaOri=ParaBOJ, ParaIter=ParaBOJ,Omega=OmegaBOJ,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualERR1<-ParaOmega(ModuleID = 1,ParaOri=ParaERR, ParaIter=ParaERR,Omega=OmegaERR,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualERR2<-ParaOmega(ModuleID = 2,ParaOri=ParaERR, ParaIter=ParaERR,Omega=OmegaERR,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualERS1<-ParaOmega(ModuleID = 1,ParaOri=ParaERS, ParaIter=ParaERS,Omega=OmegaERS,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualERS2<-ParaOmega(ModuleID = 2,ParaOri=ParaERS, ParaIter=ParaERS,Omega=OmegaERS,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualERS3<-ParaOmega(ModuleID = 3,ParaOri=ParaERS, ParaIter=ParaERS,Omega=OmegaERS,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualFEN1<-ParaOmega(ModuleID = 1,ParaOri=ParaFEN, ParaIter=ParaFEN,Omega=OmegaFEN,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualFEN2<-ParaOmega(ModuleID = 2,ParaOri=ParaFEN, ParaIter=ParaFEN,Omega=OmegaFEN,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualHEG1<-ParaOmega(ModuleID = 1,ParaOri=ParaHEG, ParaIter=ParaHEG,Omega=OmegaHEG,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualHEG2<-ParaOmega(ModuleID = 2,ParaOri=ParaHEG, ParaIter=ParaHEG,Omega=OmegaHEG,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
-    Para.EvolQualHEG3<-ParaOmega(ModuleID = 3,ParaOri=ParaHEG, ParaIter=ParaHEG,Omega=OmegaHEG,NbIter=1) %>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualBOJ1<-ParaOmega(ModuleID = 1,ParaOri=ParaBOJ, ParaIter=ParaBOJ,Omega=OmegaBOJ,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualBOJ2<-ParaOmega(ModuleID = 2,ParaOri=ParaBOJ, ParaIter=ParaBOJ,Omega=OmegaBOJ,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualBOJ3<-ParaOmega(ModuleID = 3,ParaOri=ParaBOJ, ParaIter=ParaBOJ,Omega=OmegaBOJ,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualERR1<-ParaOmega(ModuleID = 1,ParaOri=ParaERR, ParaIter=ParaERR,Omega=OmegaERR,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualERR2<-ParaOmega(ModuleID = 2,ParaOri=ParaERR, ParaIter=ParaERR,Omega=OmegaERR,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualERS1<-ParaOmega(ModuleID = 1,ParaOri=ParaERS, ParaIter=ParaERS,Omega=OmegaERS,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualERS2<-ParaOmega(ModuleID = 2,ParaOri=ParaERS, ParaIter=ParaERS,Omega=OmegaERS,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualERS3<-ParaOmega(ModuleID = 3,ParaOri=ParaERS, ParaIter=ParaERS,Omega=OmegaERS,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualFEN1<-ParaOmega(ModuleID = 1,ParaOri=ParaFEN, ParaIter=ParaFEN,Omega=OmegaFEN,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualFEN2<-ParaOmega(ModuleID = 2,ParaOri=ParaFEN, ParaIter=ParaFEN,Omega=OmegaFEN,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualHEG1<-ParaOmega(ModuleID = 1,ParaOri=ParaHEG, ParaIter=ParaHEG,Omega=OmegaHEG,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualHEG2<-ParaOmega(ModuleID = 2,ParaOri=ParaHEG, ParaIter=ParaHEG,Omega=OmegaHEG,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
+    Para.EvolQualHEG3<-ParaOmega(ModuleID = 3,ParaOri=ParaHEG, ParaIter=ParaHEG,Omega=OmegaHEG,NbIter=1) #%>%mutate(Iter=PlacOri$Iter[1])
 
     Para.EvolQual<-list(Para.EvolQualBOJ1,Para.EvolQualBOJ2,Para.EvolQualBOJ3,Para.EvolQualERR1,Para.EvolQualERR2,Para.EvolQualERS1,
                         Para.EvolQualERS2,Para.EvolQualERS3,Para.EvolQualFEN1,Para.EvolQualFEN2,Para.EvolQualHEG1,Para.EvolQualHEG2,
                         Para.EvolQualHEG3)
     Para.EvolQualTot<-c()
-
-
 
     for(i in 1:13){
 
@@ -168,609 +184,449 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
 
     }
 
-
-
-    rm(ParaBOJ,ParaERR,ParaERS,ParaFEN,ParaHEG,OmegaBOJ,OmegaERR,OmegaERS,OmegaFEN,OmegaHEG,Para.EvolQualBOJ1,Para.EvolQualBOJ2,
+     rm(ParaBOJ,ParaERR,ParaERS,ParaFEN,ParaHEG,OmegaBOJ,OmegaERR,OmegaERS,OmegaFEN,OmegaHEG,Para.EvolQualBOJ1,Para.EvolQualBOJ2,
        Para.EvolQualBOJ3,Para.EvolQualERR1,Para.EvolQualERR2,Para.EvolQualERS1,Para.EvolQualERS2,Para.EvolQualERS3,Para.EvolQualFEN1,
        Para.EvolQualFEN2,Para.EvolQualHEG1,Para.EvolQualHEG2,Para.EvolQualHEG3,Para.EvolQual)
 
-
   }
-
   rm(PlacQual)
 
 
-  #Placette Gaules de simulation
-  if (RecruesGaules==1){
 
-    PlacGaules<-Gaules %>%
-      filter(Placette==ListeIter$Placette) %>%
-      mutate(Iter=ListeIter$Iter)
+  #### 5. Préparation des variables explicatives à l'échelle de la placette fixe dans le temps ####
+  # NOTE: quand on ajoutera le simulateur de coupe, trt et ntrt ne seront plus fixe dans le temps
+  Plac <- Plac %>%
+    group_by(Placette) %>%
+    mutate(t0 = Annee_Coupe,
+           trt = ifelse(sum(Etat == "martele")>0, "CP", # s'il y a au moins 1 arbre de martelé dans la placette c'est une CP
+                        ifelse((is.na(ntrt)==TRUE | ntrt==0),"TEM", # si ntrt est vide, c'est un témoin
+                               ifelse(Annee_Inventaire-t0<5 & (sum((DHPcm/200)^2*3.1416*Nombre)/Sup_PE)>26, "TEM", # Si ST>26 et que la coupe date de moins de 5 ans, c'est un témoin
+                                      "CP"))), # sinon c'est une CP
+           # ntrt = ifelse(trt=="CP" & sum(Etat == "martele")>0, ntrt+1,
+           #               ifelse(trt=="CP", ntrt,
+           #                      0)),  # cette variable ne devrait être upgradée ici, mais plutôt après la création de la placette initiale, pour le cas où il y a des arbres martelé et car quand on va intégrer le simulateur de coupe, cette variable devra être modifiée à l'intérieur de la boucle sur les horizons
+           type_pe_Plac = ifelse(Sup_PE==0.04,"type0", # effets réels
+                                 ifelse(Sup_PE>=0.25 & Sup_PE<=0.5,"type1",  # dispos de jardinage 2023 (0.25), 2026 (0.25), Arcale (0.25), Windsor (0.25), CPI (0.5), Dubuc (0.5)
+                                        "type2")), # Mitchi (1 ha), Lac jaune (0.1), Rouge (0.16)
+           pente = ifelse(is.na(Pente==TRUE),6.5,
+                          Pente),
+           dom = substr(Reg_Eco,1,1),
+           dom = ifelse(dom %in% c("2","3","4"), dom, "4"), ## valeur de 4 attribué aux domaines pas dans la liste d'effets
 
-  }
+           rid1 = ifelse(Reg_Eco %in% c("1a","2a","2b","2c"), "2o",
+                         ifelse(Reg_Eco %in% c("4a","4b","4c"), "4o",
+                                ifelse(Reg_Eco %in% c("4d","4e","4f","4g","4h"), "4e",
+                                       Reg_Eco))),
+           rid1 = ifelse(rid1 %in% c("2o","3a","3b","3c","3d","4e","4o","DU","SV"), rid1, "4o"),  # Ajouter DU et SV qui manquaient et mis "4o" quand manquant
 
-
-  ###################Variables d'information sur la placette####################
-
-  #Placette
-  Placette<-PlacOri$Placette[1]
-
-  #Iteration
-  Iterj<-PlacOri$Iter[1]
-
-  #Superficie Placette
-  Sup_PE<-PlacOri$Sup_PE[1]
-
-  #Annee Derniere Coupe
-  t0<-PlacOri$Annee_Coupe[1]
-
-  #Variable du peuplement residuel avec condition que si St >26 = TEM
-  trt<-ifelse("martele" %in% Plac$Etat,"CP",
-              ifelse((is.na(PlacOri$ntrt[1])==TRUE | PlacOri$ntrt[1]==0),"TEM",
-                     ifelse(AnneeDep-PlacOri$Annee_Coupe[1]<5 &
-                              (sum((Plac$DHPcm/200)^2*3.1416*Plac$Nombre)/Sup_PE)>26,"TEM","CP")))
-
-  #Nombre de traitements
-  ntrt=ifelse(trt=="CP" & "martele" %in% Plac$Etat,PlacOri$ntrt[1]+1,
-              ifelse(trt=="CP",PlacOri$ntrt[1],0))
-
-  #Type de placette
-  type_pe_Plac<-ifelse(PlacOri$Sup_PE[1]==0.04,"type0",
-                       ifelse(PlacOri$Sup_PE[1]>=0.25 & PlacOri$Sup_PE[1]<=0.5,"type1","type2"))
-
-
-  #Variables de classification écologiques
-  latitude<-PlacOri$Latitude[1]
-
-  longitude<-PlacOri$Longitude[1]
-
-  altitude<-PlacOri$Altitude[1]
-
-  pente<-ifelse(is.na(PlacOri$Pente[1]==TRUE),6.5,PlacOri$Pente[1])
-
-  dom<-substr(PlacOri$Reg_Eco[1],1,1) %>% ifelse(!. %in% c("2","3","4"),"4",. )##valeur de 4 attribué aux domaines pas dans la liste d'effets
-
-  reg<-PlacOri$Reg_Eco[1]
-
-  rid1<-ifelse(reg %in% c("1a","2a","2b","2c"),"2o",ifelse(reg %in% c("4a","4b","4c"),"4o",
-                                                      ifelse(reg %in% c("4d","4e","4f","4g","4h"),"4e",reg))) %>%
-         ifelse(!. %in% c("2o","3a","3b","3c","3d","4e","4o","DU","SV"),"4o",.)  #Ajouté DU et SV qui manquaient et mis "4o" quand manquant
-  teco<-PlacOri$Type_Eco[1]
-
-  vegp<-substr(PlacOri$Type_Eco[1],1,3)
-
-  # Variables climatiques de la placette
-  prec <- PlacOri$Ptot[1]
-
-  temp <- PlacOri$Tmoy[1]
-
-  grwd<-  PlacOri$GrwDays[1]
-
-  ##################Effets Aleatoires  de la placette#############################
-
-  RandPlac<-Random %>% filter(Placette==PlacOri$Placette[1] & Iter==PlacOri$Iter[1])
+           vegp = substr(Type_Eco,1,3)
+           ) %>%
+    rename(latitude = Latitude,
+           longitude = Longitude,
+           altitude = Altitude,
+           reg = Reg_Eco,
+           teco = Type_Eco,
+           prec = Ptot,
+           temp = Tmoy,
+           grwd = GrwDays) %>%
+    select(Placette, Annee_Inventaire, Annee, trt, ntrt, t0, pente, Sup_PE, ArbreID, NoArbre, GrEspece, Espece,
+           Etat, DHPcm, Nombre, Vigueur, MSCR, ABCD,
+           Iter, type_pe_Plac, dom, rid1, vegp, latitude, longitude, altitude, reg, teco, prec, temp, grwd)
 
 
-  ################## Effets Aleatoires placette Gaules############################
 
-  if(RecruesGaules==1){
-    RandomPlacGaules<-RandomGaules %>% filter(Placette==PlacOri$Placette[1] & Iter==PlacOri$Iter[1])
-  }
-
-
-  ###############################################################################
-  ########################Simulation de la placette##############################
-  ##############################################################################
+  #### 6. Simulation de la placette sur le nombre de steps ####
 
   # Initialisation du fichier qui contiendra les résultats de simulation de la placette
-
   outputTot<-c()
 
-  ###############################################################################
-  #################### boucle pour les k périodes de 5 ans a simuler #############
+  # liste des variables à l'Échelle de la placettes qui entrent dans les équations
+  var_plot <- c("Annee_Inventaire", "trt", "ntrt", "t0", "pente", "Sup_PE", "type_pe_Plac", "dom", "rid1",
+                "vegp", "latitude", "longitude", "altitude", "reg", "teco",
+                "prec", "temp", "grwd", "t0_aj_", "fact_red", "st_tot0", "dens_tot0", "mch")
 
   for (k in 1:Horizon){
+    # k=1
 
-    # k=2
-    ##################Mise à jour des variable pour la période se simulation########
-
-    # Si premier pas de simulation, on utilise le fichier de depart de la placette
-
-
-
+    ##### 6.1 Pour k=1: on utilise le fichier de depart de la placette #####
     if   (k==1){
 
       Plac <- Plac %>%
-        mutate(Annee=AnneeDep+t)
+        mutate(Annee = Annee_Inventaire+t) # on upgrade l'année
 
-      ##################Atribution de vigueur et de produit##############
+      ###### 6.1.1 Création des vigueur et de produit  ######
 
-
-      ParaViglist=list(Para.ConvMSCRVig)
-
-
-      Vigu0<-Plac %>%
-        group_by(Placette,NoArbre) %>%
-        nest() %>%
-        mutate(vigu0 = mapply(AttribVigu0,data,MoreArgs=ParaViglist)) %>%
-        unnest(vigu0) %>%
-        select(-data)
+      Plac <- AttribVigu0(Plac, Para.ConvMSCRVig)
+      Plac <- AttribProd0(Plac, Para.ConvMSCRProd1024, Para.ConvMSCRProd24)
+      Plac <- Plac %>% select(-Vigueur)
 
 
-      ParaProdlist=list(Para.ConvMSCRProd1024,Para.ConvMSCRProd24)
+      ###### 6.1.2 Dataframe avec les conditions initiales de la placette ######
 
-      Prod0<-Plac %>%
-        group_by(Placette,NoArbre) %>%
-        nest() %>%
-        mutate(prod0 = mapply(AttribProd0,data,MoreArgs=ParaProdlist)) %>%
-        unnest(prod0) %>%
-        select(-data)
-
-      suppressMessages(
-        Plac<-Plac %>%
-          left_join(Vigu0) %>%
-          left_join(Prod0))
+      # On remet l'année à l'année de départ et residuel, ce fichier contient des arbres martelés
+      outputInitial <- Plac %>%
+        mutate(Annee=Annee_Inventaire, Residuel=0) %>%
+        select(Placette, Annee_Inventaire, Annee, ArbreID, NoArbre, Nombre, GrEspece,
+               Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter, t0, trt, ntrt) # je vais laisser ntrt ici pour pourvoir faire les validations de samare, mais dans le fichier final retourné à l'utilisateur, on mettre ntrt du fichier d'intrant
 
 
-      ########Dataframe avec les conditions initiales de la placette##############
+      ###### 6.1.3 Modification placette initiale pour martelage ######
 
-      outputInitial<-Plac %>%
-        mutate(Annee=AnneeDep,Residuel=0) %>%
-        select(Placette, Annee, ArbreID, NoArbre, Nombre, GrEspece,
-               Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter)
+      # s'il y a des arbres martelés dans une placette, on garde tous les arbres (vivant+martele) avec residuel=0,
+      # mais on fait une copie des arbres vivant avec residuel=1
+      # s'il y a des arbres martelés, les enlever, ne garder que les vivants et mettre Residuel=1
+      outputInitial_mart <- Plac %>%
+        group_by(Placette) %>%
+        mutate(martele = ifelse(sum(Etat == "martele")>0, T, F)) %>%
+        filter(Etat=="vivant", martele==T) %>%
+        mutate(Annee=Annee_Inventaire,Residuel=1,
+               ntrt = ntrt+1, t0=Annee_Inventaire) %>%  # ajout pour que dans le fichier des résultats, ces variables réflètent mieux la réalité, mais ne sont pas utilisées dans simul
+        select(Placette, Annee_Inventaire, Annee, ArbreID, NoArbre, Nombre, GrEspece,
+               Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter, t0, trt, ntrt)
 
-      #######Modification placette et création de la mesure résiduelle si martelage
+      outputInitial <- rbind(outputInitial,outputInitial_mart)
 
-      if ("martele" %in% Plac$Etat){
+      # dans les placettes à simuler, ne garder que les vivants (on enlève les martelés)
+      # s'il y a des arbres martelé dans la placette, on met t0 (anne_coupe) à AnneeDep
+      Plac <- Plac %>%
+        group_by(Placette) %>%
+        mutate(t0 = ifelse(sum(Etat == "martele")>0, Annee_Inventaire, t0),
 
-        outputInitial<-Plac %>%
-          filter(Etat=="vivant") %>%
-          mutate(Annee=AnneeDep,Residuel=1) %>%
-          select(Placette, Annee, ArbreID, NoArbre, Nombre, GrEspece,
-                 Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter) %>%
-          rbind(outputInitial,.)
+               ntrt = ifelse(trt=="CP" & sum(Etat == "martele")>0, ntrt+1,  # j'ai déplacé ça ici, après la placette initiale, mais il faudra aussi le faire à l'intérieur de la boucle quand simulateur de coupe sera là
+                             ifelse(trt=="CP", ntrt,
+                                    0))) %>%
+        filter(Etat=="vivant")
 
-        Plac<-Plac %>%
-          filter(Etat=="vivant") %>%
-          select(-MSCR)
 
-        t0=AnneeDep
+      ###### 6.1.4 Génération des résidus de l'arbre pour tous les pas de simulation ######
 
-      }
+      # CovParms contient la variances des effets aléatoires et la variance de l'erreur résiduelle (et sa structure) de chaque module
+      # aller chercher la variance de l'erreur résiduelle (présente dans un seul module (le 2))
+      Residual <- CovParms$ParameterEstimate[which(CovParms$CovParm=="Residual")]
 
-  ########################### Résidus de l'arbre####################################
-
-      Residual<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Residual")]
-
-       Rho<-CovParms$ParameterEstimate[which(CovParms$CovParm=="RHO")]
-
-       Gamma<-CovParms$ParameterEstimate[which(CovParms$CovParm=="Gamma")]
+      # aller chercher les parametres de la strucure de l'erreur résiduelle du module 2 (ARMA(1,1))
+      Rho <- CovParms$ParameterEstimate[which(CovParms$CovParm=="RHO")]
+      Gamma <- CovParms$ParameterEstimate[which(CovParms$CovParm=="Gamma")]
 
       # fonction pour générer un element de la matrice de var-cov ARMA(1,1)
       f <- function(i, j, var_res, gamma, rho) { (((i-j)!=0)*(var_res * gamma*rho^(abs(j-i)-1)))+( ((i-j)==0)*var_res) } # correlation arma
-      # créer et remplir la matrice de var-cov
+      # créer et remplir la matrice de var-cov de l'erreur résiduelle de l'arbre pour ces pas de simulation
       varcov <- expand.grid(i=1:Horizon, j=1:Horizon)
       varcov <- matrix(f(varcov$i, varcov$j, Residual, Gamma, Rho), nrow=Horizon)
 
+      # générer un vecteur d'erreur residuelle de la longueur du nombre de pas de simulation, pour chaque arbre de chaque placette
       Residus <- rockchalk::mvrnorm(n=nrow(Plac), mu=rep(0,Horizon), Sigma = varcov, empirical=F)
-      Residus <- cbind(Plac$ArbreID, Residus)
-      colnames(Residus)<-c("ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
+      Residus <- cbind(Plac$Placette, Plac$ArbreID, Residus)
+      colnames(Residus)<-c("Placette","ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
 
 
 
-######### Mise en forme des statistiques de gaules qui seront mises à jour par la suite
-
+      ###### 6.1.5 Preparation des variables explicatives des gaules pour simulation ######
       if (RecruesGaules==1){
-        RecGaules<-data.frame("GrEspece"=c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB"))
+        #RecGaules<-data.frame("GrEspece"=c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB")) # on ne s'en sert pas ici et il est recréer plus loin
 
         suppressMessages(
-          Nb_Gaules_Ha<-PlacGaules %>%
-            mutate(NbHa=Nombre/Sup_PE, NbHa68=ifelse(DHPcm>5,Nombre/Sup_PE,0)) %>%
-            group_by(GrEspece) %>%
-            summarise(Nb_Gaules_Ess_Ha=sum(NbHa),
-                      lnNb_Gaules_Ess_Ha=log(sum(NbHa)+1),
-                      lnNb_Gaules_24_Ess_Ha=log(sum(NbHa)-sum(NbHa68)+1),
-                      lnNb_Gaules_68_Ess_Ha=log(sum(NbHa68)+1)))
+          Nb_Gaules_Ha <- PlacGaules %>%
+            mutate(NbHa = Nombre/Sup_PE,
+                   NbHa68 = ifelse(DHPcm>5, Nombre/Sup_PE, 0)) %>%
+            group_by(Placette, GrEspece) %>%
+            summarise(Nb_Gaules_Ess_Ha = sum(NbHa),
+                      lnNb_Gaules_Ess_Ha = log(sum(NbHa)+1),
+                      lnNb_Gaules_24_Ess_Ha = log(sum(NbHa)-sum(NbHa68)+1),
+                      lnNb_Gaules_68_Ess_Ha = log(sum(NbHa68)+1)))
 
-        outputTot$Nb_Gaules_Ha<-sum(Nb_Gaules_Ha$Nb_Gaules_Ess_Ha)
+        ### Vérifier ce que je fais avec ça, rendu ici, le data outputTot est NULL, ça crée donc une variable dans ce data, mais ça ne marche pas dans la version de Junior
+        # je vais ignorer ça pour l'instant.
+        #outputTot$Nb_Gaules_Ha <- sum(Nb_Gaules_Ha$Nb_Gaules_Ess_Ha)
+        #outputTot$Nb_Gaules_68_Ha <- sum(exp(Nb_Gaules_Ha$lnNb_Gaules_68_Ess_Ha)-1)
 
-        outputTot$Nb_Gaules_68_Ha<-sum(exp(Nb_Gaules_Ha$lnNb_Gaules_68_Ess_Ha)-1)
 
       }
 
-    }  else {    # Si 2e pas de simulation ou plus, on prend le fichier qui contient les simulations et on garde seulement le dernier pas
-
+    ##### 6.2 2e pas de simulation ou plus #####
+    }
+    else {
+      #k=2
+      # On utilise le dernier pas de simulation comme point de départ
       Plac <- outputTot %>%
-        filter(Annee == AnneeDep+(k-1)*t & Etat!="mort") %>%
-        mutate(Annee=AnneeDep+k*t, Etat="vivant")
+        filter(Annee == Annee_Inventaire+(k-1)*t & Etat!="mort") %>%
+        mutate(Annee=Annee_Inventaire+k*t, Etat="vivant") # on met les recrues à vivant pour le prochain step
 
     }
 
-    #Temps depuis coupe
-    if(trt=="CP"){
-      t0_aj_<-Plac$Annee[1]-t0-4.9}else{t0_aj_=0} ######on ajuste pour que lorsque la step débute immédiatement après coupe t0_aj a une valeur de 0.1
+    ##### 6.3 Calcul des variables à l'échelle de la placette qui evolue dans le temps #####
 
-    #Réduction de la mortalité
-    fact_red<-ifelse(trt=="TEM",0,ifelse(t0_aj_<=3,1,0))
-
-    # calcul variable echelle placette
-    st_tot0 <- sum((Plac$DHPcm/200)^2*3.1416*Plac$Nombre)/Sup_PE
+    Plac <- Plac %>%
+      group_by(Placette) %>%
+      mutate(
 
 
-    dens_tot0 <- sum(Plac$Nombre)/Sup_PE
+        t0_aj_ = ifelse(trt=="CP" & (Annee-t0<=25), Annee-t0-4.9, 0), ###### on ajuste pour que lorsque la step débute immédiatement après coupe t0_aj a une valeur de 0.1. Et maximum de 20 ans pour l'effet de coupe
 
-    # Random iteration
-    RandPlacetteStep<-RandPlac %>% filter(Step==k)
+        fact_red = ifelse(trt=="TEM", 0,
+                          ifelse(t0_aj_ <= 3, 1,
+                                 0)),    #Réduction de la mortalité
 
-    # Recrutement Gaules
-    if (RecruesGaules==1){
-      RecGaules<-data.frame("GrEspece"=c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB"))
+        # calcul variable echelle placette
+        st_tot0 = sum((DHPcm/200)^2 *3.1416*Nombre)/Sup_PE,  # calcul variable echelle placette
+        dens_tot0 = sum(Nombre)/Sup_PE,
+        mch=MCH # on va créer mch ici, comme ça on aura la possibilité de la faire varier à chaque pas de simulation et de la voir dans le fichier de résultats
+        )
 
-      suppressMessages(
-        RecGaules<-RecGaules %>%
-          left_join(Nb_Gaules_Ha) %>%
-          mutate(Nb_Gaules_Ess_Ha=ifelse(is.na(Nb_Gaules_Ess_Ha)==TRUE,0,Nb_Gaules_Ess_Ha),
-                 lnNb_Gaules_Ess_Ha=ifelse(is.na(lnNb_Gaules_Ess_Ha)==TRUE,log(1),lnNb_Gaules_Ess_Ha),
-                 lnNb_Gaules_24_Ess_Ha=ifelse(is.na(lnNb_Gaules_24_Ess_Ha)==TRUE,log(1),lnNb_Gaules_24_Ess_Ha),
-                 lnNb_Gaules_68_Ess_Ha=ifelse(is.na(lnNb_Gaules_68_Ess_Ha)==TRUE,log(1),lnNb_Gaules_68_Ess_Ha),
-                 Ratio=Nb_Gaules_Ess_Ha/sum(Nb_Gaules_Ess_Ha)))
-    }
 
-    ############################### Mortalite ######################################
+    ##### 6.4 Effet aléatoire de step #####
+    RandPlacetteStep <- RandPlac %>% filter(Step==k)
+
+
+    ##### 6.5 Mortalite #####
+
+    # Effets aléatoires pour la mortalité
+    RandomMort <- RandPlacetteStep %>% filter(SubModuleID==1)
 
     Mort <- Plac
 
-    # Effets aléatoires pour la mortalité
-    RandomMort<-RandPlacetteStep %>% filter(SubModuleID==1)
-
     # Application de la fonction de mortalité
-    pred<-mort(Mort,trt,temp,type_pe_Plac,fact_red,t,Iterj,MCH,Para.mort)
+    Plac <- mort(Mort, t, MCH , Para.mort, RandomMort, seed_value=NULL)
+    Plac <- Plac %>% select(-xb_mort, -prob_mort)
 
 
-    Mort$pred_mort<-pred
-
-    Plac <- Mort %>%
-      mutate(pred_mort=(1-exp(-exp(pred_mort+RandomMort$RandomPlac+RandomMort$RandomStep))),Alea=runif(n()),
-             Etat1=as.character(ifelse(Alea<=pred_mort,"mort",Etat))) %>%
-      select(-pred_mort,-Alea)
-
-    #Plac<- Plac %>% mutate(Etat1 = ifelse(k==2,"mort", Etat1))
-
-    ##################### Accroissement en diamètre#################################
-
-    # fonction d'accroissement en dhp pour etre appliquee a un arbre
-
-    # fichier des arbres de la placette pour appliquer le module d'accroissement
-    Accrois <- Plac
+    ##### 6.6 Accroissement en diamètre #####
 
     # Effets aléatoire pour l'accroissement
     RandomAcc <- RandPlacetteStep %>% filter(SubModuleID==2)
 
-
-
+    Accrois <- Plac
     # on applique la fonction d'accroissement
-
-    pred<-accrois(Accrois,st_tot0,t,fact_red,ntrt,type_pe_Plac,Iterj,Para.acc)
-
-    Accrois$pred_acc<-((pred+RandomAcc$RandomPlac+RandomAcc$RandomStep+Residus[,k+1])^2)-1
-
-    Plac<- Accrois %>%
-      mutate(pred_acc=ifelse(pred_acc<0,0,pred_acc)) %>%
-      mutate(DHPcm1=as.numeric(ifelse(Etat1=="vivant",DHPcm+(round(pred_acc)/10),NA)),
-             aam=as.numeric(ifelse(Etat1=="vivant",round(pred_acc)/(10*t),NA))) %>%
-      select(-pred_acc) %>%
-      arrange(ArbreID)
+    Plac <- accrois(Accrois, t, Para.acc, RandomAcc, Residus[,k+2])
+    Plac <- Plac %>% select(-xb_acc, -pred_acc)
 
 
-    ########################VIGUEUR#################################################
-    Vig <- Plac %>% filter(Etat=="vivant")
+    ##### 6.7 Vigueur #####
+
+    Vig <- Plac
+
+    RandomVig <- RandPlacetteStep %>% filter(SubModuleID==3)
 
     # Application de la fonction de vigueur
-    pred<-vig(Vig,type_pe_Plac,rid1,Iterj,Para.vig)
+    # ça fonctionne si on laisse les morts dans le fichier, ça met NA
+    Plac <- vig(Vig, Para.vig, RandomVig, seed_value=NULL)
+    Plac <- Plac %>% select(-xb_vig, -prob_vig)
 
-    RandomVig<-RandPlacetteStep %>% filter(SubModuleID==3)
 
-    Vig$pred_vig<-pred+RandomVig$RandomPlac
+    ##### 6.8 Produit #####
 
-    suppressMessages(
-      Plac <- Vig %>%
-        mutate(pred_vig=(exp(pred_vig)/(1+exp(pred_vig))),Alea=runif(n()),
-               vigu1=as.character(ifelse(Alea<=pred_vig,"ViG","NONVIG"))) %>%
-        select(ArbreID,vigu1) %>%
-        right_join(Plac) )
+    # on ne calcule pas de probabilité de produit sur le type resineux des arbres survivants
+    #indice_prod0 <- which(Plac[,"prod0"]!="resineux" & Plac[,"Etat1"] !="mort")
 
-    #################PRODUIT#######################################################
+    RandomProd <- RandPlacetteStep %>% filter(SubModuleID==4)
 
-    Prod <- Plac %>% filter(prod0!="resineux" & Etat1 !="mort")
+    #Prod <- Plac %>% filter(prod0!="resineux" & Etat1 !="mort")
+    Prod <- Plac
 
     # Application de la fonction de produit
+    Plac <- produit(Prod, Para.prod, RandomProd, seed_value=NULL)
+    Plac <- Plac %>% select(-xb_prod, -prob_prod)
 
-    pred<-produit(Prod,type_pe_Plac,rid1,Iterj,Para.prod)
 
-    RandomProd<-RandPlacetteStep %>% filter(SubModuleID==4)
+    # S'il y a au moins une placette avec qualité
+    if (!is.null(ABCD_pres)) {
 
-    Prod$pred_prod<-pred+RandomProd$RandomPlac
+      ##### 6.9 Evolution Qualite des survivants avec qualité #####
 
-    suppressMessages(
-      Plac <- Prod %>%
-        mutate(pred_prod=(exp(pred_prod)/
-                            (1+exp(pred_prod))),Alea=runif(n()),
-               prod1=ifelse(GrEspece=="AUT"|(vigu0=="NONVIG" & DHPcm1<23.1),"pate",
-                            ifelse(Alea<=pred_prod,"sciage","pate"))) %>%
-        select(ArbreID,prod1) %>%
-        right_join(Plac) %>%
-        mutate(prod1=as.character(ifelse(prod0=="resineux","resineux",prod1))) %>%
-        arrange(ArbreID))
+      # sélectionner seulement les placettes avec qualité en intrant
+      EvolQual <- left_join(ABCD_pres[ABCD_pres$ABCD_presence=='oui',], Plac, by='Placette')
+      setDT(EvolQual)
+      EvolQual <- EvolQual(EvolQual, Para.EvolQualTot, seed_value=NULL)
 
-    #############################Evolution Qualite##############################
 
-    PlacQual<-Plac %>%
-      filter(ABCD %in% c("A","B","C","D") & Etat=="vivant")
+     ##### 6.10 Attribution Qualite pour les arbres qui viennent de passer le seuil de 23 cm quand la qualité est founie en intrant #####
 
-    if (nrow(PlacQual)>0){
+      EvolQual <- AttribQualFct(EvolQual, seed_value=NULL)
 
-      TigesQual<-EvolQual(PlacQual,type_pe_Plac,prec,rid1,dens_tot0,Para.EvolQualTot)
-      suppressMessages(
-        Plac<-Plac %>%
-          left_join(TigesQual) %>%
-          mutate(ABCD=ABCD1) %>%
-          select(-ABCD1))
-
-    }
-
-    rm(PlacQual)
-
-    ##############################Attribution Qualite###########################
-
-   if (length(PlacOri$ABCD[which(PlacOri$ABCD %in% c("A","B","C","D") & PlacOri$Etat %in% c(10,12,40,42,30,32,50,52,70))])>0){
-
-     PlacSansQual<-Plac %>%
-      filter(GrEspece %in% c("BOJ","ERR","ERS","FEN","FIN","HEG") & (is.na(ABCD)==TRUE | is.null(ABCD)==TRUE | ABCD=="") & DHPcm1>=23.05 & DHPcm<23.05)
-
-    if (nrow(PlacSansQual)>0){
-
-      PlacSansQual<-AttribQualFct(PlacSansQual,rid1)
-
-      suppressMessages(
-        Plac<-Plac %>%
-          left_join(PlacSansQual) %>%
-          mutate(ABCD=ifelse(is.na(PredQual)==FALSE,PredQual,ABCD)) %>%
-          select(-PredQual))
-    }
+     # Remettre toutes les placettes
+     Plac <- left_join(Plac[,-c('ABCD')], EvolQual[,c("Placette","ArbreID","ABCD")], by=c("Placette","ArbreID"))
 
    }
 
 
 
-    ##################RECRUTEMENT##################################################
+   ##### 6.10 Recrutement: preparation du fichiers #####
 
-    ################# Nombre de  Recrues ##########################################
 
-    Rec<-data.frame("GrEspece"=c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB"))
+    # Préparation du fichier de recrutement
+    Rec1 <- data.frame("GrEspece"=c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB"),
+                       "GrEssRec"=c("feu","feu","rex","feu","ers","feu","rex","heg","rex","sab"))
+    # répéter Rec1 autant de fois que le nombre de placettes
+    # list_plot <- unique(Plac$Placette)
+    # Rec <- NULL
+    # for (i in 1:length(list_plot)){
+    #   Rec_temp <- Rec1 %>% mutate(Placette=list_plot[i])
+    #   Rec <- bind_rows(Rec,Rec_temp)
+    # }
+    # liste des placettes
+    list_plot <- Plac %>% select(Placette) %>% unique()
+    # Répéter les 10 especes pour chacune des placettes
+    Rec <- crossing(list_plot, Rec1)
 
+    ##### 6.11 Module de recrutement avec gaules #####
     if (RecruesGaules==1){
-      suppressMessages(
-        St_Ess_Ha<-Plac %>%
+
+        # préparation des variables #####
+        Rec <- Rec %>% select(-GrEssRec)
+
+        # on ajoute les especes manquantes et met leur variables à 0
+        RecGaules <- left_join(Rec, Nb_Gaules_Ha, by=c('Placette','GrEspece')) %>%
+          replace(is.na(.),0) %>%
+          group_by(Placette) %>%
+          mutate(Ratio = Nb_Gaules_Ess_Ha/sum(Nb_Gaules_Ess_Ha))
+
+        # ST marchandes et N march par placettes/espece
+        St_Ess_Ha <- Plac %>%
           filter(Etat=="vivant") %>%
-          mutate(Stm2ha=(DHPcm/200)^2*3.1416*Nombre/Sup_PE, NbHa=Nombre/Sup_PE) %>%
-          group_by(GrEspece) %>%
-          summarise(St_Ess_Ha=sum(Stm2ha),lnSt_Ess_Ha=log(sum(Stm2ha)+1),
-                    lnNb_Ess_Ha=log(sum(NbHa)+1),NbHa=sum(NbHa)))
+          mutate(Stm2ha = (DHPcm/200)^2*3.1416*Nombre/Sup_PE,
+                 NbHa = Nombre/Sup_PE) %>%
+          group_by(Placette, GrEspece) %>%
+          summarise(St_Ess_Ha = sum(Stm2ha),
+                    lnSt_Ess_Ha = log(sum(Stm2ha)+1),
+                    lnNb_Ess_Ha = log(sum(NbHa)+1),
+                    NbHa=sum(NbHa))
 
-      suppressMessages(
-        Rec<-Rec %>%
-          left_join(St_Ess_Ha) %>%
-          mutate(lnSt_Ess_Ha=ifelse(is.na(lnSt_Ess_Ha)==TRUE,log(1),lnSt_Ess_Ha),
-                 St_Ess_Ha=ifelse(is.na(St_Ess_Ha)==TRUE,0,St_Ess_Ha),
-                 NbHa=ifelse(is.na(NbHa)==TRUE,0,NbHa),
-                 lnNb_Ess_Ha=ifelse(is.na(lnNb_Ess_Ha)==TRUE,log(1),lnNb_Ess_Ha)))
+        # ajouter les especes manquantes au fichier des info marchandes
+        Rec <- left_join(Rec, St_Ess_Ha, by=c('Placette','GrEspece')) %>%
+          replace(is.na(.),0)
 
-      disp<-CovParmsGaules$ParameterEstimate[which(CovParmsGaules$SubModuleID==10 & CovParmsGaules$response=="disp")]
-
-      Rec$Pi<-rec_pi_Gaules(Rec,RecGaules,t,st_tot0,Iterj,RandomPlacGaules,Para.rec_gaules)
-
-      Rec$Count<-rec_count_Gaules(Rec,RecGaules,t,st_tot0,Iterj,RandomPlacGaules,Para.rec_gaules)
-
-      RecBase<-map_dfr(seq_len(151), ~Rec) %>% #dataframe de base pour le recrutement
-        arrange(GrEspece) %>%
-        mutate(m=rep(c(0,1:150),10))
+        # ajouter les variables à l'échelle de la placette
+        Rec <- Plac %>%
+          select(Placette, all_of(var_plot)) %>%
+          group_by(Placette) %>%
+          slice(1) %>%
+          left_join(Rec,by='Placette')
 
 
-      RecTot<-RecBase %>%
-        mutate(mu=rep(c(0,rep(1,150)),10)) %>%
-        mutate(Pr=(gamma(m+1/disp))/(gamma(1/disp)*factorial(m))*(1/(Count*disp+1))^(1/disp)*
-                 ((Count*disp)/(Count*disp+1))^m) %>%
-        mutate(Pr=(Pi+(1-Pi)*Pr)^(1-mu)*((1-Pi)*Pr)^mu) %>%
-        group_by(GrEspece) %>%
-        mutate(CumPr=ifelse(m==150,1,cumsum(Pr)))#Assure d'avoir un ,aximum de 150 recrues
-
-      suppressMessages(
-        RecSelect<-RecTot%>%
-          group_by(GrEspece) %>%
-          mutate(Alea=runif(1)) %>%
-          mutate(Valeur=CumPr >Alea) %>%
-          filter(Valeur=="TRUE") %>%
-          summarise(NbRecrues=first(m))%>%  #
-          filter(NbRecrues!=0))
-
-      ################## Mise à jour Nombre de gaules
-
-      predNbGaules<-round (nb_Gaules(Rec,RecGaules,t,st_tot0,altitude,latitude,trt,t0_aj_,
-                                     longitude,temp,pente,Iterj,RandomPlacGaules,Para.nb_gaules))
-
-      ################## Ratio Gaules
-      Ratio<-data.frame("GrEspece"=c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB"))
-
-      Ratio$Pi<-ratio_pi_Gaules(Ratio,Rec,RecGaules,t,st_tot0,latitude,longitude,
-                                Iterj,RandomPlacGaules,Para.ratio_gaules)
-
-      Ratio$Count<-ratio_count_Gaules(Ratio,Rec,RecGaules,t,st_tot0,latitude,longitude,
-                                      prec,trt,t0_aj_,Iterj,RandomPlacGaules,Para.ratio_gaules)
-
-      Ratio<-Ratio %>%
-        mutate(TotRatio=(1-Pi)*Count,FinalRatio=TotRatio/sum(TotRatio),
-               Nb_Gaules_Ha=as.numeric(predNbGaules)) %>%
-        mutate(Nb_Gaules_Ess_Ha=as.numeric(FinalRatio*Nb_Gaules_Ha),
-               lnNb_Gaules_Ess_Ha=as.numeric(log(Nb_Gaules_Ess_Ha+1)))
-
-      ########## Nb 6 et 8
-
-      Pred68ERS<-round((1-pi68ERS(RecGaules,Ratio,Iterj,RandomPlacGaules,Para.68_ERS))*
-                         count68ERS(RecGaules,Ratio,dens_tot0,grwd,Iterj,RandomPlacGaules,Para.68_ERS))
-
-      Pred68HEG<-round((1-pi68HEG(RecGaules,Ratio,Rec,Iterj,RandomPlacGaules,Para.68_HEG))*
-                         count68HEG(RecGaules,Ratio,Rec,Iterj,RandomPlacGaules,Para.68_HEG))*0.71 #Correction basé sur le biais moyen observé
-
-      Pred68BOJ<-round((1-pi68BOJ(RecGaules,Ratio,Rec,trt,t0_aj_,altitude,Iterj,RandomPlacGaules,Para.68_BOJ))*
-                         count68BOJ(RecGaules,Ratio,t,trt,t0_aj_,latitude,Iterj,RandomPlacGaules,Para.68_BOJ))
-
-      Pred68SAB<-round((1-pi68SAB(RecGaules,Ratio,dens_tot0,Iterj,RandomPlacGaules,Para.68_SAB))*
-                         count68SAB(RecGaules,Ratio,Rec,trt,t0_aj_,dens_tot0,Iterj,RandomPlacGaules,Para.68_SAB))
+        # Calculer le nombre de recrues
+        RecSelect <- rec_n_Gaules(Rec, RecGaules, t, CovParmsGaules, RandomPlacGaules, Para.rec_gaules, seed_value=NULL) %>% select(-Pr)
 
 
-      ##########Mise à jour Gaules
-
-      Nb68<-Ratio %>%
-        mutate(lnNb_Gaules_24_Ess_Ha=ifelse(GrEspece=="ERS",ifelse(Nb_Gaules_Ess_Ha[5]>Pred68ERS,log(Nb_Gaules_Ess_Ha[5]-Pred68ERS+1),0),
-                                            ifelse(GrEspece=="HEG",ifelse(Nb_Gaules_Ess_Ha[8]>Pred68HEG,log(Nb_Gaules_Ess_Ha[8]-Pred68HEG+1),0),
-                                                   ifelse(GrEspece=="BOJ",ifelse(Nb_Gaules_Ess_Ha[2]>Pred68BOJ,log(Nb_Gaules_Ess_Ha[2]-Pred68BOJ+1),0),
-                                                          ifelse(GrEspece=="SAB",ifelse(Nb_Gaules_Ess_Ha[10]>Pred68SAB,log(Nb_Gaules_Ess_Ha[10]-Pred68SAB+1),0),0))))) %>%
-
-        mutate(lnNb_Gaules_68_Ess_Ha=ifelse(GrEspece=="ERS",log(Pred68ERS+1),
-                                            ifelse(GrEspece=="HEG",log(Pred68HEG+1),
-                                                   ifelse(GrEspece=="BOJ",log(Pred68BOJ+1),
-                                                          ifelse(GrEspece=="SAB",log(Pred68SAB+1),0))))) %>%
-        select(GrEspece,Nb_Gaules_Ha,Nb_Gaules_Ess_Ha,lnNb_Gaules_Ess_Ha,lnNb_Gaules_24_Ess_Ha,lnNb_Gaules_68_Ess_Ha)
+       ###############################################
 
 
+        ##### 6.12 Module de mise à jour du nombre de gaules
 
-      Nb_Gaules_Ha<-Nb68 #########Remplace le fichier initial Nb_Gaules_Ha
-
-    }else{ ##############Début du module de recrutement sans les gaules
-
-      suppressMessages(
-        StEss_1014<-Plac %>%
-          filter(Etat=="vivant" & DHPcm <15.1) %>%
-          mutate(Stm2ha=(DHPcm/200)^2*3.1416*Nombre/Sup_PE) %>%
-          group_by(GrEspece) %>%
-          summarise(logst_ess_1014=log(sum(Stm2ha)+0.01)))
+        # Préparer fichier Gaules
+        Ratio <- data.frame("GrEspece"=c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB"))
+        Ratio <- crossing(list_plot, Ratio)
 
 
-
-      suppressMessages(
-        Rec<-Rec %>%
-          left_join(StEss_1014) %>%
-          mutate(logst_ess_1014=ifelse(is.na(logst_ess_1014)==TRUE,log(0.01),logst_ess_1014),
-                 GrEssRec=c("feu","feu","rex","feu","ers","feu","rex","heg","rex","sab")))
+        # Calcul du nombre de gaules par essences à partir de ratios
+        Ratio <- ratio_Gaules(Ratio, Rec, RecGaules, t, RandomPlacGaules, Para.nb_gaules, Para.ratio_gaules)
 
 
-      RandomRec<-RandPlacetteStep %>% filter(SubModuleID==5)
-
-      Rec$predPi<-(exp(rec_pi(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n)+RandomRec$RandomPlac))/
-        (1+exp(rec_pi(Rec,t,st_tot0,ntrt,t0_aj_,type_pe_Plac,Iterj,Para.rec_n)+RandomRec$RandomPlac))
-
-      Rec$predDelta<-exp(rec_delta(Rec,st_tot0,type_pe_Plac,ntrt,t0_aj_,Iterj,Para.rec_n))
-
-      Rec$predLambda<-exp(rec_lambda(Rec,type_pe_Plac,st_tot0,t,Iterj,Para.rec_n))
+        # Calcul du nombre de gaules 6 et 8 cm par essence
+        Nb68 <- gaules_68(Ratio, Rec, RecGaules, t, RandomPlacGaules, Para.68_ERS, Para.68_HEG, Para.68_BOJ, Para.68_SAB)
 
 
+        # Remplace le fichier initial Nb_Gaules_Ha pour la prochaine step
+        Nb_Gaules_Ha <- Nb68
+
+    }
+    ##### 6.13 Module du nombre de recrues sans les gaules #####
+    else {
+
+      # calcul de la ST des 10-14cm par essence
+      StEss_1014 <- Plac %>%
+        mutate(Stm2ha = ifelse(Etat=="vivant" & DHPcm <15.1, (DHPcm/200)^2*3.1416*Nombre/Sup_PE, 0)) %>%
+        group_by(Placette, GrEspece) %>%
+        summarise(logst_ess_1014 = log(sum(Stm2ha)+0.01))
+
+      Rec <- left_join(Rec, StEss_1014, by=c('Placette','GrEspece')) %>%
+        mutate(logst_ess_1014 = ifelse(is.na(logst_ess_1014)==TRUE, log(0.01), logst_ess_1014))
+
+      # ajouter les variables à l'échelle de la placette
+      Rec <- Plac %>%
+        select(Placette, all_of(var_plot)) %>%
+        group_by(Placette) %>%
+        slice(1) %>%
+        left_join(Rec,by='Placette')
+
+      # effet aléatoire de placette du module de probabilite de recrue
+      RandomRec <- RandPlacetteStep %>% filter(SubModuleID==5)
+
+      # Calculer le nombre de recrues par groupe d'essences
+      RecSelect <- rec_n(Rec, t, Para.rec_n, RandomRec, seed_value=NULL)
 
 
-      RecBase<-map_dfr(seq_len(151), ~Rec) %>% #dataframe de base pour le recrutement
-        arrange(GrEspece) %>%
-        mutate(m=rep(c(0:150),10))
-
-
-      RecTot<-RecBase %>%
-        mutate(mu=rep(c(0,rep(1,150)),10)) %>%
-        mutate(Pr=predPi^(1-mu)*((1-predPi)*(exp(-predDelta*m^predLambda)-
-                                               exp(-predDelta*(m+1)^predLambda))/exp(-predDelta))^mu) %>%
-        group_by(GrEspece) %>%
-        mutate(CumPr=cumsum(Pr))
-
-      suppressMessages(
-        RecSelect<-RecTot%>%
-          group_by(GrEspece) %>%
-          mutate(Alea=runif(1)) %>%
-          mutate(Valeur=CumPr >Alea) %>%
-          filter(Valeur=="TRUE") %>%
-          summarise(NbRecrues=first(m))%>%
-          filter(NbRecrues!=0))
     }
 
 
-    Plac<-Plac %>%
-      select(Placette,Annee,ArbreID,NoArbre,Nombre,GrEspece,Espece,Etat1,DHPcm1,
-             vigu1,prod1,ABCD,Iter) ######Mise en forme de Plac pour fusion avec recrues
+    # Mise en forme de Plac pour fusion avec recrues
+    Plac <- Plac %>%
+      select(-c(DHPcm, Etat, vigu0, prod0))
 
+    # Si fichier vide: Arret simulation et écris les valeurs dans un fichier log
     if (nrow(Plac)==0){
 
       break
     }
-
     if (nrow(Plac[which(Plac$Etat1=="vivant"),])==0){
 
       break
     }
-    ###### Arrete simulation et écris les valeurs dans un fichier log ##############
 
 
-    if (nrow(RecSelect)>=1){  ######Si présence de recrues sinon on saute cette partie de code
+    ##### 6.14 Si au moins une recrues de générées, préparer le fichier #####
+    if (nrow(RecSelect)>=1){
 
+      # aller chercher le dernier numéro d'arbre de chaque placette
+      Plac_last <- Plac %>% group_by(Placette) %>% slice_tail() %>% select(Placette, ArbreID) %>% rename(ArbreID_last=ArbreID)
+
+      # numéroter les recrues
       suppressMessages(
-        RecSelect<-RecSelect %>%
-          group_by(GrEspece) %>%
+        RecSelect <- RecSelect %>% left_join(Plac_last, by='Placette') %>%
+          group_by(Placette,GrEspece) %>%
           slice(rep(1:n(), first(NbRecrues))) %>%
-          ungroup %>%
-          mutate(ArbreID=c(1:n())+last(Plac$ArbreID)))
+          group_by(Placette) %>%
+          mutate(ArbreID=c(1:n())+ArbreID_last) %>%
+          ungroup()
+        )
+
+      # ajouter les variable à l'échelle de la placette au fichier des recrues
+      RecSelect <- Plac %>%
+        select(Placette, all_of(var_plot)) %>%
+        group_by(Placette) %>%
+        slice(1) %>%
+        right_join(RecSelect, by='Placette') %>%
+        select(-ArbreID_last, -NbRecrues)
 
 
-      #############DHP Recrues #################################################
-      RandomRecDhp<-RandPlacetteStep %>% filter(SubModuleID==6)
+      ##### 6.15 Module DHP Recrues #####
 
-      varRecDhp<-CovParms$ParameterEstimate[which(CovParms$CovParm=="sigma2_res")]
+      # paramètres pour dhp des recrues
+      RandomRecDhp <- RandPlacetteStep %>% filter(SubModuleID==6)
+      varRecDhp <- CovParms$ParameterEstimate[which(CovParms$CovParm=="sigma2_res")]
+      theta <- CovParms$ParameterEstimate[which(CovParms$CovParm=="theta")]
 
-      theta<-CovParms$ParameterEstimate[which(CovParms$CovParm=="theta")]
-
-      RandomRecProd<-RandPlacetteStep %>% filter(SubModuleID==8)
 
       # on applique la fonction du DHP des recrues
-
-      RecSelect<-RecSelect %>%
-        mutate(pred_dhp=rec_dhp(RecSelect,st_tot0,dens_tot0,t,ntrt,Iterj,Para.rec_dhp),
-               eijk=rnorm(n(),mean=0,sd=sqrt(varRecDhp*pred_dhp^theta)),
-               DHPcm1=((pred_dhp+RandomRecDhp$RandomPlac+RandomRecDhp$RandomStep+eijk)^2+90)/10,
-               DHPcm1=ifelse(DHPcm1>=9.1,DHPcm1,9.1)) %>%
-        select(ArbreID,GrEspece,DHPcm1)
-      RecSelect$DHPcm1<-RecSelect$DHPcm1[,1]
-
-      ########################Vigueur des recrues#####################################
-      RandomRecVig<-RandPlacetteStep %>% filter(SubModuleID==7)
-
-      RecSelect<-RecSelect %>%
-        mutate(pred_vig=rec_vig(RecSelect,latitude,Iterj,Para.rec_vig),
-               AleaVig=runif(n()),
-               predVigRand=exp(pred_vig+RandomRecVig$RandomPlac+RandomRecVig$RandomStep)/
-                 (1+exp(pred_vig+RandomRecVig$RandomPlac+RandomRecVig$RandomStep)),
-               vigu1=ifelse(AleaVig<=predVigRand,"ViG","NONVIG")) %>%
-        select(ArbreID,GrEspece,DHPcm1,vigu1)
-      RecSelect$vigu1<-RecSelect$vigu1[,1]
+      RecSelect <- rec_dhp(RecSelect, t, Para.rec_dhp, RandomRecDhp, varRecDhp, theta, seed_value=NULL)
 
 
-      #######################Produit des recrues#####################################
-      RandomRecProd<-RandPlacetteStep %>% filter(SubModuleID==8)
+      ##### 6.16 Module Vigueur des recrues #####
 
-      RecSelect<-RecSelect %>%
-        mutate(pred_prod=rec_prod(RecSelect,type_pe_Plac,rid1,Iterj,Para.rec_prod),
-               AleaProd=runif(n()),
-               predProdRand=exp(pred_prod+RandomRecProd$RandomPlac+RandomRecProd$RandomStep)/
-                 (1+exp(pred_prod+RandomRecProd$RandomPlac+RandomRecProd$RandomStep)),
-               prod1=ifelse(GrEspece %in% c("SAB","RES","EPX"),"resineux",
-                            ifelse(GrEspece=="AUT"|(vigu1=="NONVIG"),"pate",
-                                   ifelse(AleaProd<=predProdRand,"sciage","pate")))) %>%
-        select(ArbreID,GrEspece,DHPcm1,vigu1,prod1)
+      RandomRecVig <- RandPlacetteStep %>% filter(SubModuleID==7)
 
-      #########Ajout des résidus des recrues
+      # calculer la prob vigueur
+      RecSelect <- rec_vig(RecSelect, Para.rec_vig, RandomRecVig, seed_value=NULL)
+
+
+      ##### 6.17 Module Produit des recrues #####
+
+      RandomRecProd <- RandPlacetteStep %>% filter(SubModuleID==8)
+
+      # calculer la prob vigueur
+      RecSelect <- rec_prod(RecSelect, Para.rec_prod, RandomRecProd, seed_value=NULL)
+
+
+      ##### 6.18 Résidus des recrues #####
 
       # Résidus de l'arbre
       if (k < Horizon){
@@ -780,122 +636,174 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, ListeIter, AnneeDep, Horiz
         varcov <- matrix(f(varcov$i, varcov$j, Residual, Gamma, Rho), nrow=Horizon-k)
 
         ResidusRec <- matrix(rockchalk::mvrnorm(n=nrow(RecSelect), mu=rep(0,Horizon-k), Sigma = varcov, empirical=F),ncol=(Horizon-k))
-       # ResidusRec <- rockchalk::mvrnorm(n=nrow(RecSelect), mu=rep(0,Horizon-k), Sigma = varcov, empirical=F)
-        ResidusRec0<-matrix(0,nrow=nrow(RecSelect),ncol=k) # colonnes de 0 pour les steps passés
-        ResidusRec <- cbind(RecSelect$ArbreID, ResidusRec0, ResidusRec)
+        # ResidusRec <- rockchalk::mvrnorm(n=nrow(RecSelect), mu=rep(0,Horizon-k), Sigma = varcov, empirical=F)
+        ResidusRec0 <- matrix(0,nrow=nrow(RecSelect),ncol=k) # colonnes de 0 pour les steps passés
+        ResidusRec <- cbind(RecSelect$Placette, RecSelect$ArbreID, ResidusRec0, ResidusRec)
 
-         Residus<-rbind(Residus,ResidusRec)
-
+        Residus <- rbind(Residus, ResidusRec)
 
       }
-      ########Ajout des recrues au fichier des Placettes
-      RecSelect<-RecSelect %>%
-        mutate(Placette=Placette,Annee=AnneeDep+k*t,NoArbre=NA,
-               Espece=ifelse(GrEspece %in% c("BOJ","ERR","ERS","HEG","SAB"),GrEspece,NA),
-               Etat1="recrue", Nombre=Sup_PE/0.25, Iter=PlacOri$Iter[1])
 
-      Plac<-Plac %>%
+      ##### 6.19 Ajout des recrues au fichier des Placettes #####
+
+      RecSelect <- RecSelect %>%
+        mutate(Annee = Annee_Inventaire+k*t,
+               NoArbre = NA,
+               Espece = ifelse(GrEspece %in% c("BOJ","ERR","ERS","HEG","SAB"), GrEspece, NA),
+               Etat1 = "recrue",
+               Nombre = Sup_PE/0.25, # le modèle de recrutement prédit un nombre de recrues dans 1/4 ha (2500 m2), il faut ramener le nombre en fct de la superficie de la placette
+               # dans Capsis, c'est ceil(Nombre), et la dernière recrue générée est une fraction pour tenir compte qu'avec ceil, on en génère trop (le ceil dans capsis sert surtout à fsaire une boucle sur le nombre de recrue, il faut donc un entier)
+               # Après avoir parler avec Hugues, on a décidé simplement de ne pas faire Ceil, de laisser les fractions de recrues
+               Iter = Iteration) %>%
+        select(-pred_dhp, -xb_rec_vig, -prob_vig_rec, -xb_rec_prod, -prob_prod_rec)
+
+      # ajouter les recrues aux autres arbre, ne garder que les variables essentielles
+      # les variables à l'échelle de l'arbres
+
+      #names(Plac)
+      #names(RecSelect)
+      #setdiff(names(Plac), names(RecSelect))
+      Plac <- Plac %>% #select(-aam, -xb_mort, -prob_mort, -xb_acc, -pred_acc, -xb_vig, -prob_vig, -xb_prod, -prob_prod) %>%
         bind_rows(RecSelect)
 
-    }  #######Fin du recrutement
+      # ABCD et MSCR pas dans le fichier des recrues
+
+    } # Fin du recrutement
 
 
-    # on ajoute les donnees du pas de simulation en cours aux autres pas de simulation pour la placette
+    ##### 6.20 S'il n'y a pas de recrues prédites #####
+    # else{
+    #   Plac[, aam := NULL]
+    # }
 
+
+    ##### 6.21 Préparation du fichier de la fin de step #####
+
+    # enlever les variables
+    #Plac <- Plac %>% select(-aam, -xb_mort, -prob_mort, -xb_acc, -pred_acc, -xb_vig, -prob_vig, -xb_prod, -prob_prod, -Intercept1, -Intercept2, -Intercept3, -PredQual, -ABCD_orig)
+    #Plac <- Plac %>% select(-aam, -xb_mort, -prob_mort, -xb_acc, -pred_acc, -xb_vig, -prob_vig, -xb_prod, -prob_prod)
+    # Plac <- Plac %>% select(-aam, -st_tot0, -dens_tot0, -t0_aj_, -fact_red)
+    Plac <- Plac %>% select(-aam, -st_tot0, -dens_tot0, -fact_red)
+
+
+    # Retrait des residus des arbres morts
     if (k < Horizon){
-      m<-which(Plac$Etat1!="mort",arr.ind = TRUE)
-      Residus<-matrix(Residus[m,],nrow=length(m), ncol=Horizon+1)  #####Enlève les arbres morts des résidus pour la prochaine step de croissance
+      m <- which(Plac$Etat1!="mort", arr.ind = TRUE) # où sont les vivants
+      #Residus <- matrix(Residus[m,], nrow=length(m), ncol=Horizon+1)
+      Residus <- Residus[m,]
     }
 
-
-    Plac<-Plac%>%
+    # Renommer les variables
+    Plac <- Plac %>%
       rename(Etat=Etat1,DHPcm=DHPcm1,vigu0=vigu1,prod0=prod1)
 
 
+    ##### 6.22 Préparation de la fin de step des gaules #####
+
     if (RecruesGaules==1){
-      Plac$Nb_Gaules_Ha<-sum(Nb_Gaules_Ha$Nb_Gaules_Ess_Ha)
-      Plac$Nb_Gaules_ERS<-Nb_Gaules_Ha$Nb_Gaules_Ess_Ha[which(Nb_Gaules_Ha$GrEspece=="ERS")]
-      Plac$Nb_Gaules_HEG<-Nb_Gaules_Ha$Nb_Gaules_Ess_Ha[which(Nb_Gaules_Ha$GrEspece=="HEG")]
-      Plac$Nb_Gaules_BOJ<-Nb_Gaules_Ha$Nb_Gaules_Ess_Ha[which(Nb_Gaules_Ha$GrEspece=="BOJ")]
-      Plac$Nb_Gaules_SAB<-Nb_Gaules_Ha$Nb_Gaules_Ess_Ha[which(Nb_Gaules_Ha$GrEspece=="SAB")]
-      Plac$Nb_Gaules_68_Ha<-sum(exp(Nb_Gaules_Ha$lnNb_Gaules_68_Ess_Ha)-1)
-      Plac$Nb_Gaules_68_ERS<-exp(Nb_Gaules_Ha$lnNb_Gaules_68_Ess_Ha[which(Nb_Gaules_Ha$GrEspece=="ERS")])-1
-      Plac$Nb_Gaules_68_HEG<-exp(Nb_Gaules_Ha$lnNb_Gaules_68_Ess_Ha[which(Nb_Gaules_Ha$GrEspece=="HEG")])-1
-      Plac$Nb_Gaules_68_BOJ<-exp(Nb_Gaules_Ha$lnNb_Gaules_68_Ess_Ha[which(Nb_Gaules_Ha$GrEspece=="BOJ")])-1
-      Plac$Nb_Gaules_68_SAB<-exp(Nb_Gaules_Ha$lnNb_Gaules_68_Ess_Ha[which(Nb_Gaules_Ha$GrEspece=="SAB")])-1
+
+      # transposer le fichier pour avoir les essences en colonne
+      Nb_Gaules_Ha_tr1 <- Nb_Gaules_Ha %>%
+        group_by(Placette) %>%
+        mutate(Nb_Gaules_Ha = sum(Nb_Gaules_Ess_Ha)) %>% # recalculer le total des gaules, car à cause des arrondis, la somme des essence de ne plus tout à fait Nb_Gaules_Ha
+        filter(GrEspece %in% c('ERS','HEG','BOJ','SAB')) %>%
+        select(Placette, Nb_Gaules_Ha, GrEspece, Nb_Gaules_Ess_Ha) %>%
+        group_by(Placette, Nb_Gaules_Ha) %>%
+        pivot_wider(names_from = GrEspece, names_prefix = 'Nb_Gaules_', values_from = Nb_Gaules_Ess_Ha)
+
+      Nb_Gaules_Ha_tr2 <- Nb_Gaules_Ha %>% filter(GrEspece %in% c('ERS','HEG','BOJ','SAB')) %>% select(Placette, GrEspece, Nb_Gaules_68_Ess_Ha) %>%
+        group_by(Placette) %>%
+        pivot_wider(names_from = GrEspece, names_prefix = 'Nb_Gaules_68_', values_from = Nb_Gaules_68_Ess_Ha)
+
+      #Plac$Nb_Gaules_68_Ha<-sum(exp(Nb_Gaules_Ha$lnNb_Gaules_68_Ess_Ha)-1) # je ne mettrais pas cette variable, car on n'a pas le nombre de 68 pour toutes les essences, alors le total n'est pas représentatif
+      Nb_Gaules_Ha_tr <- left_join(Nb_Gaules_Ha_tr1, Nb_Gaules_Ha_tr2, by='Placette')
+      Plac <- Plac %>% select(-contains('Nb_Gaules_'))
+      Plac <- left_join(Plac, Nb_Gaules_Ha_tr, by='Placette')
 
     }
 
+    # on ajoute les donnees du pas de simulation en cours aux autres pas de simulation pour la placette
     outputTot <- bind_rows(outputTot, Plac)
 
 
   }  # fin de la boucle des simulations
 
 
-  ParaConvVigMSCRlist=list(Para)
 
+  #### 7. Traitement MSRC ####
+
+  ##### Ceci aurait pu être mis en dehors de la fct SaMARE, directement dans la fonction principale, à la fin de toutes les itérations
+
+  ##### 7.1 S'il y a eu simulation #####
   if (!is.null(outputTot)){
 
+    setDT(outputTot)
+    setDT(outputInitial)
 
+    # enlever les variables de trop
+    # outputTot[, c("Annee_Inventaire", "trt", "ntrt", "t0", "pente", "type_pe_Plac", "dom", "rid1","vegp",
+    #               "latitude", "longitude", "altitude", "reg", "teco", "prec", "temp", "grwd", "MSCR", "Sup_PE") := NULL]
+    outputTot[, c("pente", "type_pe_Plac", "dom", "rid1","vegp",
+                  "latitude", "longitude", "altitude", "reg", "teco", "prec", "temp", "grwd", "MSCR", "Sup_PE") := NULL] #  "trt", "ntrt", "t0", "Annee_Inventaire"
+
+
+    ###### 7.1.1 Si le fichier initial contient des valeurs manquantes dans MSCR ######
+
+
+    # on supprime la colonne et on va estimer le MSCR pour tous les pas de simulation, incluant la step 0
     if (any(is.na(outputInitial$MSCR))){
 
-      outputInitial<-outputInitial %>% select(-MSCR)
 
-      suppressMessages(
-        outputTot <- outputTot %>%
-          mutate(Residuel=0) %>%
-          bind_rows(outputInitial,.))
+      outputInitial[, MSCR := NULL]
+      outputTot[, Residuel := 0]
+      outputTot <- rbind(outputInitial, outputTot, fill=TRUE)
 
-      MSCR<-outputTot %>%
-        group_by(Placette,Annee,ArbreID,Residuel,Iter) %>%
-        nest() %>%
-        mutate(MSCR = mapply(AttribMSCR,data,MoreArgs=ParaConvVigMSCRlist)) %>%
-        unnest(MSCR) %>%
-        select(-data)
-
-      suppressMessages(
-        outputTot <- outputTot %>%
-          left_join(MSCR))
-    }else{
-
-      MSCR<-outputTot %>%
-        group_by(Placette,Annee,ArbreID,Iter) %>%
-        nest() %>%
-        mutate(MSCR = mapply(AttribMSCR,data,MoreArgs=ParaConvVigMSCRlist)) %>%
-        unnest(MSCR) %>%
-        select(-data)
-
-      suppressMessages(
-        outputTot <- outputTot %>%
-          left_join(MSCR) %>%
-          mutate(Residuel=0) %>%
-          bind_rows(outputInitial,.))
+      # attribuer une valeurs MSCR
+      MSCR <- AttribMSCR(outputTot, Para) %>% select(-contains("pred"), -contains("prob"), -Alea)
+      outputTot <- MSCR
 
     }
+    ###### 7.1.2 Si la colonne MSCR ne contient aucune données manquantes dans le data initial ######
 
-  }else{
+    # on va estimer MSCR seulement pour les step>0
+    else{
 
+      outputTot[, Residuel := 0]
+      MSCR <- AttribMSCR(outputTot, Para) %>% select(-contains("pred"), -contains("prob"), -Alea)
+
+     # ajouter le data des valeurs de départ
+      outputTot <- rbind(outputInitial, MSCR, fill=TRUE)
+    }
+
+  }
+
+  ##### 7.2 S'il n'y a pas eu de simulation #####
+
+  else{ # puisque le nombre de pas de simulation doit être au moins 1, il y aura toujours un fichier outputTot non NULL
+
+    ###### 7.2.1 Si le fichier initial contient des valeurs manquantes dans la colonne MSCR ######
+
+    # on supprime la colonne et on va estimer le MSCR pour tous
     if (any(is.na(outputInitial$MSCR))){
 
-      outputTot <- outputInitial %>% select(-MSCR)
+      # supprimer MSCR
+      outputTot <- outputInitial[, MSCR := NULL]
 
-      MSCR<-outputTot %>%
-        group_by(Placette,Annee,ArbreID,Residuel,Iter) %>%
-        nest() %>%
-        mutate(MSCR = mapply(AttribMSCR,data,MoreArgs=ParaConvVigMSCRlist)) %>%
-        unnest(MSCR) %>%
-        select(-data)
+      MSCR <- AttribMSCR(outputTot, Para) %>% select(-contains("pred"), -contains("prob"), -Alea)
+      outputTot <- MSCR
 
-      suppressMessages(
-        outputTot <- outputTot %>%
-          left_join(MSCR))
-    }else{
+    }
+    ###### 7.2.2 Si la colonne MSCR n'a pas de données manquantes ######
 
+    else{
+      # retourner le fichier initial directement
       outputTot <- outputInitial
 
     }
 
   }
+
+  setDT(outputTot)
 
   return(outputTot)
 

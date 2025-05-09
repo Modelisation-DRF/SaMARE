@@ -1,4 +1,3 @@
-
 #' Vérifier la présence des colonnes obligatoires dans le fichier d'arbres
 #'
 #' La fonction \code{trouver_noms_absents} vérifie si toutes les colonnes obligatoires

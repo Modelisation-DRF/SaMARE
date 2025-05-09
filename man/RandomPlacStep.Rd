@@ -14,7 +14,7 @@ lien avec leur module respectif.}
 \item{Data}{Un dataframe contenant les arbres à simuler pour lesquels la
 placette sera extraite afin d'y générer des effets aléatoire.}
 
-\item{NbIter}{Nombre d'itérations de la simulation.}
+\item{NbIter}{Nombre d'iterations à effectuer (>=2 et un nombre pair).}
 
 \item{NbPeriodes}{Nombre de périodes pour lesquelles les effets aléatoires
 seront simulés.}

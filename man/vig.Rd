@@ -3,30 +3,25 @@
 \name{vig}
 \alias{vig}
 \title{Fonction qui prévoit l'évolution de la classe de vigueur des arbres.
-La vigueur peut prendre 2 valeurs soit "vigoureux" ou "non-vigoureux".}
+La vigueur peut prendre 2 valeurs soit "vigoureux" ou "non-vigoureux"}
 \usage{
-vig(Vig, type_pe_Plac, rid1, Iterj, Para.vig)
+vig(Vig, Para.vig, RandomVig, seed_value = NULL)
 }
 \arguments{
-\item{Vig}{Un dataframe qui contient les arbres pour lesquels on veut
-prévoir l'évolution de la classe de vigueur des arbres.}
-
-\item{type_pe_Plac}{Variable indicatrice de la taille de la placette soit
-400 m2, soit entre 2500 et 5000 m2 inclusivement ou
-une autre dimension.}
-
-\item{rid1}{variable de groupement de variables écologiques.}
-
-\item{Iterj}{Itération en cours.}
+\item{Vig}{Un dataframe qui contient une liste d'arbres avec les colonnes Placette, GrEspece, DHPcm, vigu0, type_pe_Plac, rid1, aam}
 
 \item{Para.vig}{Un dataframe  contenant les parametres du module d'évolution
 de la vigueur des arbres.}
+
+\item{RandomVig}{Un dataframe  contenant les effets aléatoires du module d'évolution
+de la vigueur des arbres.}
+
+\item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
 }
 \value{
-Retourne le prédicteur linéaire de l'équation de la probabilité que
-        l'arbre soit de classe "vigoureux".
+Retourne Vig avec les colonnes vigu1 et prob_vig et xb_vig.
 }
 \description{
 Fonction qui prévoit l'évolution de la classe de vigueur des arbres.
-La vigueur peut prendre 2 valeurs soit "vigoureux" ou "non-vigoureux".
+La vigueur peut prendre 2 valeurs soit "vigoureux" ou "non-vigoureux"
 }

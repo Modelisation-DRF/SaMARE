@@ -2,29 +2,27 @@
 % Please edit documentation in R/Sortie_Dendro_Samare.R
 \name{SortieDendroSamare}
 \alias{SortieDendroSamare}
-\title{Fonction qui structure un dataframe de sortie pour lequels on rapporte pour chaque
-placette, annee et groupe d'espèce le diamètre quadratique moyen,
-la surface terrière, le volume et la hauteur dominante.
-cette function prend en parametre un daframe qui a déja été simullé}
+\title{Fonction qui structure un dataframe créé par SimulSAMARE pour lequel on rapporte pour chaque
+placette, annee et groupe d'espèce la moyenne des itérations (et l'écart-type) du diamètre quadratique moyen,
+de la surface terrière, du volume et de la hauteur dominante, pour les vivants.
+La fonction calcul aussi les accroissements survivant, mort, recrue, brut et net.}
 \usage{
 SortieDendroSamare(SimulHtVol, simplifier = FALSE)
 }
 \arguments{
-\item{SimulHtVol}{Un dataframe contenant les résultats de simulation pour chacune des
-iterations du simulateur SaMARE. Typiquement un résultat retourné
-par la fonction "SimulSaMARE".}
+\item{SimulHtVol}{un dataframe créé par  \code{SimulSAMARE}.}
 
 \item{simplifier}{Un booléen indiquant si les résultats doivent être simplifiés pour ne garder
 que la première et la dernière année de la simulation. Par défaut, \code{FALSE}.}
 }
 \value{
-Retourne un dataframe contenant par placette, groupe d'espèce, année
-         et iteration la surface terrière le volume marchand brut, le diamètre
-         moyen quadratique et la hauteur dominante.
+Retourne un dataframe contenant la moyenne des itérations par placette, groupe d'espèces, année
+         de la surface terrière, du volume marchand brut, du diamètre moyen quadratique et de la hauteur dominante.
+         Les 10 groupes d'especes de SaMARE seront présentes dans chaque placette/annee
 }
 \description{
-Fonction qui structure un dataframe de sortie pour lequels on rapporte pour chaque
-placette, annee et groupe d'espèce le diamètre quadratique moyen,
-la surface terrière, le volume et la hauteur dominante.
-cette function prend en parametre un daframe qui a déja été simullé
+Fonction qui structure un dataframe créé par SimulSAMARE pour lequel on rapporte pour chaque
+placette, annee et groupe d'espèce la moyenne des itérations (et l'écart-type) du diamètre quadratique moyen,
+de la surface terrière, du volume et de la hauteur dominante, pour les vivants.
+La fonction calcul aussi les accroissements survivant, mort, recrue, brut et net.
 }
