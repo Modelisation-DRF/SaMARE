@@ -67,6 +67,7 @@ dqm <- function(stm2ha, nbha) {
 calcul_var_dendro <- function(data, dhp, voldm3, nombre, superficie, group_by_vars=NULL){
 
   # data=fic; dhp=dhpcm; voldm3=vol; nombre=nb; superficie=sup; group_by_vars=c('placette','essence')
+  # data=fic; dhp=dhpcm; voldm3=vol; nombre=nb; superficie=sup; group_by_vars=NULL
 
   # convertir les noms en symboles
   group_syms <- syms(group_by_vars)
@@ -91,6 +92,32 @@ calcul_var_dendro <- function(data, dhp, voldm3, nombre, superficie, group_by_va
 
 }
 
+
+
+# calcul_var_dendro2 <- function(data, dhp, voldm3, nombre, superficie, group_by_vars=NULL){
+#
+#   # data=fic; dhp=dhpcm; voldm3=vol; nombre=nb; superficie=sup; group_by_vars=c('placette','essence')
+#
+#   setDT(data)
+#
+#   # Préparer la variable `grouping`
+#   grouping <- if (!is.null(group_by_vars) && length(group_by_vars) > 0) group_by_vars else NULL
+#
+#   nombre_col <- rlang::as_name(rlang::enquo(nombre))
+#   superficie_col <- rlang::as_name(rlang::enquo(superficie))
+#   voldm3_col <- rlang::as_name(rlang::enquo(voldm3))
+#   dhp_col <- rlang::as_name(rlang::enquo(dhp))
+#
+#   data1 <- data[, .(
+#       Ti_ha    = sum(nbha(get(nombre_col), get(superficie_col)), na.rm = FALSE),
+#       ST_m2ha  = sum(stm2ha(get(dhp_col), get(nombre_col), get(superficie_col)), na.rm = FALSE),
+#       Vol_m3ha = sum(volm3ha(get(voldm3_col), get(nombre_col), get(superficie_col)), na.rm = FALSE)
+#     ), by = grouping][, DQM_cm := dqm(ST_m2ha, Ti_ha)]
+#
+#
+#   return(data1)
+#
+# }
 
 #' Calculer la hauteur dominante de placettes
 #'
@@ -139,6 +166,45 @@ calcul_hdom <- function(data, ht, nombre, superficie, group_by_vars=NULL){
 
 }
 
+# calcul_hdom2 <- function(data, ht, nombre, superficie, group_by_vars=NULL){
+#
+#   setDT(data)
+#
+#   # Définir les colonnes dynamiques
+#   grp_cols <- group_by_vars  # caractère
+#   ht_col <- rlang::as_name(rlang::enquo(ht))
+#   nombre_col <- rlang::as_name(rlang::enquo(nombre))
+#   superficie_col <- rlang::as_name(rlang::enquo(superficie))
+#
+#   # Ajouter la colonne "nb"
+#   data[, nb := nbha(get(nombre_col), get(superficie_col))]
+#
+#   # Trier
+#   if (length(grp_cols) > 0) {
+#     setorderv(data, c(grp_cols, ht_col), order = c(rep(1, length(grp_cols)), -1))
+#   } else {
+#     setorderv(data, ht_col, -1)
+#   }
+#
+#   # Préparer la variable `grouping`
+#   grouping <- if (length(grp_cols) > 0) grp_cols else NULL
+#
+#   # Faire les calculs dans un seul appel
+#   data1 <- data[, {
+#     NbCum <- cumsum(nb)
+#     NbCum_prec <- shift(NbCum, fill = 0)
+#     select_id <- ifelse(NbCum_prec >= 100 & NbCum > 100, FALSE, TRUE)
+#     poids <- ifelse(NbCum <= 100, nb, 100 - NbCum_prec)
+#     poids[select_id == FALSE] <- 0
+#     nb_tige <- round(sum(poids, na.rm = TRUE), 0)
+#     HDom_m <- sum(get(ht_col) * poids, na.rm = TRUE) / sum(poids, na.rm = TRUE)
+#     if (nb_tige < 100) HDom_m <- NA_real_
+#     .(HDom_m = HDom_m)
+#   }, by = grouping]
+#
+#   return(data1)
+#
+#}
 
 
 

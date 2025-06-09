@@ -1064,6 +1064,16 @@ if(any(is.na(data$Placette))){
 
 }
 
+
+
+
+#' Fonction pour vérifier l'année d'inventaire
+#' Si Annee_invenaire n'est pas dans le fichier, la créer.
+#' Vérifie que tous les arbres d'une placette ont la même année inventaire
+#' Vérifie si la valeur de l'année d'inventaire n'est pas manquante
+#'
+#' @param data fichier des arbres
+#' @export
 valide_Annee_depart <- function(data){
 
   if (!all(c("Annee_Inventaire") %in% names(data))) {
@@ -1075,7 +1085,7 @@ valide_Annee_depart <- function(data){
   placette_a_modifie <- data %>%
     group_by(Placette) %>%
     reframe(annees_uniques = n_distinct(Annee_Inventaire, na.rm = TRUE)) %>%
-    filter(annees_uniques > 1) %>%
+    filter(annees_uniques > 1) %>%  # est-ce que toutes les lignes d'une placette on la même annee
     pull(Placette)
 
   # Appliquer les changements au dataframe

@@ -152,6 +152,7 @@ test_that("La fonction calcul_var_dendro fonctionne ok sans group_by_vars", {
 
 })
 
+
 ########################################################
 ########################################################
 
@@ -191,5 +192,6 @@ test_that("La fonction calcul_hdom fonctionne ok sans group_by_vars", {
   expect_equal(round(obtenu$HDom_m,2), 11.12)
 
 })
+
 
 

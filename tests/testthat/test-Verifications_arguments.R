@@ -43,5 +43,8 @@ test_that("La fonction verifArguments() fonctionne tel qu'attendu sans erreur", 
   chk = verifArguments(NbIter=2, Horizon=1, RecruesGaules=0, Data=Test, Gaules=, MCH=0, cubage=F)
   expect_equal(chk, "ok")
 })
-
+# test_that("La fonction verifArguments() fonctionne tel qu'attendu pour multi_session", {
+#   chk = verifArguments(NbIter=2, Horizon=2, RecruesGaules=0, Data=Test, Gaules=, MCH=0, cubage=TRUE, multi_session='oui')
+#   expect_equal(chk, "multi_session doit etre TRUE ou FALSE")
+# })
 
