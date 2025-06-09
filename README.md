@@ -31,4 +31,4 @@ install_github("https://github.com/Modelisation-DRF/SaMARE")
 | 2025-04-16 |	2.3.2 |		Version avec limitation de la variable temps après coupe |
 | 2025-04-16 |	2.3.3 |		Correction de la prévision du nombre de gaules de hêtre de 6 et 8 cm |
 | 2025-05-09 |	3.0.0 |		Version optimisée |
-| 2025-06-04 |	3.0.1 |		Ajout de verification sur les colonnes et l'utilisation du package ExtractMap, ajout multisession optionel, ajout des gaules au temps 0 |
+| 2025-06-04 |	3.0.1 |		Ajout de verification sur les colonnes et l'utilisation du package ExtractMap, ajout des gaules au temps 0 |
