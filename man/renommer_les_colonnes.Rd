@@ -7,10 +7,11 @@
 renommer_les_colonnes(data)
 }
 \arguments{
-\item{data}{Un dataframe, représentant le fichier des arbres, dont les colonnes doivent être renommées et réorganisées.}
+\item{data}{Un dataframe, représentant le fichier des arbres, dont les colonnes doivent être renommées}
 }
 \description{
-La fonction \code{renommer_les_colonnes} renomme les colonnes d'un dataframe
+La fonction \code{renommer_les_colonnes} renomme les colonnes d'un dataframe.
+Les noms doivent être ceux attendus avec seulement des différences au niveau des minuscules et majuscules.
 }
 \details{
 La fonction suit les étapes suivantes :
@@ -22,18 +23,4 @@ La fonction suit les étapes suivantes :
   \item Si une correspondance est trouvée, renommer la colonne existante avec le nom souhaité.
   \item Retourner le dataframe avec les noms de colonnes mis à jour.
 }
-}
-\examples{
-\dontrun{
-# Supposons que nous ayons un dataframe data avec les colonnes suivantes :
-# "placette", "noarbre", "espece", "etat", "dhpcm", "vigueur", "nombre",
-# "sup_pe", "annee_coupe", "latitude", "longitude", "altitude", "pente",
-# "ptot", "tmoy", "grw_days", "reg_eco", "type_eco", "mscr", "ntrt", "abcd"
-
-# Appel de la fonction
-# data_renomme <- renommer_les_colonnes(data)
-
-# Le dataframe data_renomme aura les colonnes renommées et réorganisées selon ColOrdre.
-}
-
 }

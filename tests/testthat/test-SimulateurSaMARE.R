@@ -62,7 +62,6 @@ test_that("La fonction SimulSaMARE avec Gaules=1, coupe=1, MCH=0, sans annee inv
   an_inv <- result %>% group_by(Placette) %>% slice(1)
   expect_equal(an_inv$Annee, as.numeric(format(Sys.Date(), "%Y")))
 
-
   # presence de PlacetteID et autres
   expect_equal(sum(c('PlacetteID', 'ntrt','Annee_Coupe', 'Annee_Inventaire', 'MCH') %in% nom),5)
 
@@ -77,6 +76,20 @@ test_that("La fonction SimulSaMARE avec Gaules=1, coupe=1, MCH=0, sans annee inv
   # vérifier mch
   mch0 <- unique(result$MCH)
   expect_equal(mch0, c(NA,0))
+
+  # verifier présence de valeurs de dhp
+  dhp <- result %>% filter(Etat != 'mort') %>% filter(is.na(DHPcm))
+  expect_equal(nrow(dhp), 0)
+
+  # verifier présence de valeurs de haut et vol
+  ht <- result %>% filter(Etat != 'mort') %>% filter(is.na(Hautm))
+  expect_equal(nrow(ht), 0)
+  vol <- result %>% filter(Etat != 'mort') %>% filter(is.na(Vol_dm3))
+  expect_equal(nrow(vol), 0)
+
+  # verifier présence de valeurs de gaules
+  gau <- result %>% filter(Etat != 'mort') %>% filter(is.na(Nb_Gaules_Ha))
+  expect_equal(nrow(gau), 0)
 
 })
 
@@ -107,7 +120,7 @@ test_that("La fonction SimulSaMARE fonctionne MCH=0 ou 1", {
 
 })
 
-#
+
 test_that("La fonction SimulSaMARE avec Gaules=0, coupe=0, MCH=0, avec annee inventaire s'exécute sans erreur", {
   set.seed(NULL)
   set.seed(3)
@@ -131,6 +144,10 @@ test_that("La fonction SimulSaMARE avec Gaules=0, coupe=0, MCH=0, avec annee inv
 
   # presence de PlacetteID et autres
   expect_equal(sum(c('PlacetteID', 'ntrt','Annee_Coupe', 'Annee_Inventaire', 'MCH') %in% nom),5)
+
+  # verifier présence de valeurs de dhp
+  dhp <- result %>% filter(Etat != 'mort') %>% filter(is.na(DHPcm))
+  expect_equal(nrow(dhp), 0)
 
 })
 
@@ -273,3 +290,84 @@ test_that("La fonction SimulSaMARE fonctionne avec un nombre iter pair", {
 
   expect_equal(plot_obtenu, plot_attendu)
   })
+
+
+test_that("La fonction SimulSaMARE retourne un message d'erreur avec une variable obligatoire manquante", {
+
+  data_test <- Test400m2 %>% select(-Placette, -NoArbre)
+  expect_error(SimulSaMARE(NbIter=2, Horizon=1, RecruesGaules=0, Data = data_test),
+               "Les colonnes suivantes ne sont pas dans le fichier en entrée: placette, noarbre")
+
+
+})
+
+
+test_that("La fonction SimulSaMARE retourne un message d'erreur avec une variable obligatoire manquante dans les gaules", {
+
+  data_test <- GaulesTest2500m2 %>% select(-Placette, -Espece)
+  expect_error(SimulSaMARE(NbIter=2, Horizon=1, RecruesGaules=1, Data = Test2500m2, Gaule=data_test),
+               "Les colonnes suivantes ne sont pas dans le fichier des gaules: placette, espece")
+
+
+})
+
+
+test_that("La fonction SimulSaMARE fonctionne avec et sans Pente dans le fichier", {
+
+  data_test <- Test400m2 %>% select(-Pente)
+  expect_no_error(SimulSaMARE(NbIter=2, Horizon=1, Data = data_test))
+  expect_no_error(SimulSaMARE(NbIter=2, Horizon=1, Data = Test400m2))
+
+
+})
+
+test_that("La fonction SimulSaMARE fonctionne avec et sans les variables météo dans le fichier", {
+
+  data_test <- Test400m2 %>% select(-Tmoy)
+  expect_no_error(SimulSaMARE(NbIter=2, Horizon=1, Data = data_test))
+  expect_no_error(SimulSaMARE(NbIter=2, Horizon=1, Data = Test400m2))
+
+})
+
+
+# test_that("La fonction SimulSaMARE fonctionne avec un nombre iter >10 et multi_session=FALSE", {
+#
+#   result <- SimulSaMARE(NbIter=20, Horizon=1, RecruesGaules=0, Data = Test400m2)
+#
+#   # nombre d'itérations
+#   liste_iter <- unique(result$Iter)
+#   expect_equal(liste_iter, seq(1:20))
+#
+#   # identifiant des placettes
+#   plot_attendu <- unique(Test400m2$Placette)
+#   plot_obtenu <- unique(result$Placette)
+#   expect_equal(plot_obtenu, plot_attendu)
+# })
+
+# test_that("La fonction SimulSaMARE fonctionne avec un nombre iter >10 et multi_session=TRUE", {
+#
+#   result <- SimulSaMARE(NbIter=20, Horizon=1, RecruesGaules=0, Data = Test400m2, multi_session=TRUE)
+#
+#   # nombre d'itérations
+#   liste_iter <- unique(result$Iter)
+#   expect_equal(liste_iter, seq(1:20))
+#
+#   # identifiant des placettes
+#   plot_attendu <- unique(Test400m2$Placette)
+#   plot_obtenu <- unique(result$Placette)
+#   expect_equal(plot_obtenu, plot_attendu)
+# })
+
+# test_that("La fonction SimulSaMARE fonctionne avec un nombre iter >10 et multi_session=FALSE", {
+#
+#   result <- SimulSaMARE(NbIter=20, Horizon=1, RecruesGaules=0, Data = Test400m2, multi_session=FALSE)
+#
+#   # nombre d'itérations
+#   liste_iter <- unique(result$Iter)
+#   expect_equal(liste_iter, seq(1:20))
+#
+#   # identifiant des placettes
+#   plot_attendu <- unique(Test400m2$Placette)
+#   plot_obtenu <- unique(result$Placette)
+#   expect_equal(plot_obtenu, plot_attendu)
+# })

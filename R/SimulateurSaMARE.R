@@ -21,16 +21,17 @@
 #'    \item Nombre: nombre d'arbres que représente cet arbre dans la placette de superficie \code{Sup_PE}
 #'    \item Sup_PE: superficie de la placette en ha
 #'    \item Annee_Coupe: si la placette est dans un peuplement qui a subi une coupe partielle, l'année de la coupe, sinon NA
+#'    \item Annee_Inventaire: l'année d'inventaire des arbres, si la colonne est absente, l'année courante sera utilisée
 #'    \item ntrt: si la placette est dans un peuplement qui a subi une coupe partielle, nombre de coupes, sinon 0 ou NA
 #'    \item MSCR: code MSCR. Facultatif, mettre NA non utilisé. Si non fourni, la colonne Vigueur doit être fournie.
 #'    \item Latitude, Longitude: coordonnées de la placette en degrés décimaux
 #'    \item Altitude: altitude de la placette en mètres
-#'    \item Pente: pourcentage de pente de la placette (ex: 10)
+#'    \item Pente: pourcentage de pente de la placette (ex: 10), si la colonne est absente, la valeur sera estimée à partir de la localisation
 #'    \item Reg_Eco: code de la région écologique de la placette (ex: 3a)
 #'    \item Type_Eco: code du type écologique de la placette (ex: FE23)
-#'    \item Ptot: précipitations totales annuelles de la placette en mm
-#'    \item Tmoy: température moyenne annuelle de la placette en degrés celcius
-#'    \item GrwDays: Nombre de jours de la saison de croissance de la placette
+#'    \item Ptot: précipitations totales annuelles de la placette en mm, si la colonne est absente, la valeur sera estimée à partir de la localisation
+#'    \item Tmoy: température moyenne annuelle de la placette en degrés celcius, si la colonne est absente, la valeur sera estimée à partir de la localisation
+#'    \item GrwDays: Nombre de jours de la saison de croissance de la placette, si la colonne est absente, la valeur sera estimée à partir de la localisation
 #' }
 #' @param Gaules Un dataframe contenant la liste des gaules par essence et par classe de diamètre.
 #'               Cette information doit être fournie si le paramètre \code{RecruesGaules}=1.
@@ -72,7 +73,8 @@
 #' # Simulation sur 10 ans, recrutement de base
 #' result <- SimulSaMARE(NbIter = 10, Horizon = 2, Data = Test2500m2)
 #' # Simulation sur 10 ans, recrutement avec les gaules
-#' result <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2, Gaules=GaulesTest2500m2)
+#' result <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1,
+#'                       Data = Test2500m2, Gaules=GaulesTest2500m2)
 #' }
 #'
 #' @import data.table
@@ -83,7 +85,9 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
 
   select=dplyr::select
 
-  # NbIter=3; Horizon=1; Data=Test400m2; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE
+  # NbIter=2; Horizon=1; Data=Test400m2; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE
+  # Data = Test400m2; NbIter = 20; Horizon = 3; multi_session = FALSE; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE
+  # NbIter=2; Horizon=1; Data=Test2500m2; RecruesGaules=1; Gaules = GaulesTest2500m2; MCH = 0; cubage=TRUE; multi_session = FALSE
 
   # Vérification des arguments de la fonction principale
   Erreur <- verifArguments(NbIter=NbIter, Horizon=Horizon, RecruesGaules=RecruesGaules, Data=Data, Gaules=Gaules, MCH=MCH, cubage=cubage)
@@ -91,40 +95,57 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
 
 
 
-  #### 0. Optimiser le nombre d'itérations vs nombre de placettes ####
+   #### 0. Vérifier les colonnes des fichiers en entrée ####
 
+  # Vérifier s'il manque des colonnes obligatoires dans le fichier en entrées
+  col_abs <- trouver_noms_absents(Data)
+  if (length(col_abs)>0) {stop(paste("Les colonnes suivantes ne sont pas dans le fichier en entr\u00E9e:", paste(unlist(col_abs), collapse=', ') ))}
+
+  if (!missing(Gaules)){
+    col_abs <- trouver_noms_absents_gaules(Gaules)
+    if (length(col_abs)>0) {stop(paste("Les colonnes suivantes ne sont pas dans le fichier des gaules:", paste(unlist(col_abs), collapse=', ')))}
+  }
+
+  Data <- as.data.frame(Data)
+  Data <- renommer_les_colonnes(Data)
+  Gaules <- if (!missing(Gaules)) renommer_les_colonnes_gaules(Gaules) else NA
+
+  # Vérifier si les colonnes Ptot Tmoy GrwDays sont présentes, sinon les extraire avec ExtractMap
+  Data <- verifier_variable_meteo(Data)
+
+  # Vérifier si les colonnes Pente, sinon les extraire avec ExtractMap
+  Data <- verifier_variable_station(Data)
+
+
+  #### 1. Validation/création de la variable Annee_Inventaire ####
+
+  Data <- Data %>% filter(DHPcm>=9)
+  Data <- valide_Annee_depart(Data)
+
+
+  #### 2. Optimiser le nombre d'itérations vs nombre de placettes ####
+  diviseur = 2
+  # if (multi_session == TRUE) {
+  #   if (NbIter<10) multi_session == FALSE else diviseur=10 # si moins de 10 iter, on ne pourra pas diviser par 10, donc ne pas faire de multisession et laisser diviseur à 2
+  # }
   # Pour que la boucle Samare soit moins grosse (en ce moment elle est du nombre d'itérations), générer les itérations ici en dupliquant les placettes
   NbIter_orig <- NbIter
   test <- Data
   Data <- NULL
-  for (i in 1:(NbIter/2)){
+  for (i in 1:(NbIter/diviseur)){
     temp <- test %>% rename(Placette_orig=Placette) %>% mutate(Placette = paste(Placette_orig,i,sep = '.'))
     Data <- bind_rows(Data,temp)
   }
   if (RecruesGaules==1){
     test <- Gaules
     Gaules <- NULL
-    for (i in 1:(NbIter/2)){
+    for (i in 1:(NbIter/diviseur)){
       temp <- test %>% rename(Placette_orig=Placette) %>% mutate(Placette = paste(Placette_orig,i,sep = '.'))
       Gaules <- bind_rows(Gaules,temp)
     }
   }
-  NbIter=2 # il faut au moins 2 iter pour le relation hd et cubage
+  NbIter=diviseur # il faut au moins 2 iter pour le relation hd et cubage
   # on a copié les placettes nbiter/2, il reste donc seulement 2 itérations à faire
-
-
-
-  #### 1. Renommer les colonnes des fichiers en entrée ####
-
-  Data <- as.data.frame(Data)
-  Data <- renommer_les_colonnes(Data)
-  Gaules <- if (!missing(Gaules)) renommer_les_colonnes_gaules(Gaules) else NA
-
-
-  #### 2. Validation/création de la variable Annee_Inventaire ####
-
-  Data <- Data %>% filter(DHPcm>=9)
-  Data <- valide_Annee_depart(Data)
 
 
   #### 3. Préparation des paramètres ####
@@ -201,29 +222,34 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
   covparmGaules <- CovparmGaules
   matchModuleCovparms <- MatchModuleCovparms
 
-   #tic()
-  Simul <- list(NbIter)
-    for(x in 1:NbIter){
-      Simul[[x]] <- SaMARE(Random=RandPlacStep, RandomGaules=RandPlacStepGaules, Data=Data, Gaules=Gaules,
-              Iteration=x, Horizon=Horizon, RecruesGaules=RecruesGaules, MCH=MCH,
-              CovParms=matchModuleCovparms, CovParmsGaules=covparmGaules,
-              Para=para, ParaGaules=paraGaules, Omega=matchModuleOmega, OmegaGaules=omegaGaulesFormat)
-    }
-  Simul <- rbindlist(Simul)
-  #toc()
 
-  # tous 50 ans comme horizon
-  # 100 placettes 400m2, 1 itération: 6 sec
-  # 1000 placettes 400m2, 1 itération: 38 sec
-  # 500 placettes 2500m2, 1 itération: 25 sec
-  # 3 placettes 400m2, 500 itération: 60 sec en recopiant les placettes nbiter/2 et faire seulement 2 iter
-  # 3 placettes 400m2, 500 itération: xx sec en laissant la boucle à 500 iter
-  # 1000 placettes 2500m2, 1 itération: 50 sec
-  # 1000 placettes 400m2, 100 itérations: 598.43 sec  = 10 min
-  # 200 placettes 2500m2, 100 itérations: 979 sec  = 16 min  (24 millions de lignes) en séquentiel
-  # 200 placettes 2500m2, 100 itérations: 201 sec  = 3.3 min  (24 millions de lignes) en parallèle
-  # 800 placettes 400m2, 100 itérations: 464 sec  = 7.7 min (50 millions de lignes) en parallèle, pas plus rapide avec rbindlist que bind_rows
-  # 200 placettes 400m2, 108 itérations: 150 sec  = 2.5 min  (13 millions de lignes) en parallèle
+  # doFuture::registerDoFuture()
+  # options(future.globals.maxSize= 891289600)      # Monte la tolérence à 850 megs pour les éléments passés dans dofuture
+  # future::plan(sequential) #temporaire
+  # if (multi_session==TRUE) {
+  #    future::plan(multisession, workers=parallelly::availableCores()/2)  # Limite le nombre de coeurs utilisé pour éviter de planter l'ordi
+  # }
+  # Simul <- bind_rows(
+  #   foreach(x = 1:NbIter, .packages = c("mvtnorm"))  %dorng%
+  #     {SaMARE(Random=RandPlacStep, RandomGaules=RandPlacStepGaules, Data=Data, Gaules=Gaules,
+  #             Iteration=x, Horizon=Horizon, RecruesGaules=RecruesGaules, MCH=MCH,
+  #             CovParms=matchModuleCovparms, CovParmsGaules=covparmGaules,
+  #             Para=para, ParaGaules=paraGaules, Omega=matchModuleOmega, OmegaGaules=omegaGaulesFormat)}
+  # )
+  #
+  # future::plan(sequential)
+  # setDT(Simul)
+  # le parallèle n'augmente pas vraiment le temps de simulation, même que ça plante si le nombre d'itérations est trop grand
+
+ Simul <- list(NbIter)
+  for(x in 1:NbIter){
+    Simul[[x]] <- SaMARE(Random=RandPlacStep, RandomGaules=RandPlacStepGaules, Data=Data, Gaules=Gaules,
+            Iteration=x, Horizon=Horizon, RecruesGaules=RecruesGaules, MCH=MCH,
+            CovParms=matchModuleCovparms, CovParmsGaules=covparmGaules,
+            Para=para, ParaGaules=paraGaules, Omega=matchModuleOmega, OmegaGaules=omegaGaulesFormat)
+  }
+ Simul <- rbindlist(Simul)
+
 
 
   #### 6. Estimer la hauteur et le volume des arbres ####
@@ -258,24 +284,24 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
 
   # recréer le numéro de placette original et le numéro d'itération original
   Simul[,  `:=`(
-    Iter_temp =     as.numeric(sub(".*\\.", "", Placette)),
+    Iter_temp =     as.numeric(sub(".*\\.", "", Placette)), # extrait ce qui suit le dernier '.'
     Placette = sub("\\..*", "", Placette))
-    ][, Iter := ifelse(Iter==1, Iter_temp, Iter_temp+(NbIter_orig/2))]
+    ][, Iter := .GRP, by = .(Iter, Iter_temp)] # numéroter les combinaisons uniques de iter et iter_temp pour créer les numéro d'iter de 1 à NbIter_orig
+  Simul[, `:=`(Iter_temp = NULL)]
   Simul[, `:=`(
-    PlacetteID = paste0(Placette,"_", Iter),
-    Iter_temp = NULL,
-    ST_m2 = pi*(DHPcm/200)^2,  # on en tient pas compte de Nombre?, comme pour le volume?
-    Vigueur = case_when(
-      vigu0 == "ViG" & prod0 == "sciage" ~ as.integer(1),
-      vigu0 == "ViG" & prod0 == "pate" ~ as.integer(2),
-      vigu0 == "NONVIG" & prod0 == "sciage" & DHPcm>=23.1 ~ as.integer(3),
-      vigu0 == "NONVIG" & prod0 == "sciage" & DHPcm<23.1 ~ as.integer(4),
-      vigu0 == "NONVIG" & prod0 == "pate" ~ as.integer(4),
-      vigu0 == "ViG" & prod0 == "resineux" ~ as.integer(5),
-      vigu0 == "NONVIG" & prod0 == "resineux" ~ as.integer(6),
-      TRUE ~ NA_integer_
-    )
-        )]
+      PlacetteID = paste0(Placette,"_", Iter),
+      ST_m2 = pi*(DHPcm/200)^2,  # on en tient pas compte de Nombre
+      Vigueur = case_when(
+        vigu0 == "ViG" & prod0 == "sciage" ~ as.integer(1),
+        vigu0 == "ViG" & prod0 == "pate" ~ as.integer(2),
+        vigu0 == "NONVIG" & prod0 == "sciage" & DHPcm>=23.1 ~ as.integer(3),
+        vigu0 == "NONVIG" & prod0 == "sciage" & DHPcm<23.1 ~ as.integer(4),
+        vigu0 == "NONVIG" & prod0 == "pate" ~ as.integer(4),
+        vigu0 == "ViG" & prod0 == "resineux" ~ as.integer(5),
+        vigu0 == "NONVIG" & prod0 == "resineux" ~ as.integer(6),
+        TRUE ~ NA_integer_
+      )
+    )]
   setnames(Simul,
            old = c("t0", "mch", 'prod0', 'vigu0', 'NoArbre'),   #PlacetteID=Placette: je ne renomme pas la variable
            new = c("Annee_Coupe", "MCH", "Prod", "Vig", 'origTreeID'))

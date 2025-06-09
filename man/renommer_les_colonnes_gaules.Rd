@@ -7,7 +7,7 @@
 renommer_les_colonnes_gaules(data)
 }
 \arguments{
-\item{data}{Un dataframe, représentant le fichier des gaules, dont les colonnes doivent être renommées et réorganisées.}
+\item{data}{Un dataframe, représentant le fichier des gaules, dont les colonnes doivent être renommées}
 }
 \description{
 La fonction \code{renommer_les_colonnes} renomme les colonnes d'un dataframe
@@ -21,16 +21,5 @@ La fonction suit les étapes suivantes :
   \item Pour chaque nom de colonne souhaité, chercher sa correspondance parmi les noms des colonnes existantes.
   \item Si une correspondance est trouvée, renommer la colonne existante avec le nom souhaité.
   \item Retourner le dataframe avec les noms de colonnes mis à jour.
-}
-}
-\examples{
-\dontrun{
-# Supposons que nous ayons un dataframe data avec les colonnes suivantes :
-# "placette", "espece", "grespece", "dhpcm", "nombre", "sup_pe"
-
-# Appel de la fonction
-# data_renomme <- renommer_les_colonnes_gaules(data)
-
-# Le dataframe data_renomme aura les colonnes renommées et réorganisées selon ColOrdre.
 }
 }

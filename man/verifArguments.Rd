@@ -29,16 +29,17 @@ verifArguments(NbIter, Horizon, RecruesGaules, Data, Gaules, MCH, cubage)
    \item Nombre: nombre d'arbres que représente cet arbre dans la placette de superficie \code{Sup_PE}
    \item Sup_PE: superficie de la placette en ha
    \item Annee_Coupe: si la placette est dans un peuplement qui a subi une coupe partielle, l'année de la coupe, sinon NA
+   \item Annee_Inventaire: l'année d'inventaire des arbres, si la colonne est absente, l'année courante sera utilisée
    \item ntrt: si la placette est dans un peuplement qui a subi une coupe partielle, nombre de coupes, sinon 0 ou NA
    \item MSCR: code MSCR. Facultatif, mettre NA non utilisé. Si non fourni, la colonne Vigueur doit être fournie.
    \item Latitude, Longitude: coordonnées de la placette en degrés décimaux
    \item Altitude: altitude de la placette en mètres
-   \item Pente: pourcentage de pente de la placette (ex: 10)
+   \item Pente: pourcentage de pente de la placette (ex: 10), si la colonne est absente, la valeur sera estimée à partir de la localisation
    \item Reg_Eco: code de la région écologique de la placette (ex: 3a)
    \item Type_Eco: code du type écologique de la placette (ex: FE23)
-   \item Ptot: précipitations totales annuelles de la placette en mm
-   \item Tmoy: température moyenne annuelle de la placette en degrés celcius
-   \item GrwDays: Nombre de jours de la saison de croissance de la placette
+   \item Ptot: précipitations totales annuelles de la placette en mm, si la colonne est absente, la valeur sera estimée à partir de la localisation
+   \item Tmoy: température moyenne annuelle de la placette en degrés celcius, si la colonne est absente, la valeur sera estimée à partir de la localisation
+   \item GrwDays: Nombre de jours de la saison de croissance de la placette, si la colonne est absente, la valeur sera estimée à partir de la localisation
 }}
 
 \item{Gaules}{Un dataframe contenant la liste des gaules par essence et par classe de diamètre.

@@ -44,7 +44,7 @@ ParaOmega<-function(ModuleID,ParaOri,ParaIter,Omega,NbIter){
           ParaMod<-ParaOri %>% filter(SubModuleID==ModuleID &ParameterEstimate!=0) %>% .$ParameterEstimate
 
 
-          beta<-rmvnorm(n=NbIter, mean=ParaMod, sigma=OmegaMat, method="chol")
+          beta<-mvtnorm::rmvnorm(n=NbIter, mean=ParaMod, sigma=OmegaMat, method="chol")
           beta<-as.vector(t(beta))
 
           ParaMod<-ParaIter %>%

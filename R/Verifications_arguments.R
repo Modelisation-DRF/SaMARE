@@ -42,6 +42,10 @@ verifArguments <- function(NbIter, Horizon, RecruesGaules, Data, Gaules, MCH, cu
   else if (RecruesGaules==1 & missing(Gaules)){
     erreur <- "Avec RecruesGaules==1 Gaules doit etre specifie"
   }
+  # # multi_session doit etre TRUE or FALSE
+  # else if (!multi_session %in% c(TRUE, FALSE)) {
+  #   erreur <- c("multi_session doit etre TRUE ou FALSE")
+  # }
   else erreur <- c("ok")
   return(erreur)
 }

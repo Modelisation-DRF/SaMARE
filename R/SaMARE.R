@@ -116,6 +116,31 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
       #filter(Placette==ListeIter$Placette) %>%
       mutate(Iter=Iteration)
 
+  # compiler les gaules
+  Nb_Gaules_Ha_tr1 <- PlacGaules %>% lazy_dt() %>%
+    mutate(NbHa = Nombre/Sup_PE) %>% group_by(Placette) %>%
+    mutate(Nb_Gaules_Ha = sum(NbHa)) %>%  group_by(Placette, Nb_Gaules_Ha, GrEspece) %>%
+    summarise(Nb_Gaules_Ess_Ha = sum(NbHa)) %>%
+    filter(GrEspece %in% c('ERS','HEG','BOJ','SAB')) %>%
+    select(Placette, Nb_Gaules_Ha, GrEspece, Nb_Gaules_Ess_Ha) %>%
+    group_by(Placette, Nb_Gaules_Ha) %>%
+    pivot_wider(names_from = GrEspece, names_prefix = 'Nb_Gaules_', values_from = Nb_Gaules_Ess_Ha) %>% as.data.frame()
+
+  Nb_Gaules_Ha_tr2 <- PlacGaules %>% lazy_dt() %>%
+    mutate(NbHa68 = ifelse(DHPcm>5, Nombre/Sup_PE, 0)) %>% group_by(Placette, GrEspece) %>%
+    summarise(Nb_Gaules_68_Ess_Ha = sum(NbHa68)) %>%
+    filter(GrEspece %in% c('ERS','HEG','BOJ','SAB')) %>% select(Placette, GrEspece, Nb_Gaules_68_Ess_Ha) %>%
+    group_by(Placette) %>%
+    pivot_wider(names_from = GrEspece, names_prefix = 'Nb_Gaules_68_', values_from = Nb_Gaules_68_Ess_Ha) %>%  as.data.frame()
+
+  gaule_init <- left_join(Nb_Gaules_Ha_tr1, Nb_Gaules_Ha_tr2, by='Placette')
+  nom_gaules <- names(gaule_init)
+  nom_attendu <- c("Nb_Gaules_BOJ", "Nb_Gaules_ERS", "Nb_Gaules_HEG", "Nb_Gaules_SAB",
+                   "Nb_Gaules_68_BOJ", "Nb_Gaules_68_ERS", "Nb_Gaules_68_HEG", "Nb_Gaules_68_SAB")
+  for (nom in nom_attendu){
+    if (!nom %in% nom_gaules)  gaule_init[[nom]] <- 0
+  }
+
   # Générer les effets aleatoires placette Gaules
   RandomPlacGaules <- RandomGaules %>% filter(Iter==Iteration)
 
@@ -717,6 +742,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
 
       #Plac$Nb_Gaules_68_Ha<-sum(exp(Nb_Gaules_Ha$lnNb_Gaules_68_Ess_Ha)-1) # je ne mettrais pas cette variable, car on n'a pas le nombre de 68 pour toutes les essences, alors le total n'est pas représentatif
       Nb_Gaules_Ha_tr <- left_join(Nb_Gaules_Ha_tr1, Nb_Gaules_Ha_tr2, by='Placette')
+
       Plac <- Plac %>% select(-contains('Nb_Gaules_'))
       Plac <- left_join(Plac, Nb_Gaules_Ha_tr, by='Placette')
 
@@ -739,6 +765,11 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
 
     setDT(outputTot)
     setDT(outputInitial)
+    if (RecruesGaules==1){
+      setDT(gaule_init)
+      outputInitial <- merge(outputInitial, gaule_init, by='Placette', all.x=TRUE)
+    }
+
 
     # enlever les variables de trop
     # outputTot[, c("Annee_Inventaire", "trt", "ntrt", "t0", "pente", "type_pe_Plac", "dom", "rid1","vegp",

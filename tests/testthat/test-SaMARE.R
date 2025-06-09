@@ -526,14 +526,19 @@ test_that("SaMARE returns the expected data frame with Gaules MCH=0", {
                         Para=MatchModuleParameters,ParaGaules=ParametresGaules,Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat, MCH = 0)
 
   set.seed(NULL)
-  attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_test_new.rds"))
+  #attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_test_new.rds"))
+  attendu2 <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_test_new2.rds"))
+
+  # att_gau1 <- attendu %>% filter(Annee>2025) %>% rename(Nb_Gaules_Ha1=Nb_Gaules_Ha) %>% select(Nb_Gaules_Ha1)
+  # att_gau2 <- attendu2 %>% filter(Annee>2025) %>% rename(Nb_Gaules_Ha2=Nb_Gaules_Ha)  %>% select(Nb_Gaules_Ha2)
+  # compare <- bind_cols(att_gau1, att_gau2) %>% mutate(diff=Nb_Gaules_Ha2-Nb_Gaules_Ha1) %>% filter(diff != 0)
+  # expect_equal(nrow(compare),0)
 
   obtenu2 <- obtenu %>% select(-t0, -trt, -ntrt, -t0_aj_, -mch, -Annee_Inventaire)
   nom <- names(obtenu2)
-  attendu <- attendu %>% select(-Nb_Gaules_68_Ha) %>% select(all_of(nom)) # pour enlever nb_gaules_68_ha, car n'est pas la somme de toutes les essences car seulement 4 ess sur les 10
+  attendu2 <- attendu2 %>% select(all_of(nom))
 
-
-  expect_equal(as.data.frame(obtenu2), as.data.frame(attendu))
+  expect_equal(as.data.frame(obtenu2), as.data.frame(attendu2))
 
 })
 
@@ -552,11 +557,11 @@ test_that("SaMARE returns the expected data frame with Gaules MCH=1", {
                        Para=MatchModuleParameters,ParaGaules=ParametresGaules,Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat, MCH = 1)
 
   set.seed(NULL)
-  attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_test_MCH_new.rds"))
+  attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_test_MCH_new2.rds"))
 
   obtenu2 <- obtenu %>% select(-t0, -trt, -ntrt, -t0_aj_, -mch, -Annee_Inventaire)
   nom <- names(obtenu2)
-  attendu <- attendu %>% select(-Nb_Gaules_68_Ha) %>% select(all_of(nom)) # pour enlever nb_gaules_68_ha, car n'est pas la somme de toutes les essences car seulement 4 ess sur les 10
+  attendu <- attendu %>% select(all_of(nom)) # pour enlever nb_gaules_68_ha, car n'est pas la somme de toutes les essences car seulement 4 ess sur les 10
 
   expect_equal(as.data.frame(obtenu2), as.data.frame(attendu))
 
@@ -584,7 +589,7 @@ test_that("SaMARE returns the expected data frame without Gaules and MCH = 0, av
                     Para=MatchModuleParameters, ParaGaules=ParametresGaules, Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat,
                     MCH = 0)
 
-  attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_plusieurs_placettes.rds"))
+  attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_plusieurs_placettes.rds"))
 
   expect_equal(obtenu, attendu)
 

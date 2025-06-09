@@ -1125,6 +1125,39 @@ saveRDS(attendu, test_path("fixtures/recrues_avec_gaules", "resultat_attendu_nb_
 
 ##################################################################
 
+# Pour test de samare gaules et une placette
+set.seed(NULL)
+set.seed(3)
+Data_test_for_simul_samare <- readRDS(test_path("fixtures/samare", "Data_test_for_simul_samare.rds")) %>% mutate(Annee_Inventaire=2023)
+RandomTest <- readRDS(test_path("fixtures/samare", "RandomTest.rds"))
+RandPlacStepGaules_test <- readRDS(test_path("fixtures/samare/avec_gaules", "RandPlacStepGaules_test.rds"))
+Gaules_test <- readRDS(test_path("fixtures/samare/avec_gaules", "Gaules_test.rds"))
+
+attendu <- SaMARE(Random =RandomTest,RandomGaules=RandPlacStepGaules_test, Data = Data_test_for_simul_samare,
+                 Gaules =Gaules_test, Horizon = 4 , Iteration=1,
+                 RecruesGaules =1,CovParms=MatchModuleCovparms,CovParmsGaules=CovparmGaules,
+                 Para=MatchModuleParameters,ParaGaules=ParametresGaules,Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat, MCH = 0)
+set.seed(NULL)
+saveRDS(attendu, test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_test_new2.rds")) # ajout des gaules au temps 0
+#attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_test_new.rds")) # meme resultats mais au temps 0, gaules à NA
+
+
+# Pour test de samare gaules et une placette et mch=1
+set.seed(NULL)
+set.seed(3)
+RandomTest <- readRDS(test_path("fixtures/samare", "RandomTest.rds"))
+RandPlacStepGaules_test <- readRDS(test_path("fixtures/samare/avec_gaules", "RandPlacStepGaules_test.rds"))
+Data_test_for_simul_samare <- readRDS(test_path("fixtures/samare", "Data_test_for_simul_samare.rds")) %>% mutate(Annee_Inventaire=2023)
+Gaules_test <- readRDS(test_path("fixtures/samare/avec_gaules", "Gaules_test.rds"))
+attendu<-SaMARE(Random =RandomTest,RandomGaules=RandPlacStepGaules_test, Data = Data_test_for_simul_samare,
+               Gaules =Gaules_test, Iteration=1, Horizon = 4 ,
+               RecruesGaules =1,CovParms=MatchModuleCovparms,CovParmsGaules=CovparmGaules,
+               Para=MatchModuleParameters,ParaGaules=ParametresGaules,Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat, MCH = 1)
+set.seed(NULL)
+saveRDS(attendu, test_path("fixtures/samare/avec_gaules", "result_samare_test_MCH_new2.rds"))
+
+
+
 
 # Pour test de samare avec gaules et plusieurs placettes
 
