@@ -77,8 +77,28 @@ SortieBillonnage <- function(Data, Type ){
     #       Etat, DHPcm, MSCR, hauteur_pred, vol_dm3, Stm2, Sup_PE, ABCD, Vigueur, DER, F1, F2, F3, F4, P, type) %>%
     as.data.frame()
 
+  #Multiplication des valeurs par 1000 pour avoir les bonnes valeurs
+  final <- final %>%
+    mutate(across(c(DER, F1, F2, F3, F4, P), ~ .x * 1000))
+
+  #On transpose les colonnes de Petro pour avoir la colonne grade_bille avec les valeurs
+  billonage_cols <- c("DER", "F1", "F2", "F3", "F4", "P")
+  existing_cols <- intersect(billonage_cols, colnames(final))
+
+  #On donne les valeurs des colonnes respectives de billonage à vol_bille
+  final_transpo <- final %>%
+    pivot_longer(cols = all_of(existing_cols),
+                 names_to = "grade_bille",
+                 values_to = "vol_bille_dm3") %>%
+    select(PlacetteID, Annee, origTreeID, grade_bille, vol_bille_dm3)
+
+  #On enleve les possibles erreurs de fichiers en mettant le fichier en data.table
+  final_transpo <- suppressMessages(setDT(final_transpo))
+
   }
 
-  return(final)
+  return(final_transpo)
 
-  }
+}
+
+#result1 <- SortieBillonnage(result, "DHP2015")
