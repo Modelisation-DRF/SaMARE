@@ -75,8 +75,6 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
   Sybille <- SortieSybille(Data, dhs, nom_grade1, long_grade1, diam_grade1, nom_grade2, long_grade2, diam_grade2,
                            nom_grade3, long_grade3, diam_grade3)
 
-  print(Sybille)
-
   #On fusionne les 2
   Fusion <- rbind(Petro, Sybille, fill = TRUE)
 
