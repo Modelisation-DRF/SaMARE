@@ -62,11 +62,11 @@
 #'
 #' @seealso \code{\link{SortieSybille}}, \code{\link{SortieBillonnage}}
 #' @export
+
+#library(OutilsDRF)
 SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, diam_grade1 = NA, nom_grade2 = NA, long_grade2 = NA, diam_grade2 = NA,
                                nom_grade3 = NA, long_grade3 = NA, diam_grade3 = NA) {
   setDT(Data)
-
-  Data <- Data[!is.na(origTreeID)]
 
   # On obtient Petro
   Petro <- SortieBillonnage(Data, Type)
@@ -75,24 +75,30 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
   Sybille <- SortieSybille(Data, dhs, nom_grade1, long_grade1, diam_grade1, nom_grade2, long_grade2, diam_grade2,
                            nom_grade3, long_grade3, diam_grade3)
 
-  #On fusionne les 2
+  # On fusionne les 2
   Fusion <- rbind(Petro, Sybille, fill = TRUE)
 
   setDT(Fusion)
 
-  #On remplace les NA par 0
+  # On remplace les NA par 0
   Fusion[is.na(vol_bille_dm3), vol_bille_dm3 := 0.0]
-  setorder(Fusion, PlacetteID, Annee, origTreeID)
+  setorder(Fusion, PlacetteID, Annee, ArbreID)
 
-  #On merge le Data de base avec notre fichier de billons
+  # On merge le Data de base avec notre fichier de billons, on garde tout les x(donc arbre mort aussi)
   Fusion_complete <- merge(Data, Fusion,
                            by.x = c("id_pe", "Annee", "no_arbre"),        # Colonnes Data
-                           by.y = c("PlacetteID", "Annee", "origTreeID"), # Colonnes Fusion
+                           by.y = c("PlacetteID", "Annee", "ArbreID"), # Colonnes Fusion
                            all.x = TRUE)
+
+  # On enlève les colonnes ajoutées de Sybille
+  Fusion_complete[, c("cl_drai", "sdom_bio", "veg_pot", "ALTITUDE", "HT_REELLE_M" ,"nbTi_ha", "st_ha") := NULL]
+
+  # On renomme les colonnes au format SaMARE
+  setnames(Fusion_complete, c("DHP_Ae", "HAUTEUR_M"), c("DHPcm", "Hautm"))
 
   return(Fusion_complete)
 }
 
 #result <- SimulSaMARE(NbIter = 10, Horizon = 2, Data = Test2500m2)
 #result2 <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2, Gaules=GaulesTest2500m2)
-#result3 <- SortieBillesFusion(result, Type = "DHP2015", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8)
+#result6 <- SortieBillesFusion(result, Type = "DHP2015", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8)

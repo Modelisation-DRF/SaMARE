@@ -80,22 +80,23 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
   ), by = .(PlacetteID, Annee)]
 
   ## Renommer les colonnes pour préparer le Data dans Sybille
-  setnames(Data, c("PlacetteID", "DHPcm", "Hautm", "origTreeID", "Espece"),
+  setnames(Data, c("PlacetteID", "DHPcm", "Hautm", "ArbreID", "Espece"),
            c("id_pe", "DHP_Ae", "HAUTEUR_M", "no_arbre", "essence"))
 
   # Ajouter les colonnes manquantes et effectuer les traitements de préparation de données
-  # supprimer
-  Data[, cl_drai := "3"]
+  # Puisque SaMARE n'utilise pas ces colonnes, on les initialise à NA pour Sybille
+  Data[, cl_drai := NA]
 
-  Data[, veg_pot := "FE2"]
+  Data[, veg_pot := NA]
 
-  Data[, sdom_bio := "3E"]
+  Data[, sdom_bio := NA]
 
+  Data[, ALTITUDE := NA]
+
+  # temporaire pour résultats
   Data[, essence := "BOP"]
 
-  Data[, ALTITUDE := 200]
-
-  # keep
+  # Keep
   Data[, HT_REELLE_M := 0]
 
   # Multiplier par 10 pour satisfaire le calcul avec DHP_Ae
@@ -115,9 +116,8 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
     )
   )]
 
+  # On prend que les lignes où hauteur existe
   Data <- Data[is.finite(HAUTEUR_M)]
-
-  Data <- Data[!is.na(no_arbre)]
 
   # Garder que les colonnes nécessaires pour utiliser Sybille
   Data_treated <- Data[, .(essence, id_pe, no_arbre, sdom_bio, cl_drai, veg_pot, DHP_Ae, HT_REELLE_M, HAUTEUR_M, nbTi_ha, st_ha, ALTITUDE, Annee)]
@@ -128,10 +128,10 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
 
   #On renomme les colonnes pour matcher avec SaMARE
   setnames(Data_calculated, c("id_pe", "no_arbre"),
-           c("PlacetteID", "origTreeID"))
+           c("PlacetteID", "ArbreID"))
 
   #On garde que les colonnes nécessaires
-  Data_calculated <- Data_calculated[, .(PlacetteID, origTreeID, Annee, grade_bille, vol_bille_dm3)]
+  Data_calculated <- Data_calculated[, .(PlacetteID, ArbreID, Annee, grade_bille, vol_bille_dm3)]
 
   return(Data_calculated)
 
