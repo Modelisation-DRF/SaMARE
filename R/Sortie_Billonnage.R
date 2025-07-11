@@ -14,12 +14,10 @@
 #'          pour chacun des arbres feuillus de plus de 23 cm.
 #' @export
 
-SortieBillonnage <- function(Data, Type ){
+SortieBillonnage <- function(Data, Type){
 
   # Data=fic; Type="DHP2015"
-
-  select=dplyr::select
-
+  select <- dplyr::select
   Data_ori <- Data
 
   # Petro a une équation pour CHR, attribuer CHR aux 3 autres especes de chenes
@@ -30,7 +28,7 @@ SortieBillonnage <- function(Data, Type ){
     mutate(Espece_original = Espece,
            Espece = ifelse(Espece %in% c("CHR","CHG","CHB","CHE"),"CHR", Espece),
            Espece = ifelse(is.na(Espece), GrEspece, Espece)) %>%
-    filter(Espece %in% c("ERS", "BOJ", "ERR", "BOP", "HEG", "CHR") ) %>%  # j'ai change CHX pour CHR car cette ligne ne fonctionnera jamais pour CHX, car le CHR est dans le Grespce FEN pour les recrues, et si on n'a l'espece original (pour les arbres qui sont là dès le départ, ça sera CHR, CHE, CHG ou CHB)
+    filter(Espece %in% c("ERS", "BOJ", "ERR", "BOP", "HEG", "CHR")) %>%  # j'ai change CHX pour CHR car cette ligne ne fonctionnera jamais pour CHX, car le CHR est dans le Grespce FEN pour les recrues, et si on n'a l'espece original (pour les arbres qui sont là dès le départ, ça sera CHR, CHE, CHG ou CHB)
     as.data.frame()
 
   # essences billonnage:         BOJ         ERR   ERS               HEG               CHR  BOP
@@ -41,22 +39,29 @@ SortieBillonnage <- function(Data, Type ){
   #   filter(Espece %in% c("ERS", "BOJ", "ERR", "BOP", "HEG", "CHR") ) %>%  # j'ai change CHX pour CHR car cette ligne ne fonctionnera jamais pour CHX, car le CHR est dans le Grespce FEN pour les recrues, et si on n'a l'espece original (pour les arbres qui sont là dès le départ, ça sera CHR, CHE, CHG ou CHB)
   #   as.data.frame()
 
+  #Vérifier s'il y a des données valides après filtrage et retourner immédiatement si vide
   if (nrow(Data) == 0) {
+    # Retourner une data.table vide avec la structure appropriée
+    final_transpo <- data.table(
+      PlacetteID = character(0),
+      Annee = numeric(0),
+      ArbreID = character(0),
+      grade_bille = character(0),
+      vol_bille_dm3 = numeric(0)
+    )
+    return(final_transpo)
+  }
 
-    final <- data.frame(message = "Aucun arbre valide pour le billonnage")
-
-  } else {
-
+  # Traiter les données si on a des lignes valides
   data1 <- Data %>%
     lazy_dt() %>%
     mutate(bilonID = seq_len(nrow(Data))) %>% # numéroter les arbres
     as.data.frame()
 
-
   billo <- Billonage::SIMBillonnageABCD_DHP(data1, Type)
 
   # utiliser Data_ori?
-  final <-  data1 %>% lazy_dt() %>%
+  final <- data1 %>% lazy_dt() %>%
     left_join(billo, by = "bilonID") %>%
     # ceci est fait directewment dans la fct SimulSaMARE
     # mutate(Stm2ha = pi*(DHPcm/200)^2,  # ici st n'est pas à l'ha, Nombre et SUP_PE n'est pas pris en compte
@@ -85,20 +90,28 @@ SortieBillonnage <- function(Data, Type ){
   billonage_cols <- c("DER", "F1", "F2", "F3", "F4", "P")
   existing_cols <- intersect(billonage_cols, colnames(final))
 
-  #On donne les valeurs des colonnes respectives de billonage à vol_bille
-  final_transpo <- final %>%
-    pivot_longer(cols = all_of(existing_cols),
-                 names_to = "grade_bille",
-                 values_to = "vol_bille_dm3") %>%
-    select(PlacetteID, Annee, ArbreID, grade_bille, vol_bille_dm3)
+  #Vérifier nrow(final)et aussi vérifier les colonnes existantes
+  if (nrow(final) == 0 || length(existing_cols) == 0) {
+    final_transpo <- data.table(
+      PlacetteID = character(0),
+      Annee = numeric(0),
+      ArbreID = character(0),
+      grade_bille = character(0),
+      vol_bille_dm3 = numeric(0)
+    )
+  } else {
+    #On donne les valeurs des colonnes respectives de billonage à vol_bille
+    final_transpo <- final %>%
+      pivot_longer(cols = all_of(existing_cols),
+                   names_to = "grade_bille",
+                   values_to = "vol_bille_dm3") %>%
+      select(PlacetteID, Annee, ArbreID, grade_bille, vol_bille_dm3)
 
-  #On enleve les possibles erreurs de fichiers en mettant le fichier en data.table
-  final_transpo <- suppressMessages(setDT(final_transpo))
-
+    #On enleve les possibles erreurs de fichiers en mettant le fichier en data.table
+    final_transpo <- suppressMessages(setDT(final_transpo))
   }
 
   return(final_transpo)
-
 }
 
 #result3 <- SortieBillonnage(result, "DHP2015")

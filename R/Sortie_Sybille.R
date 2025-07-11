@@ -85,13 +85,12 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
 
   # Ajouter les colonnes manquantes et effectuer les traitements de préparation de données
   # Puisque SaMARE n'utilise pas ces colonnes, on les initialise à NA pour Sybille
-  Data[, cl_drai := NA]
-
-  Data[, veg_pot := NA]
-
-  Data[, sdom_bio := NA]
-
-  Data[, ALTITUDE := NA]
+  Data[, `:=`(
+    cl_drai = NA_character_,
+    veg_pot = NA_character_,
+    sdom_bio = NA_character_,
+    ALTITUDE = NA_real_
+  )]
 
   # temporaire pour résultats
   Data[, essence := "BOP"]
@@ -101,20 +100,6 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
 
   # Multiplier par 10 pour satisfaire le calcul avec DHP_Ae
   Data[, DHP_Ae := DHP_Ae * 10]
-
-  # Prendre que le premier caractère de cl_drai
-  Data[, cl_drai := substr(cl_drai, 1, 1)]
-  # Tranformation du caractère E ou O en Est/Ouest pour sdom_bio si besoin, sinon on ne fait rien
-  Data[, cl_drai := as.character(cl_drai)]
-  Data[, sdom_bio := ifelse(
-    substr(sdom_bio, 2, 2) == "E",
-    paste0(substr(sdom_bio, 1, 1), "EST"),
-    ifelse(
-      substr(sdom_bio, 2, 2) == "O",
-      paste0(substr(sdom_bio, 1, 1), "OUEST"),
-      sdom_bio
-    )
-  )]
 
   # On prend que les lignes où hauteur existe
   Data <- Data[is.finite(HAUTEUR_M)]
@@ -140,4 +125,4 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
 ###
 #result <- SimulSaMARE(NbIter = 10, Horizon = 2, Data = Test2500m2)
 #result2 <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2, Gaules=GaulesTest2500m2)
-#result4 <- SortieSybille(result, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8)
+#result44 <- SortieSybille(result, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8)
