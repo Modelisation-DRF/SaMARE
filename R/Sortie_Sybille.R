@@ -93,7 +93,7 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
   )]
 
   # temporaire pour résultats
-  Data[, essence := "BOP"]
+  # Data[, essence := "BOP"]
 
   # Keep
   Data[, HT_REELLE_M := 0]
