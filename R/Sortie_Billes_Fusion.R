@@ -28,8 +28,9 @@
 #' @param diam_grade1 Diamètre minimal au fin bout de la première bille en cm.
 #' @param diam_grade2 Diamètre minimal au fin bout de la deuxième bille en cm.(si besoin)
 #' @param diam_grade3 Diamètre minimal au fin bout de la troisième bille en cm.(si besoin)
+#' @param Simplifier Paramètre qui permet de décider si on prend toutes les années de simulation ou seulement la première et la dernière(False = Tout, True = 1er et dernier)
 #'
-#' @return Un data.table fusionné contenant toutes les colonnes d'Artémis et les colonnes pour le billonage (grade_type et vol_bille_dm3)
+#' @return Un data.table fusionné contenant toutes les colonnes de Samare et les colonnes pour le billonage (grade_type et vol_bille_dm3)
 #'
 #' @details
 #' La fonction effectue les opérations suivantes:
@@ -65,9 +66,10 @@
 
 #library(OutilsDRF)
 SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, diam_grade1 = NA, nom_grade2 = NA, long_grade2 = NA, diam_grade2 = NA,
-                               nom_grade3 = NA, long_grade3 = NA, diam_grade3 = NA) {
+                               nom_grade3 = NA, long_grade3 = NA, diam_grade3 = NA, Simplifier = FALSE) {
   setDT(Data)
 
+  Data_Arbre <- SortieArbreSamare(Data)
   # On obtient Petro
   Petro <- SortieBillonnage(Data, Type)
 
@@ -75,20 +77,23 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
   Sybille <- SortieSybille(Data, dhs, nom_grade1, long_grade1, diam_grade1, nom_grade2, long_grade2, diam_grade2,
                            nom_grade3, long_grade3, diam_grade3)
 
+  Sybille <- Sybille[!is.na(grade_bille)]
+
   # On fusionne les 2
   Fusion <- rbind(Petro, Sybille, fill = TRUE)
 
   setDT(Fusion)
 
-  # On remplace les NA par 0
-  Fusion[is.na(vol_bille_dm3), vol_bille_dm3 := 0.0]
   setorder(Fusion, PlacetteID, Annee, ArbreID)
 
   # On merge le Data de base avec notre fichier de billons, on garde tout les x(donc arbre mort aussi)
-  Fusion_complete <- merge(Data, Fusion,
+  Fusion_complete <- merge(Data_Arbre, Fusion,
                            by.x = c("id_pe", "Annee", "no_arbre"),        # Colonnes Data
                            by.y = c("PlacetteID", "Annee", "ArbreID"), # Colonnes Fusion
                            all.x = TRUE)
+
+  # On remplace les NA par 0
+  Fusion_complete[is.na(vol_bille_dm3), vol_bille_dm3 := 0.0]
 
   # On enlève les colonnes ajoutées de Sybille
   Fusion_complete[, c("cl_drai", "sdom_bio", "veg_pot", "ALTITUDE", "HT_REELLE_M" ,"nbTi_ha", "st_ha") := NULL]
@@ -96,9 +101,21 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
   # On renomme les colonnes au format SaMARE
   setnames(Fusion_complete, c("DHP_Ae", "HAUTEUR_M"), c("DHPcm", "Hautm"))
 
+  #Remettre les valeurs de DHPcm en cm(changement fait dans SortieSybille à la base pour calcul)
+  Fusion_complete[, DHPcm := DHPcm / 10]
+
+  MinAnnee = min(Fusion_complete$Annee)
+  MaxAnnee = max(Fusion_complete$Annee)
+
+  if(Simplifier == TRUE){
+    Data_min <-Fusion_complete %>% filter(Annee==MinAnnee )
+    Data_max <-Fusion_complete %>% filter(Annee==MaxAnnee )
+    Fusion_complete <-rbind(Data_min, Data_max) %>%  arrange(id_pe,Annee,origTreeID)
+  }
+
   return(Fusion_complete)
 }
 
-#result <- SimulSaMARE(NbIter = 10, Horizon = 2, Data = Test2500m2)
+#result <- SimulSaMARE(NbIter = 10, Horizon = 5, Data = Test2500m2)
 #result2 <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2, Gaules=GaulesTest2500m2)
-#result6 <- SortieBillesFusion(result, Type = "DHP2015", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8)
+#result88 <- SortieBillesFusion(result, Type = "DHP2015", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8)

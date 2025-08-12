@@ -41,14 +41,13 @@ SortieBillonnage <- function(Data, Type){
 
   #Vérifier s'il y a des données valides après filtrage et retourner immédiatement si vide
   if (nrow(Data) == 0) {
-    # Retourner une data.table vide avec la structure appropriée
-    final_transpo <- data.table(
-      PlacetteID = character(0),
-      Annee = numeric(0),
-      ArbreID = character(0),
-      grade_bille = character(0),
-      vol_bille_dm3 = numeric(0)
-    )
+    # Copier la structure des colonnes nécessaires depuis Data
+    cols_needed <- c("PlacetteID", "Annee", "origTreeID")
+    final_transpo <- as.data.table(Data)[0, ..cols_needed]
+
+    # Ajouter les colonnes supplémentaires avec les types forcés
+    final_transpo[, grade_bille := character(0)]
+    final_transpo[, vol_bille_dm3 := numeric(0)]
     return(final_transpo)
   }
 
@@ -92,13 +91,14 @@ SortieBillonnage <- function(Data, Type){
 
   #Vérifier nrow(final)et aussi vérifier les colonnes existantes
   if (nrow(final) == 0 || length(existing_cols) == 0) {
-    final_transpo <- data.table(
-      PlacetteID = character(0),
-      Annee = numeric(0),
-      ArbreID = character(0),
-      grade_bille = character(0),
-      vol_bille_dm3 = numeric(0)
-    )
+    # Copier la structure des colonnes nécessaires depuis Data
+    cols_needed <- c("PlacetteID", "Annee", "origTreeID")
+    final_transpo <- as.data.table(Data)[0, ..cols_needed]
+
+    # Ajouter les colonnes supplémentaires avec les types forcés
+    final_transpo[, grade_bille := character(0)]
+    final_transpo[, vol_bille_dm3 := numeric(0)]
+    return(final_transpo)
   } else {
     #On donne les valeurs des colonnes respectives de billonage à vol_bille
     final_transpo <- final %>%
@@ -114,4 +114,6 @@ SortieBillonnage <- function(Data, Type){
   return(final_transpo)
 }
 
-#result3 <- SortieBillonnage(result, "DHP2015")
+#Result <- result[, Espece := "HHH"]
+
+#result33 <- SortieBillonnage(Result, "DHP2015")
