@@ -130,13 +130,19 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
   # On remplace les NA par 0
   Fusion_complete[is.na(vol_bille_dm3), vol_bille_dm3 := 0.0]
 
-
   # Remettre les valeurs de DHP en cm (avec le bon nom de colonne)
   Fusion_complete[, (col_dhp) := get(col_dhp) / 10]
+
+  #Pour corriger le problème de fichier? À voir
+  if(Simplifier == FALSE) {
+    Fusion_complete[, c("cl_drai", "sdom_bio", "veg_pot", "ALTITUDE", "HT_REELLE_M" ,"nbTi_ha", "st_ha") := NULL]
+    setnames(Fusion_complete, c("DHP_Ae"), c("DHPcm"))
+    setnames(Fusion_complete, c("HAUTEUR_M"), c("Hautm"))
+  }
 
   return(Fusion_complete)
 }
 
 #result <- SimulSaMARE(NbIter = 10, Horizon = 5, Data = Test2500m2)
 #result2 <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2, Gaules=GaulesTest2500m2)
-#result88 <- SortieBillesFusion(result, Type = "DHP2015", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8, Simplifier = T)
+#result99 <- SortieBillesFusion(result, Type = "DHP2015", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8, Simplifier = F)
