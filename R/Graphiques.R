@@ -15,105 +15,105 @@
 #'          moyen quadratique et la hauteur dominante.
 #' @export
 #'
-Graph<-function (SimulHtVol, Espece="TOT", Variable='ST_HA',listePlacette){
+Graph <- function(SimulHtVol, Espece="TOT", Variable='ST_HA', listePlacette){
 
-Data<-SortieDendroSamare(SimulHtVol) %>%
-      filter(GrEspece==Espece & Placette %in% listePlacette) %>%
-      mutate(Yvar=NA)
+  Data <- SortieDendroSamare(SimulHtVol) %>%
+    filter(GrEspece==Espece & Placette %in% listePlacette) %>%
+    mutate(Yvar=NA)
 
-Data <- Data %>% #Permet de retirer le Residuel=0 dans le cas où on a également un résiduel=1 pour la même année
-  group_by(Placette,Annee) %>%
-  slice_tail() %>%
-  ungroup()
+  Data <- Data %>% #Permet de retirer le Residuel=0 dans le cas où on a également un résiduel=1 pour la même année
+    group_by(Placette,Annee) %>%
+    slice_tail() %>%
+    ungroup()
 
+  # MODIFICATION : Utiliser les vrais noms de colonnes retournés par SortieDendroSamare
+  if (Variable=='Vol_HA'){
+    Data$Yvar <- Data$Vol_m3ha  # CHANGÉ : Vol_HA -> Vol_m3ha
+    Etiquette="Volume marchand (m3/ha)"
+  }
 
-if (Variable=='Vol_HA'){
-   Data$Yvar<-Data$Vol_HA
-   Etiquette="Volume marchand (m3/ha)"
-}
+  if (Variable=='ST_HA'){
+    Data$Yvar <- Data$ST_m2ha   # CHANGÉ : ST_HA -> ST_m2ha
+    Etiquette="Surface terri\uE8re marchande (m2/ha)"
+  }
 
-if (Variable=='ST_HA'){
-  Data$Yvar<-Data$ST_HA
-  Etiquette="Surface terri\uE8re marchande (m2/ha)"
-}
+  if (Variable=='DQM'){
+    Data$Yvar <- Data$DQM_cm    # CHANGÉ : DQM -> DQM_cm
+    Etiquette="Diam\uE8tre quadratique moyen (cm)"
+  }
 
-if (Variable=='DQM'){
-  Data$Yvar<-Data$DQM
-  Etiquette="Diam\uE8tre quadratique moyen (cm)"
-}
+  if (Variable=='HDomM'){
+    Data$Yvar <- Data$HDom_m    # CHANGÉ : HDomM -> HDom_m
+    Etiquette="Hauteur dominante (m)"
+  }
 
-if (Variable=='HDomM'){
-  Data$Yvar<-Data$HDomM
-  Etiquette="Hauteur dominante (m)"
-}
+  if (Variable=='nbTi_HA'){
+    Data$Yvar <- Data$Ti_ha     # CHANGÉ : nbTi_HA -> Ti_ha
+    Etiquette="Densit\uE9 (nb/ha)"
+  }
 
-if (Variable=='nbTi_HA'){
-  Data$Yvar<-Data$nbTi_HA
-  Etiquette="Densit\uE9 (nb/ha)"
-}
+  if (Espece=="TOT"){Essence="Toutes essences"}
+  if (Espece=="BOJ"){Essence="Bouleau jaune"}
+  if (Espece=="ERR"){Essence="\uC9rable rouge"}
+  if (Espece=="ERS"){Essence="\uC9rable \uE0 sucre"}
+  if (Espece=="FEN"){Essence="Feuillus nobles"}
+  if (Espece=="FIN"){Essence="Feuillus intol\uE9rants"}
+  if (Espece=="EPX"){Essence="\uC9pinettes"}
+  if (Espece=="SAB"){Essence="Sapin baumier"}
+  if (Espece=="RES"){Essence="R\uE9sineux"}
+  if (Espece=="HEG"){Essence="H\uEAtre \uE0 grandes feuilles"}
+  if (Espece=="AUT"){Essence="Autres essences"}
 
-if (Espece=="TOT"){Essence="Toutes essences"}
-if (Espece=="BOJ"){Essence="Bouleau jaune"}
-if (Espece=="ERR"){Essence="\uC9rable rouge"}
-if (Espece=="ERS"){Essence="\uC9rable \uE0 sucre"}
-if (Espece=="FEN"){Essence="Feuillus nobles"}
-if (Espece=="FIN"){Essence="Feuillus intol\uE9rants"}
-if (Espece=="EPX"){Essence="\uC9pinettes"}
-if (Espece=="SAB"){Essence="Sapin baumier"}
-if (Espece=="RES"){Essence="R\uE9sineux"}
-if (Espece=="HEG"){Essence="H\uEAtre \uE0 grandes feuilles"}
-if (Espece=="AUT"){Essence="Autres essences"}
+  ymax <- max(Data$Yvar)
 
-ymax<-max(Data$Yvar)
+  AnneeDep=min(Data$Annee)
+  AnneeFin=max(Data$Annee)
 
-AnneeDep=min(Data$Annee)
-AnneeFin=max(Data$Annee)
+  dernieres_valeurs <- Data %>%
+    group_by(Placette) %>%
+    slice(n()) %>%
+    ungroup()
 
-dernieres_valeurs <- Data %>%
-                    group_by(Placette) %>%
-                    slice(n()) %>%
-                     ungroup()
-
-GraphEvol<-Data%>%
-             ggplot(aes(x=Annee,y=Yvar,group=Placette, label = Placette))+
-             geom_line(aes(),show.legend=FALSE, lwd=1.25, colour="#008000")+
-             ylim(0,ymax+5)+
-             xlab(bquote(bold("Ann\uE9\u65 de la simulation")))+ ylab(paste(Etiquette))+
-             scale_x_continuous(breaks = seq(AnneeDep, AnneeFin, by = 5))+
-             theme_bw() +
-             ggtitle(paste(Etiquette,"  ",Essence))+
-             theme(
+  GraphEvol <- Data %>%
+    ggplot(aes(x=Annee,y=Yvar,group=Placette, label = Placette))+
+    geom_line(aes(),show.legend=FALSE, lwd=1.25, colour="#008000")+
+    ylim(0,ymax+5)+
+    xlab(bquote(bold("Ann\uE9\u65 de la simulation")))+ ylab(paste(Etiquette))+
+    scale_x_continuous(breaks = seq(AnneeDep, AnneeFin, by = 5))+
+    theme_bw() +
+    ggtitle(paste(Etiquette,"  ",Essence))+
+    theme(
       strip.background = element_rect(fill = "white"),
       axis.title=element_text(size=14,face="bold"),
       axis.text.x = element_text(angle = 45,  hjust=1),
       strip.text.x = element_text(size = 12,face="bold"),
       plot.title = element_text(hjust = 0.5,size=14,face="bold"))+
-     geom_text(data=dernieres_valeurs,aes(label = Placette), hjust = 1, vjust=-0.2,size=3)
+    geom_text(data=dernieres_valeurs,aes(label = Placette), hjust = 1, vjust=-0.2,size=3)
   GraphEvol
 
-NbPlac<-length(unique(SimulHtVol$Placette))
+  NbPlac <- length(unique(SimulHtVol$Placette))
 
-Sommaire<-Sommaire_Classes_DHP(SimulHtVol) %>%
-          filter((Annee %in% c(AnneeDep,AnneeFin)) & GrEspece==Espece  & (Placette %in% listePlacette)) %>%
-          mutate(DHP_cl=round(DHP_cl/5)*5) %>%
-          group_by(Annee, DHP_cl) %>%
-          summarise(NbHa=(sum(NbHa)/NbPlac),.groups="drop")
+  # MODIFICATION : Utiliser les vrais noms de colonnes retournés par Sommaire_Classes_DHP
+  Sommaire <- Sommaire_Classes_DHP(SimulHtVol) %>%
+    filter((Annee %in% c(AnneeDep,AnneeFin)) & GrEspece==Espece  & (Placette %in% listePlacette)) %>%
+    mutate(DHP_cl=round(DHP_cl/5)*5) %>%
+    group_by(Annee, DHP_cl) %>%
+    summarise(NbHa=(sum(Ti_ha)/NbPlac),.groups="drop")  # CHANGÉ : NbHa -> Ti_ha
 
+  MaxDHP <- max(Sommaire$DHP_cl)
 
-MaxDHP<-max(Sommaire$DHP_cl)
+  ClassesDHP <- data.frame("Annee"=c(rep(AnneeDep,13), rep(AnneeFin,13)),"DHP_cl"=rep(seq(10,70,by=5),2))
 
-ClassesDHP<-data.frame("Annee"=c(rep(AnneeDep,13), rep(AnneeFin,13)),"DHP_cl"=rep(seq(10,70,by=5),2))
-
-GraphDist<-Sommaire %>%
-           full_join(ClassesDHP, relationship="many-to-many",by =join_by(Annee, DHP_cl)) %>%
-           mutate(NbHa=ifelse(is.na(NbHa)==TRUE,0,NbHa),Annee=as.factor(Annee)) %>%
-           ggplot(aes(x=DHP_cl, y=NbHa, fill=Annee))+
-            geom_bar(position=position_dodge(preserve="single"), stat="identity", color="black", width=3)+
-           ggtitle(paste("Distribution diam\uE9trale","  ",Essence))+
-          xlab(bquote(bold("Classe de DHP (cm)")))+ ylab("Nombre de tiges par hectare")+
-          scale_x_continuous(breaks = seq(10, 70, by = 5))+
-          scale_fill_manual(values=c("#D95F02" ,"#008000"))+
-          theme(strip.background = element_rect(fill = "white"),
+  GraphDist <- Sommaire %>%
+    full_join(ClassesDHP, relationship="many-to-many",by =join_by(Annee, DHP_cl)) %>%
+    mutate(NbHa=ifelse(is.na(NbHa)==TRUE,0,NbHa),Annee=as.factor(Annee)) %>%
+    ggplot(aes(x=DHP_cl, y=NbHa, fill=Annee))+
+    geom_bar(position=position_dodge(preserve="single"), stat="identity", color="black", width=3)+
+    ggtitle(paste("Distribution diam\uE9trale","  ",Essence))+
+    xlab(bquote(bold("Classe de DHP (cm)")))+ ylab("Nombre de tiges par hectare")+
+    scale_x_continuous(breaks = seq(10, 70, by = 5))+
+    scale_fill_manual(values=c("#D95F02" ,"#008000"))+
+    theme(strip.background = element_rect(fill = "white"),
           plot.title=element_text(size=12,face="bold",hjust=0.5),
           axis.title=element_text(size=12,face="bold"),
           axis.text.x=element_text(size=10),
@@ -121,13 +121,11 @@ GraphDist<-Sommaire %>%
           strip.text = element_text(size = 10,face="bold"),
           legend.text= element_text(size = 12),
           legend.title= element_text(size = 12))+
-          labs(fill="Ann\uE9\u65")+
-          theme(legend.position="top")
-GraphDist
+    labs(fill="Ann\uE9\u65")+
+    theme(legend.position="top")
+  GraphDist
 
-Graphiques<-list(GraphEvol,GraphDist)
+  Graphiques <- list(GraphEvol,GraphDist)
 
-return(Graphiques)
-
-
+  return(Graphiques)
 }
