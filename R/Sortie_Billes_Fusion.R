@@ -69,7 +69,9 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
                                nom_grade3 = NA, long_grade3 = NA, diam_grade3 = NA, Simplifier = FALSE) {
   setDT(Data)
 
-  Data_Arbre <- SortieArbreSamare(Data)
+  Data_Arbre <- SortieArbreSamare(Data, simplifier = Simplifier)
+  setDT(Data_Arbre)
+
   # On obtient Petro
   Petro <- SortieBillonnage(Data, Type)
 
@@ -81,41 +83,60 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
 
   # On fusionne les 2
   Fusion <- rbind(Petro, Sybille, fill = TRUE)
-
   setDT(Fusion)
-
   setorder(Fusion, PlacetteID, Annee, ArbreID)
 
-  # On merge le Data de base avec notre fichier de billons, on garde tout les x(donc arbre mort aussi)
+  ###### À REVOIR(peut-être?)
+  #Je n'aime pas trop cette solution de changer les noms de colonnes lorsque simplifier = T ou F, ça fait la job mais
+  #je ne comprends pas le comportement(pour l'instant SortieArbre fait pas grand chose autre que garder les années)
+  colonnes_data_arbre <- colnames(Data_Arbre)
+
+  # Détecter les noms de colonnes pour PlacetteID
+  col_placette <- if("PlacetteID" %in% colonnes_data_arbre) {
+    "PlacetteID"
+  } else if("id_pe" %in% colonnes_data_arbre) {
+    "id_pe"
+  } else {
+    stop("Impossible de trouver la colonne PlacetteID/id_pe")
+  }
+
+  # Détecter les noms de colonnes pour ArbreID
+  col_arbre <- if("ArbreID" %in% colonnes_data_arbre) {
+    "ArbreID"
+  } else if("no_arbre" %in% colonnes_data_arbre) {
+    "no_arbre"
+  } else {
+    stop("Impossible de trouver la colonne ArbreID/no_arbre")
+  }
+
+  # Détecter les noms de colonnes pour DHPcm
+  col_dhp <- if("DHPcm" %in% colonnes_data_arbre) {
+    "DHPcm"
+  } else if("DHP_Ae" %in% colonnes_data_arbre) {
+    "DHP_Ae"
+  } else {
+    stop("Impossible de trouver la colonne DHPcm/DHP_Ae")
+  }
+
+############################################################
+  # MERGE avec les bons noms de colonnes
   Fusion_complete <- merge(Data_Arbre, Fusion,
-                           by.x = c("id_pe", "Annee", "no_arbre"),        # Colonnes Data
-                           by.y = c("PlacetteID", "Annee", "ArbreID"), # Colonnes Fusion
+                           by.x = c(col_placette, "Annee", col_arbre),
+                           by.y = c("PlacetteID", "Annee", "ArbreID"),
                            all.x = TRUE)
+
+  setDT(Fusion_complete)
 
   # On remplace les NA par 0
   Fusion_complete[is.na(vol_bille_dm3), vol_bille_dm3 := 0.0]
 
-  # On enlève les colonnes ajoutées de Sybille
-  Fusion_complete[, c("cl_drai", "sdom_bio", "veg_pot", "ALTITUDE", "HT_REELLE_M" ,"nbTi_ha", "st_ha") := NULL]
 
-  # On renomme les colonnes au format SaMARE
-  setnames(Fusion_complete, c("DHP_Ae", "HAUTEUR_M"), c("DHPcm", "Hautm"))
-
-  #Remettre les valeurs de DHPcm en cm(changement fait dans SortieSybille à la base pour calcul)
-  Fusion_complete[, DHPcm := DHPcm / 10]
-
-  MinAnnee = min(Fusion_complete$Annee)
-  MaxAnnee = max(Fusion_complete$Annee)
-
-  if(Simplifier == TRUE){
-    Data_min <-Fusion_complete %>% filter(Annee==MinAnnee )
-    Data_max <-Fusion_complete %>% filter(Annee==MaxAnnee )
-    Fusion_complete <-rbind(Data_min, Data_max) %>%  arrange(id_pe,Annee,origTreeID)
-  }
+  # Remettre les valeurs de DHP en cm (avec le bon nom de colonne)
+  Fusion_complete[, (col_dhp) := get(col_dhp) / 10]
 
   return(Fusion_complete)
 }
 
 #result <- SimulSaMARE(NbIter = 10, Horizon = 5, Data = Test2500m2)
 #result2 <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2, Gaules=GaulesTest2500m2)
-#result88 <- SortieBillesFusion(result, Type = "DHP2015", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8)
+#result88 <- SortieBillesFusion(result, Type = "DHP2015", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8, Simplifier = T)
