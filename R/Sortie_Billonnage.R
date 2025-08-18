@@ -14,6 +14,22 @@
 #'          pour chacun des arbres feuillus de plus de 23 cm.
 #' @export
 
+#' Fonction qui structure un dataframe de sortie dont chaque ligne correspond
+#' à chacun des arbres par placette, par classe Petro, par itération et par année.
+#'
+#' @param Data Un dataframe qui contient en ligne les arbres dont on veut prévoir
+#'             les rendements en produit à l'aide du module de billonnage Petro
+#'             régionalisé. sera applier sur "ERS", "BOJ", "ERR", "BOP", "HEG", "CHR"
+#' @param Type "DHP" pour utiliser les équations régionalisées basées seulement sur le DHP
+#'             "ABCD" pour utiliser les équations régionalisées basées sur ABCD
+#'             "1234" pour utiliser les équations de 2015 basées sur 1234
+#'             "MSCR" pour utiliser les équations de 2015 basées sur MSCR
+#'             "DHP2015" pour utiliser les équations de 2015 basées seulement sur le DHP
+#'             "ABCD2015" pour utiliser les équations de 2015 basées sur ABCD
+#' @return Retourne un dataframe avec l'estimation du volume par classe de produit
+#'          pour chacun des arbres feuillus de plus de 23 cm.
+#' @export
+
 SortieBillonnage <- function(Data, Type){
 
   # Data=fic; Type="DHP2015"
@@ -104,8 +120,8 @@ SortieBillonnage <- function(Data, Type){
     final_transpo <- final %>%
       pivot_longer(cols = all_of(existing_cols),
                    names_to = "grade_bille",
-                   values_to = "vol_bille_dm3") %>%
-      select(PlacetteID, Annee, ArbreID, grade_bille, vol_bille_dm3)
+                   values_to = "vol_bille_dm3") #%>%
+      #select(PlacetteID, Annee, ArbreID, grade_bille, vol_bille_dm3)
 
     #On enleve les possibles erreurs de fichiers en mettant le fichier en data.table
     final_transpo <- suppressMessages(setDT(final_transpo))
@@ -114,6 +130,6 @@ SortieBillonnage <- function(Data, Type){
   return(final_transpo)
 }
 
-#Result <- result[, Espece := "HHH"]
-
-#result33 <- SortieBillonnage(Result, "DHP2015")
+#data1 <- fread("C:/Users/boini5/Downloads/Donnees_test_billon_shiny - 1 placette.csv", sep = ";", header = TRUE)
+#result <- SimulSaMARE(NbIter = 10, Horizon = 5, Data = data1)
+#result6 <- SortieBillonnage(result, "DHP2015")

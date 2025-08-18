@@ -382,9 +382,9 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
     ##### 6.3 Calcul des variables à l'échelle de la placette qui evolue dans le temps #####
 
     Plac <- Plac %>%
+      mutate(Sup_PE = as.numeric(Sup_PE)) %>%
       group_by(Placette) %>%
       mutate(
-
 
         t0_aj_ = ifelse(trt=="CP" & (Annee-t0<=25), Annee-t0-4.9, 0), ###### on ajuste pour que lorsque la step débute immédiatement après coupe t0_aj a une valeur de 0.1. Et maximum de 20 ans pour l'effet de coupe
 
@@ -397,7 +397,6 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
         dens_tot0 = sum(Nombre)/Sup_PE,
         mch=MCH # on va créer mch ici, comme ça on aura la possibilité de la faire varier à chaque pas de simulation et de la voir dans le fichier de résultats
         )
-
 
     ##### 6.4 Effet aléatoire de step #####
     RandPlacetteStep <- RandPlac %>% filter(Step==k)

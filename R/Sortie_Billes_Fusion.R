@@ -65,33 +65,31 @@
 #' @export
 
 #library(OutilsDRF)
-SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, diam_grade1 = NA, nom_grade2 = NA, long_grade2 = NA, diam_grade2 = NA,
+SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, diam_grade1 = NA,
+                               nom_grade2 = NA, long_grade2 = NA, diam_grade2 = NA,
                                nom_grade3 = NA, long_grade3 = NA, diam_grade3 = NA, Simplifier = FALSE) {
+
   setDT(Data)
 
   Data_Arbre <- SortieArbreSamare(Data, simplifier = Simplifier)
   setDT(Data_Arbre)
 
-  # On obtient Petro
+  # On obtient Petro et Sybille
   Petro <- SortieBillonnage(Data, Type)
 
-  # On obtient Sybille
   Sybille <- SortieSybille(Data, dhs, nom_grade1, long_grade1, diam_grade1, nom_grade2, long_grade2, diam_grade2,
                            nom_grade3, long_grade3, diam_grade3)
 
   Sybille <- Sybille[!is.na(grade_bille)]
 
-  # On fusionne les 2
+  # On fusionne Petro et Sybille
   Fusion <- rbind(Petro, Sybille, fill = TRUE)
   setDT(Fusion)
   setorder(Fusion, PlacetteID, Annee, ArbreID)
 
-  ###### À REVOIR(peut-être?)
-  #Je n'aime pas trop cette solution de changer les noms de colonnes lorsque simplifier = T ou F, ça fait la job mais
-  #je ne comprends pas le comportement(pour l'instant SortieArbre fait pas grand chose autre que garder les années)
+  # Détecter les noms de colonnes
   colonnes_data_arbre <- colnames(Data_Arbre)
 
-  # Détecter les noms de colonnes pour PlacetteID
   col_placette <- if("PlacetteID" %in% colonnes_data_arbre) {
     "PlacetteID"
   } else if("id_pe" %in% colonnes_data_arbre) {
@@ -100,7 +98,6 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
     stop("Impossible de trouver la colonne PlacetteID/id_pe")
   }
 
-  # Détecter les noms de colonnes pour ArbreID
   col_arbre <- if("ArbreID" %in% colonnes_data_arbre) {
     "ArbreID"
   } else if("no_arbre" %in% colonnes_data_arbre) {
@@ -109,7 +106,6 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
     stop("Impossible de trouver la colonne ArbreID/no_arbre")
   }
 
-  # Détecter les noms de colonnes pour DHPcm
   col_dhp <- if("DHPcm" %in% colonnes_data_arbre) {
     "DHPcm"
   } else if("DHP_Ae" %in% colonnes_data_arbre) {
@@ -118,31 +114,49 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
     stop("Impossible de trouver la colonne DHPcm/DHP_Ae")
   }
 
-############################################################
-  # MERGE avec les bons noms de colonnes
-  Fusion_complete <- merge(Data_Arbre, Fusion,
+  # SOLUTION 1: Sélectionner uniquement les colonnes nécessaires de Fusion
+  # pour éviter les conflits de noms
+  colonnes_fusion <- c("PlacetteID", "Annee", "ArbreID", "grade_bille", "vol_bille_dm3")
+  Fusion_reduite <- Fusion[, ..colonnes_fusion]
+
+  # MERGE avec all.x = TRUE pour garder tous les arbres de Data_Arbre
+  Fusion_complete <- merge(Data_Arbre, Fusion_reduite,
                            by.x = c(col_placette, "Annee", col_arbre),
                            by.y = c("PlacetteID", "Annee", "ArbreID"),
                            all.x = TRUE)
 
   setDT(Fusion_complete)
 
-  # On remplace les NA par 0
+  # Remplacer les NA par 0 pour les volumes
   Fusion_complete[is.na(vol_bille_dm3), vol_bille_dm3 := 0.0]
 
-  # Remettre les valeurs de DHP en cm (avec le bon nom de colonne)
-  Fusion_complete[, (col_dhp) := get(col_dhp) / 10]
-
-  #Pour corriger le problème de fichier? À voir
-  if(Simplifier == FALSE) {
-    Fusion_complete[, c("cl_drai", "sdom_bio", "veg_pot", "ALTITUDE", "HT_REELLE_M" ,"nbTi_ha", "st_ha") := NULL]
-    setnames(Fusion_complete, c("DHP_Ae"), c("DHPcm"))
-    setnames(Fusion_complete, c("HAUTEUR_M"), c("Hautm"))
+  # Remettre les valeurs de DHP en cm (si nécessaire)
+  if(col_dhp == "DHP_Ae") {
+    Fusion_complete[, (col_dhp) := get(col_dhp) / 10]
   }
+
+  # Nettoyage final selon le paramètre Simplifier
+  if(Simplifier == FALSE) {
+    cols_to_remove <- c("cl_drai", "sdom_bio", "veg_pot", "ALTITUDE", "HT_REELLE_M", "nbTi_ha", "st_ha")
+    cols_to_remove <- cols_to_remove[cols_to_remove %in% names(Fusion_complete)]
+    if(length(cols_to_remove) > 0) {
+      Fusion_complete[, (cols_to_remove) := NULL]
+    }
+
+    # Renommer les colonnes pour SaMARE
+    if("DHP_Ae" %in% names(Fusion_complete)) {
+      setnames(Fusion_complete, "DHP_Ae", "DHPcm")
+    }
+    if("HAUTEUR_M" %in% names(Fusion_complete)) {
+      setnames(Fusion_complete, "HAUTEUR_M", "Hautm")
+    }
+  }
+
+  setorderv(Fusion_complete, c(col_placette, "Annee", col_arbre))
 
   return(Fusion_complete)
 }
 
-#result <- SimulSaMARE(NbIter = 10, Horizon = 5, Data = Test2500m2)
+#result <- SimulSaMARE(NbIter = 10, Horizon = 5, Data = data1)
 #result2 <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2, Gaules=GaulesTest2500m2)
-#result99 <- SortieBillesFusion(result, Type = "DHP2015", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8, Simplifier = F)
+#result55 <- SortieBillesFusion(result, Type = "DHP2015", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8, Simplifier = F)
