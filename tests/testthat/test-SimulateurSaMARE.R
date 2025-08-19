@@ -63,7 +63,7 @@ test_that("La fonction SimulSaMARE avec Gaules=1, coupe=1, MCH=0, sans annee inv
   expect_equal(an_inv$Annee, as.numeric(format(Sys.Date(), "%Y")))
 
   # presence de PlacetteID et autres
-  expect_equal(sum(c('PlacetteID', 'ntrt','Annee_Coupe', 'Annee_Inventaire', 'MCH') %in% nom),5)
+  expect_equal(sum(c('PlacetteID', 'ntrt','Annee_Coupe', 'Annee_Inventaire', 'MCH', 'reg_eco') %in% nom),6)
 
   # vérifier Temps
   temps <- unique(result$Temps)
@@ -143,7 +143,7 @@ test_that("La fonction SimulSaMARE avec Gaules=0, coupe=0, MCH=0, avec annee inv
   expect_equal(nom_pas_attendu, 0)
 
   # presence de PlacetteID et autres
-  expect_equal(sum(c('PlacetteID', 'ntrt','Annee_Coupe', 'Annee_Inventaire', 'MCH') %in% nom),5)
+  expect_equal(sum(c('PlacetteID', 'ntrt','Annee_Coupe', 'Annee_Inventaire', 'MCH', 'reg_eco') %in% nom),6)
 
   # verifier présence de valeurs de dhp
   dhp <- result %>% filter(Etat != 'mort') %>% filter(is.na(DHPcm))

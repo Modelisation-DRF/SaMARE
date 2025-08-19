@@ -278,7 +278,7 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
   )]
 
   # ajouter certaines variables échelle placette du fichier intrants
-  info <- Data %>% group_by(Placette) %>% slice(1) %>% select(Placette, Latitude, Longitude, Sup_PE, ntrt)
+  info <- Data %>% group_by(Placette) %>% slice(1) %>% select(Placette, Latitude, Longitude, Sup_PE, ntrt, Reg_Eco) %>% rename(reg_eco=Reg_Eco)
   setDT(info)
   Simul <- merge(Simul, info, by = "Placette", all.x = T, sort = FALSE)
 
@@ -309,7 +309,7 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
 
   # mettre les colonnes en ordre
   Simul <- Simul %>% lazy_dt() %>%
-    relocate(Iter, Placette, PlacetteID, Latitude, Longitude, Annee_Inventaire, Sup_PE, MCH, Residuel, Annee, Annee_Coupe, Temps, Temps_depuis_coupe, ntrt,
+    relocate(Iter, Placette, PlacetteID, Latitude, Longitude, reg_eco, Annee_Inventaire, Sup_PE, MCH, Residuel, Annee, Annee_Coupe, Temps, Temps_depuis_coupe, ntrt,
              origTreeID, ArbreID, Espece, GrEspece, Etat, Nombre, DHPcm, ST_m2, Hautm, Vol_dm3, Prod, Vig, Vigueur, ABCD, MSCR) %>%
     as.data.frame()
   # les colonnes de gaules seront par défaut à la fin du fichier car pas nommées dans le relocate
