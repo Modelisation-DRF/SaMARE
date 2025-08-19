@@ -32,3 +32,4 @@ install_github("https://github.com/Modelisation-DRF/SaMARE")
 | 2025-04-16 |	2.3.3 |		Correction de la prévision du nombre de gaules de hêtre de 6 et 8 cm |
 | 2025-05-09 |	2.4.0 |		Version optimisée |
 | 2025-06-04 |	2.4.1 |		Ajout de verification sur les colonnes et l'utilisation du package ExtractMap, ajout des gaules au temps 0 |
+| 2025-08-19 |	2.4.2 |		Ajout de la colonne reg_eco dans le fichier retourné par SimulSamare |
