@@ -40,13 +40,41 @@ test_that("La fonction SortieBillonage() gère le cas sans aucun arbre valide co
 })
 
 
-test_that("La fonction SortieBillonage() fonctionne sans erreur à partir d'une simulation de samare", {
-
+test_that("La fonction SortieBillonage() fonctionne sans erreur à partir d'une simulation de samare avec type=DHP2015", {
   simul <- SimulSaMARE(NbIter = 2, Horizon = 2, Data = Test2500m2)
-
   expect_no_error(SortieBillonnage(Data=simul, Type="DHP2015"))
-
-  #obtenu <- SortieBillonage(Data=simul, Type="DHP2015")
-
-
+  #obtenu <- SortieBillonnage(Data=simul, Type="DHP2015")
 })
+
+
+test_that("La fonction SortieBillonage() fonctionne sans erreur avec type=1234", {
+  simul <- SimulSaMARE(NbIter = 2, Horizon = 2, Data = Test2500m2)
+  expect_no_error(SortieBillonnage(Data=simul, Type="1234"))
+  #obtenu <- SortieBillonnage(Data=simul, Type="1234")
+})
+
+
+test_that("La fonction SortieBillonage() fonctionne sans erreur avec type=DHP", {
+  simul <- SimulSaMARE(NbIter = 2, Horizon = 2, Data = Test2500m2)
+  expect_no_error(SortieBillonnage(Data=simul, Type="DHP"))
+  #obtenu <- SortieBillonnage(Data=simul, Type="DHP")
+})
+
+test_that("La fonction SortieBillonage() fonctionne sans erreur avec type=ABCD", {
+  simul <- SimulSaMARE(NbIter = 2, Horizon = 2, Data = Test2500m2)
+  expect_no_error(SortieBillonnage(Data=simul, Type="ABCD"))
+  #obtenu <- SortieBillonnage(Data=simul, Type="ABCD")
+})
+
+test_that("La fonction SortieBillonage() fonctionne sans erreur avec type=MSCR", {
+  simul <- SimulSaMARE(NbIter = 2, Horizon = 2, Data = Test2500m2)
+  expect_no_error(SortieBillonnage(Data=simul, Type="MSCR"))
+  obtenu <- SortieBillonnage(Data=simul, Type="MSCR")
+})
+
+test_that("La fonction SortieBillonage() fonctionne sans erreur avec type=ABCD2015", {
+  simul <- SimulSaMARE(NbIter = 2, Horizon = 2, Data = Test2500m2)
+  expect_no_error(SortieBillonnage(Data=simul, Type="ABCD2015"))
+  obtenu <- SortieBillonnage(Data=simul, Type="ABCD2015")
+})
+

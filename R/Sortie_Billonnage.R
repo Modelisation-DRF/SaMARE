@@ -71,6 +71,7 @@ SortieBillonnage <- function(Data, Type){
   data1 <- Data %>%
     lazy_dt() %>%
     mutate(bilonID = seq_len(nrow(Data))) %>% # numéroter les arbres
+    rename(vigu0=Vig, prod0=Prod) %>% # nécessaire pour type=1234
     as.data.frame()
 
   billo <- Billonage::SIMBillonnageABCD_DHP(data1, Type)
