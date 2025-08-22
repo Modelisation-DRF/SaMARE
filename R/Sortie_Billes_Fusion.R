@@ -114,7 +114,6 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
     stop("Impossible de trouver la colonne DHPcm/DHP_Ae")
   }
 
-  # SOLUTION 1: Sélectionner uniquement les colonnes nécessaires de Fusion
   # pour éviter les conflits de noms
   colonnes_fusion <- c("PlacetteID", "Annee", "ArbreID", "grade_bille", "vol_bille_dm3")
   Fusion_reduite <- Fusion[, ..colonnes_fusion]
@@ -157,6 +156,8 @@ SortieBillesFusion <- function(Data, Type, dhs = 0.15, nom_grade1 = NA, long_gra
   return(Fusion_complete)
 }
 
+#data1 <- fread("C:/Users/boini5/Downloads/Donnees_test_billon_shiny - 1 placette.csv", sep = ";")
 #result <- SimulSaMARE(NbIter = 10, Horizon = 5, Data = data1)
 #result2 <- SimulSaMARE(NbIter = 10, Horizon = 2, RecruesGaules = 1, Data = Test2500m2, Gaules=GaulesTest2500m2)
-#result55 <- SortieBillesFusion(result, Type = "DHP2015", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8, Simplifier = F)
+#result44 <- SortieBillesFusion(result, Type = "DHP", dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 8, diam_grade1 = 20,
+#                               nom_grade2 = "pate", long_grade2 = 4, diam_grade2 = 8, Simplifier = F)
