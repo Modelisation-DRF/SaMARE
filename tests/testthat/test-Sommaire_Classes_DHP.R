@@ -49,8 +49,6 @@ test_that("Sommaire_Classes_DHP fonctionne avec simul avec gaules ", {
 
 
 })
-
-
 test_that("Sommaire_Classes_DHP fonctionne avec le parametre simplifier", {
 
   # data à la fin de la simulation de samare

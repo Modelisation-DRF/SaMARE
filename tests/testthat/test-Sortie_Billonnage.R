@@ -8,14 +8,17 @@ test_that("La fonction SortieBillonage() gère les essences comme attendu", {
   fic$Espece <- Espece
   fic$GrEspece <- GrEspece
 
+  fic <- fic %>% rename(Vig=vigu0, Prod=prod0)
+
   # il devrait y avoir des estimations pour 13 lignes
 
   # essences samare:      "AUT" "BOJ" "EPX" "ERR" "ERS" "FEN" "FIN" "HEG" "RES" "SAB"
   # essences billonnage:         BOJ         ERR   ERS               HEG               CHR  BOP
 
   result <- SortieBillonnage(Data=fic, Type="DHP2015")
+  result2 <- result %>% filter(!is.na(vol_bille_dm3)) %>% group_by(NoArbre) %>% slice(1)
 
-  expect_equal(nrow(result),13)
+  expect_equal(nrow(result2),13) # valeur pour 13 arbres
 
 })
 
@@ -29,13 +32,15 @@ test_that("La fonction SortieBillonage() gère le cas sans aucun arbre valide co
   GrEspece <- c("ERS", "BOJ", "SAB")
   DHPcm <- c(12,12,25)
 
+  fic <- fic %>% rename(Vig=vigu0, Prod=prod0, origTreeID=NoArbre)
   fic$Espece <- Espece
   fic$GrEspece <- GrEspece
   fic$DHPcm <- DHPcm
 
   result <- SortieBillonnage(Data=fic, Type="DHP2015")
 
-  expect_equal(result$message,"Aucun arbre valide pour le billonnage")
+  #expect_equal(result$message,"Aucun arbre valide pour le billonnage")
+  expect_equal(nrow(result),0)
 
 })
 

@@ -65,7 +65,7 @@ verifier_variable_meteo <- function(data){
 
   variables_non_trouvees <- setdiff(mes_variables, names(data))
 
-  if(!is_empty(variables_non_trouvees)){
+  if(!rlang::is_empty(variables_non_trouvees)){
     variables_a_extraire <- map_noms_variables[variables_non_trouvees]
 
     data <- ExtractMap::extract_map_plot(file=data, liste_raster="cartes_climat", variable=variables_a_extraire)
@@ -128,7 +128,7 @@ verifier_variable_station <- function(data){
   variables_non_trouvees <- setdiff(mes_variables, names(data))
 
 
-  if(!is_empty(variables_non_trouvees)){
+  if(!rlang::is_empty(variables_non_trouvees)){
     variables_a_extraire <- map_noms_variables[variables_non_trouvees]
 
     data <- ExtractMap::extract_map_plot(file=data, liste_raster="cartes_station", variable=variables_a_extraire)

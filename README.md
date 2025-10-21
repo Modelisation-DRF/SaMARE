@@ -33,3 +33,4 @@ install_github("https://github.com/Modelisation-DRF/SaMARE")
 | 2025-05-09 |	2.4.0 |		Version optimisée |
 | 2025-06-04 |	2.4.1 |		Ajout de verification sur les colonnes et l'utilisation du package ExtractMap, ajout des gaules au temps 0 |
 | 2025-08-19 |	2.4.2 |		Ajout de la colonne reg_eco dans le fichier retourné par SimulSamare et renommer les colonnes Prod et Vig dans SortieBillonage |
+| 2025-10-21 |	2.4.3 |	Ménage dans Imports et Depends et ajout de package.R	 |

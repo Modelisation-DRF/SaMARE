@@ -83,7 +83,8 @@ La fonction effectue les opérations suivantes:
 \examples{
 \dontrun{
 # Exemple d'utilisation basique
-resultat <- SortieBillesFusion(mes_donnees, "TypeA", nom_grade1 = "Sciage long",  long_grade1 = 4, diam_grade1 = 8)
+resultat <- SortieBillesFusion(mes_donnees, "TypeA", nom_grade1 = "Sciage long",
+long_grade1 = 4, diam_grade1 = 8)
 
 # Avec paramètres de grades personnalisés
 resultat <- SortieBillesFusion(

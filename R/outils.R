@@ -136,7 +136,7 @@ calcul_hdom <- function(data, ht, nombre, superficie, group_by_vars=NULL){
   group_syms <- syms(group_by_vars)
 
   # pour le arrange
-  arrange_exprs <- c(group_syms, expr(desc({{ht}})))
+  arrange_exprs <- c(group_syms, rlang::expr(desc({{ht}})))
 
   data1 <- data %>%
     lazy_dt() %>%

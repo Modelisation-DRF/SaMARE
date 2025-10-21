@@ -589,7 +589,7 @@ test_that("SaMARE returns the expected data frame without Gaules and MCH = 0, av
                     Para=MatchModuleParameters, ParaGaules=ParametresGaules, Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat,
                     MCH = 0)
 
-  attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_plusieurs_placettes.rds"))
+  attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_plus_plot.rds"))
 
   expect_equal(obtenu, attendu)
 
