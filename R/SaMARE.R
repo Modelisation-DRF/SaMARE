@@ -379,6 +379,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
 
     }
 
+    # Ajouter le code de OutilsDRF ici
+
     ##### 6.3 Calcul des variables à l'échelle de la placette qui evolue dans le temps #####
 
     Plac <- Plac %>%
