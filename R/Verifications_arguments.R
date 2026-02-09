@@ -8,7 +8,7 @@
 # #' @export
 #'
 # @examples
-verifArguments <- function(NbIter, Horizon, RecruesGaules, Data, Gaules, MCH, cubage) {
+verifArguments <- function(NbIter, Horizon, RecruesGaules, Data, Gaules, MCH, cubage, Coupe_ON, Coupe_modif) {
 
   # on doit spécifier au moins un 1 fichier
   if (missing(Data)) {
@@ -46,6 +46,74 @@ verifArguments <- function(NbIter, Horizon, RecruesGaules, Data, Gaules, MCH, cu
   # else if (!multi_session %in% c(TRUE, FALSE)) {
   #   erreur <- c("multi_session doit etre TRUE ou FALSE")
   # }
+  #
   else erreur <- c("ok")
+  #
+  # validation coupe_on
+  if (!is.null(Coupe_ON)) {
+
+    if (!is.vector(Coupe_ON) || !is.numeric(Coupe_ON)) {
+      erreur <- "L'argument Coupe_ON doit etre un vecteur numerique"
+    }
+    if (length(Coupe_ON) != Horizon) {
+      erreur <- paste("La longueur de Coupe_ON doit etre egale a Horizon (", Horizon, ")", sep="")
+    }
+    # Vérifier que les valeurs sont valides (0-18 ou NA)
+    valid_values <- c(0:19, NA)
+    if (!all(Coupe_ON %in% valid_values)) {
+      erreur <- "Les valeurs de Coupe_ON doivent etre entre 0 et 19 ou NA"
+    }
+  }
+  #
+  # Validation du paramètre Coupe_modif
+  if (!is.null(Coupe_modif)) {
+    if (!is.list(Coupe_modif)) {
+      erreur <- "L'argument Coupe_modif doit etre une liste"
+    }
+    if (length(Coupe_modif) != Horizon) {
+      erreur <- paste("La longueur de Coupe_modif doit etre egale a Horizon (", Horizon, ")", sep="")
+    }
+
+    # Valider chaque élément de la liste
+    for (i in 1:length(Coupe_modif)) {
+      elem <- Coupe_modif[[i]]
+
+      # Skip NULL elements
+      if (is.null(elem)) {
+        next
+      }
+
+      # Handle single values (numbers or NA)
+      if (length(elem) == 1) {
+        if (is.na(elem)) {
+          next  # Skip NA values
+        } else if (is.numeric(elem)) {
+          if (elem < -80 || elem > 160) {
+            erreur <- paste("Le modificateur a la position", i, "doit etre entre -80 et 160")
+          }
+        } else {
+          erreur <- paste("L'element a la position", i,
+                     "doit etre un nombre, un data.frame, NA ou NULL")
+        }
+      }
+      # Handle data frames or lists with multiple elements
+      else if (is.data.frame(elem)) {
+        if (!all(c("ess_ind", "modifier") %in% names(elem))) {
+          erreur <- paste("Le data.frame a la position", i,
+                     "doit contenir les colonnes 'ess_ind' et 'modifier'")
+        }
+        if (any(elem$modifier < -80 | elem$modifier > 160)) {
+          erreur <- paste("Tous les modificateurs dans le data.frame a la position", i,
+                     "doivent etre entre -80 et 160")
+        }
+      }
+      # Handle other multi-element objects
+      else {
+        erreur <- paste("L'element a la position", i,
+                   "doit etre un nombre, un data.frame, NA ou NULL")
+      }
+    }
+  }
+
   return(erreur)
 }

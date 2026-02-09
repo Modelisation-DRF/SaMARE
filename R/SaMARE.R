@@ -32,6 +32,12 @@
 #'                    de SaMARE (modules 10 à 16) les éléments du triangle inférieur de
 #'                    la matrice de variance-covariance.
 #' @param seed_value Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.
+#' @param Coupe_ON Vecteur contenant le numéro du traitement de coupe (0-18) pour chaque
+#'              décennie à simuler. Utiliser NA pour les décennies sans coupe.
+#'
+#' @param Coupe_modif Une liste de data.frames et/ou de nombres contenant les modificateurs
+#'                    de probabilité de coupe. Chaque élément peut être un nombre unique
+#'                    ou un data.frame avec colonnes 'essence' et 'modifier'.
 #' @inheritParams SimulSaMARE
 #'
 #' @return Retourne un dataframe avec une liste d'arbres vivants et mort avec leur DHP
@@ -41,7 +47,7 @@
 
 SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, RecruesGaules,
                   MCH, CovParms, CovParmsGaules, Para, ParaGaules, Omega, OmegaGaules,
-                  seed_value=NULL){
+                  seed_value=NULL,Coupe_ON = NULL, Coupe_modif = NULL){
 
   # Random =RandomTest; Data = data; Gaules =NA
   # Horizon = 6 ; Iteration = 1;seed_value=3;
@@ -379,7 +385,6 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
 
     }
 
-    # Ajouter le code de OutilsDRF ici
 
     ##### 6.3 Calcul des variables à l'échelle de la placette qui evolue dans le temps #####
 
@@ -399,6 +404,37 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
         dens_tot0 = sum(Nombre)/Sup_PE,
         mch=MCH # on va créer mch ici, comme ça on aura la possibilité de la faire varier à chaque pas de simulation et de la voir dans le fichier de résultats
         )
+
+
+    # Utiliser le simulateur de coupe si pas NA à la position k de Coupe_ON
+    if (!is.null(Coupe_ON) && length(Coupe_ON) >= k && !is.na(Coupe_ON[k])) {
+      # Préparer les données pour prob_coupe
+      data_for_coupe <- Plac %>%
+        rename(id_pe = Placette, #ok
+               no_arbre = NoArbre, #ok
+               dhpcm = DHPcm, #ok
+               essence = GrEspece,
+               ess_ind = Espece) %>% #ok
+        mutate(nbTi_ha = st_tot0,
+               st_ha = dens_tot0)
+      # Déterminer le modificateur pour cette période
+      modifier_k <- NULL
+      if (!is.null(Coupe_modif) && length(Coupe_modif) >= k) {
+        elem <- Coupe_modif[[k]]
+        if (!is.null(elem)) {
+          if (length(elem) == 1 && is.na(elem)) {
+            #si NA, on passe
+          } else {
+            modifier_k <- elem
+          }
+        }
+      }
+      # Appliquer prob_coupe en mode déterministe
+      resultat_coupe <- OutilsDRF::prob_coupe(data_tree = data_for_coupe,
+                                              trt_coupe = Coupe_ON[k],
+                                              mode_simul = "DET",
+                                              modifier = modifier_k)
+    }
 
     ##### 6.4 Effet aléatoire de step #####
     RandPlacetteStep <- RandPlac %>% filter(Step==k)

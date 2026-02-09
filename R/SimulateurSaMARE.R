@@ -51,6 +51,17 @@
 #'    \item \code{FALSE} pour ne pas les calculer.
 #'    }
 #'
+#' @param Coupe_ON Vecteur contenant le numéro du traitement de coupe (0-18) pour chaque
+#'              décennie à simuler. Le nombre d'éléments doit être égal à Horizon.
+#'              Utiliser NA pour les décennies sans coupe. Par défaut = NULL (pas de coupe).
+#'
+#' @param Coupe_modif Une liste de data.frames et/ou de nombres contenant les modificateurs
+#'                    de probabilité de coupe. Par défaut = NULL (pas de modificateurs).
+#'                    La liste doit avoir la même longueur que le nombre de périodes (Horizon).
+#'                    Chaque élément peut être:
+#'                    - Un nombre unique (s'applique à toutes les essences)
+#'                    - Un data.frame avec colonnes 'essence' et 'modifier'
+#'                    - NA (pas de modification pour cette période)
 #' @return Un dataframe contenant la liste des arbres, leur état, leur DHP, pour chaque pas de simulation
 #'         et chaque iteration.
 #'
@@ -81,7 +92,7 @@
 #' @export
 
 
-SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cubage=TRUE){
+SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cubage=TRUE, Coupe_ON = NULL, Coupe_modif = NULL){
 
   select=dplyr::select
 
@@ -90,7 +101,7 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
   # NbIter=2; Horizon=1; Data=Test2500m2; RecruesGaules=1; Gaules = GaulesTest2500m2; MCH = 0; cubage=TRUE; multi_session = FALSE
 
   # Vérification des arguments de la fonction principale
-  Erreur <- verifArguments(NbIter=NbIter, Horizon=Horizon, RecruesGaules=RecruesGaules, Data=Data, Gaules=Gaules, MCH=MCH, cubage=cubage)
+  Erreur <- verifArguments(NbIter=NbIter, Horizon=Horizon, RecruesGaules=RecruesGaules, Data=Data, Gaules=Gaules, MCH=MCH, cubage=cubage,Coupe_ON=Coupe_ON, Coupe_modif=Coupe_modif)
   if (Erreur != "ok") {stop(Erreur)}
 
 
@@ -246,7 +257,7 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
     Simul[[x]] <- SaMARE(Random=RandPlacStep, RandomGaules=RandPlacStepGaules, Data=Data, Gaules=Gaules,
             Iteration=x, Horizon=Horizon, RecruesGaules=RecruesGaules, MCH=MCH,
             CovParms=matchModuleCovparms, CovParmsGaules=covparmGaules,
-            Para=para, ParaGaules=paraGaules, Omega=matchModuleOmega, OmegaGaules=omegaGaulesFormat)
+            Para=para, ParaGaules=paraGaules, Omega=matchModuleOmega, OmegaGaules=omegaGaulesFormat,Coupe_ON=Coupe_ON, Coupe_modif=Coupe_modif)
   }
  Simul <- rbindlist(Simul)
 
@@ -288,6 +299,7 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
     Placette = sub("\\..*", "", Placette))
     ][, Iter := .GRP, by = .(Iter, Iter_temp)] # numéroter les combinaisons uniques de iter et iter_temp pour créer les numéro d'iter de 1 à NbIter_orig
   Simul[, `:=`(Iter_temp = NULL)]
+  cat("Avant ST_m2 :", "ST_m2" %in% names(Simul), "\n")
   Simul[, `:=`(
       PlacetteID = paste0(Placette,"_", Iter),
       ST_m2 = pi*(DHPcm/200)^2,  # on en tient pas compte de Nombre
@@ -302,18 +314,22 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
         TRUE ~ NA_integer_
       )
     )]
+
+  cat("Après ST_m2 :", "ST_m2" %in% names(Simul), "\n")
+
   setnames(Simul,
            old = c("t0", "mch", 'prod0', 'vigu0', 'NoArbre'),   #PlacetteID=Placette: je ne renomme pas la variable
            new = c("Annee_Coupe", "MCH", "Prod", "Vig", 'origTreeID'))
   setorder(Simul, Iter, Placette, Annee, Residuel, ArbreID)
 
   # mettre les colonnes en ordre
+  cat("Avant lazy_dt :", "ST_m2" %in% names(Simul), "\n")
   Simul <- Simul %>% lazy_dt() %>%
     relocate(Iter, Placette, PlacetteID, Latitude, Longitude, reg_eco, Annee_Inventaire, Sup_PE, MCH, Residuel, Annee, Annee_Coupe, Temps, Temps_depuis_coupe, ntrt,
              origTreeID, ArbreID, Espece, GrEspece, Etat, Nombre, DHPcm, ST_m2, Hautm, Vol_dm3, Prod, Vig, Vigueur, ABCD, MSCR) %>%
     as.data.frame()
   # les colonnes de gaules seront par défaut à la fin du fichier car pas nommées dans le relocate
-
+  cat("Après as.data.frame :", "ST_m2" %in% names(Simul2), "\n")
   return(Simul)
 
 }
