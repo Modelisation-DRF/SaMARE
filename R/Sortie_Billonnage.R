@@ -54,15 +54,15 @@ SortieBillonnage <- function(Data, Type){
   # Traiter les données si on a des lignes valides
   data1 <- Data %>%
     lazy_dt() %>%
-    mutate(bilonID = seq_len(nrow(Data))) %>% # numéroter les arbres
+    mutate(TigeID = seq_len(nrow(Data))) %>% # numéroter les arbres
     rename(vigu0=Vig, prod0=Prod) %>% # nécessaire pour type=1234
     as.data.frame()
 
-  billo <- Billonage::SIMBillonnageABCD_DHP(data1, Type)
+  billo <- BillonnagePetro::SimBillonnagePetro(data1, Type)
 
   # utiliser Data_ori?
   final <- data1 %>% lazy_dt() %>%
-    left_join(billo, by = "bilonID") %>%
+    left_join(billo, by = "TigeID") %>%
     # ceci est fait directewment dans la fct SimulSaMARE
     # mutate(Stm2ha = pi*(DHPcm/200)^2,  # ici st n'est pas à l'ha, Nombre et SUP_PE n'est pas pris en compte
     #        Vigueur = case_when(
@@ -75,7 +75,7 @@ SortieBillonnage <- function(Data, Type){
     #           vigu0 == "NONVIG" & prod0 == "resineux" ~ 6,
     #           TRUE ~ NA_integer_)
     #           ) %>%
-    dplyr::select(-Espece, -bilonID) %>%
+    dplyr::select(-Espece, -TigeID) %>%
     rename(Espece = Espece_original) %>%
     # Laisser toutes les variable de Data
     #select(Annee, Residuel, ArbreID, Iter, NoArbre, Placette, Nombre, GrEspece, Espece,

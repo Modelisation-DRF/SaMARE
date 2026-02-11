@@ -1,7 +1,7 @@
 Package: SimulateurSaMARE 
 Type: Package
 Title: Simulateur de l'accroissement, de la mortalité et du recrutement pour les forêts feuillues et mixtes du Québec (SaMARE)
-Version: 2.4.3
+Version: 2.4.4
 Author: c(
     person("Hugues", "Power", , email = "hugues.power@mrnf.gouv.qc.ca", role = c("aut", "cre")),
     person("Junior", "Peumi", , role = c("ctb")),
@@ -31,13 +31,13 @@ Imports:
     purrr,
     stringr,
     tidyr,
-    Billonage,
+    BillonnagePetro,
     ExtractMap,
     OutilsDRF
 Depends: 
     R (>= 2.10)
 Remotes:
-    Modelisation-DRF/Billonnage,
+    Modelisation-DRF/BillonnagePetro,
     Modelisation-DRF/ExtractMap,
     Modelisation-DRF/OutilsDRF
 Suggests: 
