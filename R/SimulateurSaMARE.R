@@ -96,7 +96,7 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
 
   select=dplyr::select
 
-  # NbIter=2; Horizon=1; Data=Test400m2; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE
+  # NbIter=2; Horizon=2; Data=Test2500m2; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE; Coupe_ON = c(0,7); Coupe_modif = c(NA,NA)
   # Data = Test400m2; NbIter = 20; Horizon = 3; multi_session = FALSE; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE
   # NbIter=2; Horizon=1; Data=Test2500m2; RecruesGaules=1; Gaules = GaulesTest2500m2; MCH = 0; cubage=TRUE; multi_session = FALSE
 
@@ -299,7 +299,6 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
     Placette = sub("\\..*", "", Placette))
     ][, Iter := .GRP, by = .(Iter, Iter_temp)] # numéroter les combinaisons uniques de iter et iter_temp pour créer les numéro d'iter de 1 à NbIter_orig
   Simul[, `:=`(Iter_temp = NULL)]
-  cat("Avant ST_m2 :", "ST_m2" %in% names(Simul), "\n")
   Simul[, `:=`(
       PlacetteID = paste0(Placette,"_", Iter),
       ST_m2 = pi*(DHPcm/200)^2,  # on en tient pas compte de Nombre
@@ -315,7 +314,6 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
       )
     )]
 
-  cat("Après ST_m2 :", "ST_m2" %in% names(Simul), "\n")
 
   setnames(Simul,
            old = c("t0", "mch", 'prod0', 'vigu0', 'NoArbre'),   #PlacetteID=Placette: je ne renomme pas la variable
@@ -323,13 +321,12 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
   setorder(Simul, Iter, Placette, Annee, Residuel, ArbreID)
 
   # mettre les colonnes en ordre
-  cat("Avant lazy_dt :", "ST_m2" %in% names(Simul), "\n")
   Simul <- Simul %>% lazy_dt() %>%
     relocate(Iter, Placette, PlacetteID, Latitude, Longitude, reg_eco, Annee_Inventaire, Sup_PE, MCH, Residuel, Annee, Annee_Coupe, Temps, Temps_depuis_coupe, ntrt,
              origTreeID, ArbreID, Espece, GrEspece, Etat, Nombre, DHPcm, ST_m2, Hautm, Vol_dm3, Prod, Vig, Vigueur, ABCD, MSCR) %>%
     as.data.frame()
   # les colonnes de gaules seront par défaut à la fin du fichier car pas nommées dans le relocate
-  cat("Après as.data.frame :", "ST_m2" %in% names(Simul2), "\n")
+
   return(Simul)
 
 }

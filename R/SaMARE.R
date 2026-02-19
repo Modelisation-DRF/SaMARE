@@ -49,8 +49,11 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
                   MCH, CovParms, CovParmsGaules, Para, ParaGaules, Omega, OmegaGaules,
                   seed_value=NULL,Coupe_ON = NULL, Coupe_modif = NULL){
 
+  #Random=RandPlacStep; RandomGaules=RandPlacStepGaules; Iteration=1; RecruesGaules=RecruesGaules; CovParms=matchModuleCovparms; Omega=matchModuleOmega; OmegaGaules=omegaGaulesFormat
+  #seed_value=3;
   # Random =RandomTest; Data = data; Gaules =NA
-  # Horizon = 6 ; Iteration = 1;seed_value=3;
+  # Horizon = 6 ; Iteration = 1;
+
   # RecruesGaules =0;CovParms=MatchModuleCovparms;CovParmsGaules=CovparmGaules;
   # Para=MatchModuleParameters;ParaGaules=ParametresGaules;Omega=MatchModuleOmega; OmegaGaules=OmegaGaulesFormat; MCH = 0
   # set.seed(NULL)
@@ -277,8 +280,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
                 "prec", "temp", "grwd", "t0_aj_", "fact_red", "st_tot0", "dens_tot0", "mch")
 
   for (k in 1:Horizon){
-    # k=1
-
+     #k=1
     ##### 6.1 Pour k=1: on utilise le fichier de depart de la placette #####
     if   (k==1){
 
@@ -351,7 +353,6 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
       colnames(Residus)<-c("Placette","ArbreID",paste("Periode","_",c(1:Horizon),sep=""))
 
 
-
       ###### 6.1.5 Preparation des variables explicatives des gaules pour simulation ######
       if (RecruesGaules==1){
         #RecGaules<-data.frame("GrEspece"=c("AUT","BOJ","EPX","ERR","ERS","FEN","FIN","HEG","RES","SAB")) # on ne s'en sert pas ici et il est recréer plus loin
@@ -405,7 +406,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
         mch=MCH # on va créer mch ici, comme ça on aura la possibilité de la faire varier à chaque pas de simulation et de la voir dans le fichier de résultats
         )
 
-
+   # ---- Simulateur de coupe ----
     # Utiliser le simulateur de coupe si pas NA à la position k de Coupe_ON
     if (!is.null(Coupe_ON) && length(Coupe_ON) >= k && !is.na(Coupe_ON[k])) {
       # Préparer les données pour prob_coupe
@@ -415,8 +416,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
                dhpcm = DHPcm, #ok
                essence = GrEspece,
                ess_ind = Espece) %>% #ok
-        mutate(nbTi_ha = st_tot0,
-               st_ha = dens_tot0)
+        mutate(nbTi_ha = dens_tot0,
+               st_ha = st_tot0)
       # Déterminer le modificateur pour cette période
       modifier_k <- NULL
       if (!is.null(Coupe_modif) && length(Coupe_modif) >= k) {
@@ -429,12 +430,27 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
           }
         }
       }
-      # Appliquer prob_coupe en mode déterministe
+      # Appliquer prob_coupe en mode stochastique
       resultat_coupe <- OutilsDRF::prob_coupe(data_tree = data_for_coupe,
                                               trt_coupe = Coupe_ON[k],
-                                              mode_simul = "DET",
+                                              mode_simul = "STO",
                                               modifier = modifier_k)
+
+      # Mettre à jour les variables de coupe
+      # À ajouter
+
+      # Recalculer la colonne Nombre
+      Plac <- Plac %>%
+        left_join(resultat_coupe %>% select(id_pe, ArbreID, COUPE),
+                  by = c("Placette"="id_pe","ArbreID" = "ArbreID")) %>%
+        filter(COUPE == "NON") %>%
+        select(-COUPE)
+      #On garde le df après coupe puisque fichier retourne "avant_coupe"
+      #Plac_apres_coupe <- Plac %>%
+        #mutate(Residuel = 1)
     }
+
+    # -----------------------
 
     ##### 6.4 Effet aléatoire de step #####
     RandPlacetteStep <- RandPlac %>% filter(Step==k)
@@ -451,13 +467,15 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
     Plac <- mort(Mort, t, MCH , Para.mort, RandomMort, seed_value=NULL)
     Plac <- Plac %>% select(-xb_mort, -prob_mort)
 
-
     ##### 6.6 Accroissement en diamètre #####
 
     # Effets aléatoire pour l'accroissement
     RandomAcc <- RandPlacetteStep %>% filter(SubModuleID==2)
 
     Accrois <- Plac
+    Residus <- as.matrix(data.frame(Residus) %>%
+      mutate(ArbreID = as.integer(ArbreID)) %>%
+      semi_join(Accrois, by = "ArbreID"))
     # on applique la fonction d'accroissement
     Plac <- accrois(Accrois, t, Para.acc, RandomAcc, Residus[,k+2])
     Plac <- Plac %>% select(-xb_acc, -pred_acc)
@@ -701,9 +719,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
         # ResidusRec <- rockchalk::mvrnorm(n=nrow(RecSelect), mu=rep(0,Horizon-k), Sigma = varcov, empirical=F)
         ResidusRec0 <- matrix(0,nrow=nrow(RecSelect),ncol=k) # colonnes de 0 pour les steps passés
         ResidusRec <- cbind(RecSelect$Placette, RecSelect$ArbreID, ResidusRec0, ResidusRec)
-
         Residus <- rbind(Residus, ResidusRec)
-
       }
 
       ##### 6.19 Ajout des recrues au fichier des Placettes #####
@@ -752,7 +768,10 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
     if (k < Horizon){
       m <- which(Plac$Etat1!="mort", arr.ind = TRUE) # où sont les vivants
       #Residus <- matrix(Residus[m,], nrow=length(m), ncol=Horizon+1)
-      Residus <- Residus[m,]
+      residus <- data.frame(Residus) %>%
+        mutate(ArbreID = as.integer(ArbreID)) %>%
+        semi_join(Plac %>% filter(Etat1!="mort"), by = "ArbreID")  #Modification par gabrielle
+      #Residus <- Residus[m,] # avant c'était cette ligne
     }
 
     # Renommer les variables
