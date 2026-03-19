@@ -436,18 +436,21 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
                                               mode_simul = "STO",
                                               modifier = modifier_k)
 
-      # Mettre à jour les variables de coupe
-      # À ajouter
+      #On garde le df après coupe
+      Plac_avec_coupe <- Plac %>%
+        mutate(Residuel=1, if_else(is.na(ntrt), 1, ntrt + 1), t0=Annee)
+      select(Placette, Annee_Inventaire, Annee, ArbreID, NoArbre, Nombre, GrEspece,
+             Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter, t0, trt, ntrt)
 
       # Recalculer la colonne Nombre
       Plac <- Plac %>%
         left_join(resultat_coupe %>% select(id_pe, ArbreID, COUPE),
                   by = c("Placette"="id_pe","ArbreID" = "ArbreID")) %>%
         filter(COUPE == "NON") %>%
+        mutate(t0 = Annee-t, trt = "CP", t0_aj_ = 0.1, if_else(is.na(ntrt), 1, ntrt + 1)) %>%  #GABRIELLE
         select(-COUPE)
-      #On garde le df après coupe puisque fichier retourne "avant_coupe"
-      #Plac_apres_coupe <- Plac %>%
-        #mutate(Residuel = 1)
+
+
     }
 
     # -----------------------
@@ -806,9 +809,13 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
 
     # on ajoute les donnees du pas de simulation en cours aux autres pas de simulation pour la placette
     outputTot <- bind_rows(outputTot, Plac)
+    outputTot_coupe <- bind_rows(outputTot_coupe,Plac_avec_coupe) # Assurer d'initialisé au début  GABRIELLE
 
 
   }  # fin de la boucle des simulations
+
+  # Rassemblement de toutes les placettes, avant, pendant et après les coupes
+  outputTot <- bind_rows(outputTot,outputTot_coupe) %>%  arrange(Placette, Annee, Residuel, ArbreID) # trier par Placette, Annee, Residuel, ArbreID  GABRIELLE
 
 
 
