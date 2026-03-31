@@ -6,6 +6,7 @@ Author: c(
     person("Hugues", "Power", , email = "hugues.power@mrnf.gouv.qc.ca", role = c("aut", "cre")),
     person("Junior", "Peumi", , role = c("ctb")),
     person("Nicholas", "Boivin", , role = c("ctb")),
+	person("Gabrielle", "Lajeunesse-Langdeau", , role = c("ctb")),
     person("Isabelle", "Auger", , email = "isabelle.auger@mrnf.gouv.qc.ca", role = c("ctb"))
     )
 Maintainer: The package maintainer <hugues.power@mrnf.gouv.qc.ca>
