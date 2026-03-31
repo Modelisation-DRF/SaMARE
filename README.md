@@ -10,11 +10,13 @@ Un package pour la simulation de l'accroissement, de la mortalité et du recrute
 Non disponibles pour l'instant.
 
 ## Dépendences
-Ce package dépend des packages OutilsDRF et Billonnage.
+Ce package dépend des packages OutilsDRF, BillonnagePetro et ExtractMap.
 
 OutilsDRF est disponible ici: https://github.com/Modelisation-DRF/OutilsDRF
 
 BillonnagePetro est disponible ici: https://github.com/Modelisation-DRF/BillonnagePetro
+
+ExtractMap est disponible ici: https://github.com/Modelisation-DRF/ExtractMap
 
 
 ## Comment installer le package dans R
@@ -35,3 +37,4 @@ install_github("https://github.com/Modelisation-DRF/SaMARE")
 | 2025-08-19 |	2.4.2 |		Ajout de la colonne reg_eco dans le fichier retourné par SimulSamare et renommer les colonnes Prod et Vig dans SortieBillonage |
 | 2025-10-21 |	2.4.3 |	Ménage dans Imports et Depends et ajout de package.R	 |
 | 2026-02-11 |	2.4.4 |	Modification de SortieBillonnage() pour prendre en compte les modifications apportées au package BillonnagePetro	 |
+| 2026-03-31 |	2.4.5 |	Ajout du simulateur de coupe |
