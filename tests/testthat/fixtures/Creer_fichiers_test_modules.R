@@ -1058,8 +1058,36 @@ attendu <- SaMARE(Random =Random_tous, Data = data_tous, Gaules =NA,
 
 #saveRDS(Random_tous, test_path("fixtures/samare", "Random_tous.rds"))
 #saveRDS(attendu, test_path("fixtures/samare", "result_samare_plusieurs_placettes.rds"))
-saveRDS(attendu, test_path("fixtures/samare", "result_samare_plusieurs_placettes_v2.rds"))
+#saveRDS(attendu, test_path("fixtures/samare", "result_samare_plusieurs_placettes_v2.rds"))
+saveRDS(attendu, test_path("fixtures/samare", "result_samare_plusieurs_placettes_v3.rds")) # attendu refait aporès ajout simulateur de coupe 20260330
 saveRDS(data_tous, test_path("fixtures/samare", "Data_test_for_simul_samare_plusieurs_placettes.rds"))
+
+
+### test avec simulateur de coupe
+set.seed(NULL)
+set.seed(3)
+Random_tous <- readRDS(test_path("fixtures/samare", "Random_tous.rds"))
+modif <- data.frame(ess_ind=c('ERS','HEG'),
+                    modifier=c(50,80))
+attendu <- SaMARE(Random =Random_tous, Data = data_tous, Gaules =NA,
+                  Horizon = 4 ,
+                  Iteration = 1,
+                  Coupe_ON = c(NA,1,2,NA),
+                  Coupe_modif = list(NA, 50, modif, NA),
+                  #seed_value=NULL,
+                  RecruesGaules =0,CovParms=MatchModuleCovparms,CovParmsGaules=CovparmGaules,
+                  Para=MatchModuleParameters,ParaGaules=ParametresGaules,Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat, MCH = 0)
+
+saveRDS(attendu, test_path("fixtures/samare", "result_samare_simul_coupe.rds")) # attendu refait aporès ajout simulateur de coupe 20260330
+#saveRDS(data_tous, test_path("fixtures/samare", "Data_test_for_simul_samare_plusieurs_placettes.rds"))
+
+
+
+
+
+
+
+
 
 
 
@@ -1197,10 +1225,32 @@ attendu <- SaMARE(Random =RandomTest, Data = data_tous, Gaules = Gaules_tous, Ra
                  Para=MatchModuleParameters, ParaGaules=ParametresGaules, Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat,
                  MCH = 0)
 set.seed(NULL)
-saveRDS(attendu, test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_plusieurs_placettes.rds"))
+#saveRDS(attendu, test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_plusieurs_placettes.rds"))
+saveRDS(attendu, test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_plus_plot.rds")) # fichier attendu refait après ajout du simulateur de coupe 20260330
 saveRDS(RandPlacStepGaules_tous, test_path("fixtures/samare/avec_gaules", "RandPlacStepGaules_tous.rds"))
 saveRDS(Gaules_tous, test_path("fixtures/samare/avec_gaules", "Gaules_tous.rds"))
 
+
+
+# Avec gaules et simulateur de coupe
+set.seed(NULL)
+set.seed(3)
+modif <- data.frame(ess_ind=c('ERS','HEG'),
+                    modifier=c(50,80))
+attendu <- SaMARE(Random =RandomTest, Data = data_tous, Gaules = Gaules_tous, RandomGaules=RandPlacStepGaules_tous,
+                  Horizon = 4 ,
+                  Iteration = 1,
+                  #seed_value=NULL,
+                  Coupe_ON = c(NA,1,2,NA),
+                  Coupe_modif = list(NA, 50, modif, NA),
+                  RecruesGaules = 1, CovParms=MatchModuleCovparms, CovParmsGaules=CovparmGaules,
+                  Para=MatchModuleParameters, ParaGaules=ParametresGaules, Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat,
+                  MCH = 0)
+set.seed(NULL)
+
+saveRDS(attendu, test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_simul_coupe.rds")) # fichier attendu refait après ajout du simulateur de coupe 20260330
+#saveRDS(RandPlacStepGaules_tous, test_path("fixtures/samare/avec_gaules", "RandPlacStepGaules_tous.rds"))
+#saveRDS(Gaules_tous, test_path("fixtures/samare/avec_gaules", "Gaules_tous.rds"))
 
 ##########################################################################
 
