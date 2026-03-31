@@ -20,6 +20,9 @@ accrois<-function(Accrois, t, Para.acc, RandomAcc, Res){
 
   n <- nrow(Accrois)
 
+  # ntrt est un effet catégorique qui prend les valeurs 0, 1 ou 2. Donc si plus de 2 coupes, mettre  avec le groupe 2
+  Accrois <- Accrois %>% mutate(ntrt2 = ifelse(ntrt>2, 2, ntrt))
+
   #Liste des effets
   listeEss<-c(rep("AUT",n),rep("BOJ",n),rep("EPX",n),rep("ERR",n),rep("ERS",n),
               rep("FEN",n),rep("FIN",n),rep("HEG",n),rep("RES",n),rep("SAB",n))
@@ -43,7 +46,7 @@ accrois<-function(Accrois, t, Para.acc, RandomAcc, Res){
   Xacc[,29]<-Accrois$st_tot0
   Xacc[,30]<-log(t)
   Xacc[,31]<-Accrois$fact_red
-  Xacc[,32:34]<-(Accrois$ntrt==listeNtrt)*1
+  Xacc[,32:34]<-(Accrois$ntrt2==listeNtrt)*1
   Xacc[,35:37]<-(Accrois$type_pe_Plac==listeTypePe)*1
   Xacc[,38:67]<-(Accrois$GrEspece==listeEssInter1 & Accrois$type_pe_Plac==listeTypePe)*1
 
@@ -73,7 +76,7 @@ accrois<-function(Accrois, t, Para.acc, RandomAcc, Res){
               ][, DHPcm1 := fifelse(Etat1=="vivant", DHPcm + pred_acc, NA)
                 ][, aam := fifelse(Etat1=="vivant", pred_acc/t, NA)
                   ]
-  Accrois[, c("resid", "RandomPlac", "RandomStep") := NULL]
+  Accrois[, c("resid", "RandomPlac", "RandomStep", "ntrt2") := NULL]
   setorder(Accrois,Placette,ArbreID)
 
 

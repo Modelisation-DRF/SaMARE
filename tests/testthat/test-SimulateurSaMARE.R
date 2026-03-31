@@ -28,10 +28,11 @@
 
 
 test_that("La fonction SimulSaMARE avec Gaules=1, coupe=1, MCH=0, sans annee inventaire s'exécute sans erreur", {
+
   set.seed(NULL)
   set.seed(3)
 
-  Test400m2Coupe_test <- Test400m2Coupe %>% select(-Annee_Inventaire)
+  Test400m2Coupe_test <- Test400m2CP %>% select(-Annee_Inventaire,-NombrE)
 
   # s'exécute sans erreur
   expect_no_error(SimulSaMARE(NbIter=2, Horizon=6, RecruesGaules=1, Data = Test400m2Coupe_test, Gaules = GaulesTest2500m2, MCH = 0))
@@ -71,11 +72,13 @@ test_that("La fonction SimulSaMARE avec Gaules=1, coupe=1, MCH=0, sans annee inv
 
   # vérifier Temps depuis coupe
   cp <- unique(result$Temps_depuis_coupe)
-  expect_equal(cp, seq(1,31,5))
+  annee_cp <- unique(result$Annee_Coupe)
+  annee <- unique(result$Annee)
+  expect_equal(cp, annee-annee_cp) # seq(1,31,5) ceci ne marche pas car ça change avec l'année système
 
   # vérifier mch
   mch0 <- unique(result$MCH)
-  expect_equal(mch0, c(NA,0))
+  expect_equal(mch0, 0)
 
   # verifier présence de valeurs de dhp
   dhp <- result %>% filter(Etat != 'mort') %>% filter(is.na(DHPcm))
@@ -98,6 +101,8 @@ test_that("La fonction SimulSaMARE fonctionne MCH=0 ou 1", {
   set.seed(NULL)
   set.seed(5)
 
+  Test400m2Coupe <- Test400m2CP %>% select(-NombrE)
+
   Result_MCH0 <- SimulSaMARE(NbIter=2, Horizon=3, RecruesGaules=0, Data = Test400m2Coupe, MCH = 0)
 
   set.seed(NULL)
@@ -116,7 +121,7 @@ test_that("La fonction SimulSaMARE fonctionne MCH=0 ou 1", {
 
 
   mch1 <- unique(Result_MCH1$MCH)
-  expect_equal(mch1, c(NA,1))
+  expect_equal(mch1, 1)
 
 })
 
@@ -125,7 +130,7 @@ test_that("La fonction SimulSaMARE avec Gaules=0, coupe=0, MCH=0, avec annee inv
   set.seed(NULL)
   set.seed(3)
 
-  Test400m2Coupe2 <- Test400m2Coupe %>% mutate(Annee_Inventaire=2023, Annee_Coupe=NA, ntrt=0)
+  Test400m2Coupe2 <- Test400m2CP %>% mutate(Annee_Inventaire=2023, Annee_Coupe=NA, ntrt=0) %>% select(-NombrE)
 
   expect_no_error(SimulSaMARE(NbIter=2, Horizon=6, RecruesGaules=0, Data = Test400m2Coupe2, MCH = 0))
 
@@ -157,6 +162,8 @@ test_that("La fonction SimulSaMARE avec cubage=FALSE s'exécute sans erreur", {
   set.seed(NULL)
   set.seed(3)
 
+  Test400m2Coupe <- Test400m2CP %>% select(-NombrE)
+
   # s'exécute sans erreur
   expect_no_error(SimulSaMARE(NbIter=2, Horizon=6, RecruesGaules=0, Data = Test400m2Coupe, MCH = 0, cubage = FALSE))
 
@@ -183,7 +190,7 @@ test_that("La fonction SimulSaMARE avec coupe et avec martele et avec cubage s'e
   set.seed(NULL)
   set.seed(3)
 
-  Test400m2Coupe2 <- Test400m2Coupe %>% mutate(Annee_Inventaire=2025, Etat = ifelse(NoArBre<=3, 11, Etat), Annee_Coupe=2021)
+  Test400m2Coupe2 <- Test400m2CP %>% mutate(Annee_Inventaire=2025, Etat = ifelse(NoArBre<=3, 11, Etat), Annee_Coupe=2021) %>% select(-NombrE)
 
   # s'exécute sans erreur
   expect_no_error(SimulSaMARE(NbIter=2, Horizon=3, RecruesGaules=0, Data = Test400m2Coupe2, MCH = 0))
@@ -210,7 +217,7 @@ test_that("La fonction SimulSaMARE avec coupe et avec martele et sans cubage s'e
   set.seed(NULL)
   set.seed(3)
 
-  Test400m2Coupe2 <- Test400m2Coupe %>% mutate(Annee_Inventaire=2025, Etat = ifelse(NoArBre<=3, 11, Etat), Annee_Coupe=2021)
+  Test400m2Coupe2 <- Test400m2CP %>% mutate(Annee_Inventaire=2025, Etat = ifelse(NoArBre<=3, 11, Etat), Annee_Coupe=2021) %>% select(-NombrE)
 
   # s'exécute sans erreur
   expect_no_error(SimulSaMARE(NbIter=2, Horizon=3, RecruesGaules=0, Data = Test400m2Coupe2, MCH = 0, cubage=F))
@@ -235,7 +242,7 @@ test_that("La fonction SimulSaMARE sans coupe et avec martele et avec cubage s'e
   set.seed(NULL)
   set.seed(3)
 
-  Test400m2Coupe2 <- Test400m2Coupe %>% mutate(Annee_Inventaire=2025, Etat = ifelse(NoArBre<=3, 11, Etat), Annee_Coupe=NA, ntrt=0)
+  Test400m2Coupe2 <- Test400m2CP %>% mutate(Annee_Inventaire=2025, Etat = ifelse(NoArBre<=3, 11, Etat), Annee_Coupe=NA, ntrt=0) %>% select(-NombrE)
 
   # s'exécute sans erreur
   expect_no_error(SimulSaMARE(NbIter=2, Horizon=3, RecruesGaules=0, Data = Test400m2Coupe2, MCH = 0))
@@ -270,7 +277,7 @@ test_that("La fonction SimulSaMARE retourne un message d'erreur quand verifArgum
 
 test_that("La fonction SimulSaMARE retourne un message d'erreur avec un nbiter impair", {
 
-  expect_error(SimulSaMARE(NbIter=3, Horizon=1, RecruesGaules=0, Data = Test400m2),
+  expect_error(SimulSaMARE(NbIter=3, Horizon=1, RecruesGaules=0, Data = Test400m2Temoin),
                "NbIter doit etre un nombre pair")
 
 
@@ -278,14 +285,14 @@ test_that("La fonction SimulSaMARE retourne un message d'erreur avec un nbiter i
 
 test_that("La fonction SimulSaMARE fonctionne avec un nombre iter pair", {
 
-  result <- SimulSaMARE(NbIter=4, Horizon=1, RecruesGaules=0, Data = Test400m2)
+  result <- SimulSaMARE(NbIter=4, Horizon=1, RecruesGaules=0, Data = Test400m2Temoin)
 
   # nombre d'itérations
   liste_iter <- unique(result$Iter)
   expect_equal(liste_iter, seq(1:4))
 
   # identifiant des placettes
-  plot_attendu <- unique(Test400m2$Placette)
+  plot_attendu <- unique(Test400m2Temoin$Placette)
   plot_obtenu <- unique(result$Placette)
 
   expect_equal(plot_obtenu, plot_attendu)
@@ -294,7 +301,7 @@ test_that("La fonction SimulSaMARE fonctionne avec un nombre iter pair", {
 
 test_that("La fonction SimulSaMARE retourne un message d'erreur avec une variable obligatoire manquante", {
 
-  data_test <- Test400m2 %>% select(-Placette, -NoArbre)
+  data_test <- Test400m2Temoin %>% select(-Placette, -NoArbre)
   expect_error(SimulSaMARE(NbIter=2, Horizon=1, RecruesGaules=0, Data = data_test),
                "Les colonnes suivantes ne sont pas dans le fichier en entrée: placette, noarbre")
 
@@ -314,20 +321,176 @@ test_that("La fonction SimulSaMARE retourne un message d'erreur avec une variabl
 
 test_that("La fonction SimulSaMARE fonctionne avec et sans Pente dans le fichier", {
 
-  data_test <- Test400m2 %>% select(-Pente)
+  data_test <- Test400m2Temoin %>% select(-Pente)
   expect_no_error(SimulSaMARE(NbIter=2, Horizon=1, Data = data_test))
-  expect_no_error(SimulSaMARE(NbIter=2, Horizon=1, Data = Test400m2))
+  expect_no_error(SimulSaMARE(NbIter=2, Horizon=1, Data = Test400m2Temoin))
 
 
 })
 
 test_that("La fonction SimulSaMARE fonctionne avec et sans les variables météo dans le fichier", {
 
-  data_test <- Test400m2 %>% select(-Tmoy)
+  data_test <- Test400m2Temoin %>% select(-Tmoy)
   expect_no_error(SimulSaMARE(NbIter=2, Horizon=1, Data = data_test))
-  expect_no_error(SimulSaMARE(NbIter=2, Horizon=1, Data = Test400m2))
+  expect_no_error(SimulSaMARE(NbIter=2, Horizon=1, Data = Test400m2Temoin))
 
 })
+
+
+
+
+test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne pour coupe placette temoin sans modificateur, avec cubage, hor=1, sans martelage", {
+
+  data1 <- Test400m2Temoin %>% filter(Placette=='TEM23APC5000') # TEM sans arbres martelés
+
+  result <- SimulSaMARE(NbIter=2, Horizon=1, Data = data1, Coupe_ON = c(1), cubage=TRUE)
+  # on s'attend à ce que la coupe se fasse à la premiere periode car il n'y a pas de martelage
+
+  # pour temps=0 et residuel=0: ntrt=0, annee_coupe=NA, temps_depuis_coupe=NA
+  obtenu <- as.matrix(result %>% filter(Temps==0, Residuel==0) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(NA, NA, 0), nrow = 1))
+
+  # pour temps=0 et residuel=1: ntrt=1, annee_coupe=2024, temps_depuis_coupe=0
+  obtenu <- as.matrix(result %>% filter(Temps==0, Residuel==1) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2024, 0, 1), nrow = 1))
+
+  # pour temps=5: residuel=0, ntrt=1,  annee_coupe=2024, temps_depuis_coupe=5
+  obtenu <- as.matrix(result %>% filter(Temps==5) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2024, 5, 1, 0), nrow = 1))
+
+
+
+})
+
+test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne pour coupe placette temoin sans modificateur, avec cubage, hor=1, avec martelage", {
+
+  data2 <- Test400m2Temoin %>% filter(Placette=='TEM23APC5002') # TEM avec arbres martelés
+
+  result <- SimulSaMARE(NbIter=2, Horizon=1, Data = data2, Coupe_ON = c(1))
+
+  # on s'attend à ce que la coupe ne se fasse pas à la premiere periode car il y a des arbres martelés
+
+  # pour temps=0 et residuel=0: ntrt=0, annee_coupe=NA, temps_depuis_coupe=NA
+  obtenu <- as.matrix(result %>% filter(Temps==0, Residuel==0) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(NA, NA, 0), nrow = 1))
+
+  # pour temps=0 et residuel=1: ntrt=1, annee_coupe=2024, temps_depuis_coupe=0
+  obtenu <- as.matrix(result %>% filter(Temps==0, Residuel==1) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2024, 0, 1), nrow = 1))
+
+  # pour temps=5: residuel=0, ntrt=1,  annee_coupe=2024, temps_depuis_coupe=5
+  obtenu <- as.matrix(result %>% filter(Temps==5) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2024, 5, 1, 0), nrow = 1))
+
+
+})
+
+
+
+
+test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne pour 2 coupe placette CP avec modificateur, sans cubage, hor=3, sans martelage", {
+
+  data <- Test400m2CP %>% select(-NombrE) # placette CP ntrt=1, annee_coupe=2024, annee_inventaire=2024
+
+  result <- SimulSaMARE(NbIter=2, Horizon=6, Data = data, Coupe_ON = c(NA,NA,1,NA, NA,2), Coupe_modif = list(NA, NA, NA, NA, NA, 50))
+
+  # on s'attend a une coupe supplémentaire à la période 3 et 6:
+  # periode 1: 2024 à 2029, 0-5 ans, pas de coupe
+  # periode 2: 2029 à 2034, 5-10 ans, pas de coupe
+  # periode 3: 2034 à 2039, 10-15, coupe en début de période, donc à 10 ans un residuel et à 15 ans un trt de plus
+  # periode 4: 2039 à 2044, 15-20, pas de coupe
+  # periode 5: 2044 à 2049, 20-25, pas de coupe
+  # periode 6: 2049 à 2054, 25-30, coupe en début de période, donc à 25 ans un residuel et à 30 ans un trt de plus
+
+  # pour temps=0 : residuel=0: ntrt=1, annee_coupe=2024, temps_depuis_coupe=0
+  obtenu <- as.matrix(result %>% filter(Temps==0) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2024, 0, 1, 0), nrow = 1))
+
+  # pour temps=5 : residuel=0: ntrt=1, annee_coupe=2024, temps_depuis_coupe=5
+  obtenu <- as.matrix(result %>% filter(Temps==5) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2024, 5, 1, 0), nrow = 1))
+
+  # pour temps=10 : residuel=0: ntrt=1, annee_coupe=2024, temps_depuis_coupe=10
+  obtenu <- as.matrix(result %>% filter(Temps==10, Residuel==0) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2024, 10, 1), nrow = 1))
+
+  # pour temps=10 : residuel=1: ntrt=2, annee_coupe=2024, temps_depuis_coupe=0
+  obtenu <- as.matrix(result %>% filter(Temps==10, Residuel==1) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2034, 0, 2), nrow = 1))
+
+  # pour temps=15 : residuel=0: ntrt=2, annee_coupe=2034, temps_depuis_coupe=5
+  obtenu <- as.matrix(result %>% filter(Temps==15) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2034, 5, 2, 0), nrow = 1))
+
+  # pour temps=20 : residuel=0: ntrt=2, annee_coupe=2034, temps_depuis_coupe=10
+  obtenu <- as.matrix(result %>% filter(Temps==20) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2034, 10, 2, 0), nrow = 1))
+
+  # pour temps=25 : residuel=0: ntrt=2, annee_coupe=2034, temps_depuis_coupe=15
+  obtenu <- as.matrix(result %>% filter(Temps==25, Residuel==0) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2034, 15, 2), nrow = 1))
+
+  # pour temps=25 : residuel=1: ntrt=3, annee_coupe=2049, temps_depuis_coupe=0
+  obtenu <- as.matrix(result %>% filter(Temps==25, Residuel==1) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2049, 0, 3), nrow = 1))
+
+  # pour temps=30 : residuel=0: ntrt=3, annee_coupe=2049, temps_depuis_coupe=5
+  obtenu <- as.matrix(result %>% filter(Temps==30) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2049, 5, 3, 0), nrow = 1))
+})
+
+
+
+test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne avec une table pour modificateur de coupe et plus d'une placette", {
+
+  data <- Test400m2Temoin %>% mutate(Etat=10) # ne pas mettre de martelé
+
+  modif <- data.frame(ess_ind=c('ERS','HEG'),
+                      modifier=c(50,80))
+
+  result <- SimulSaMARE(NbIter=2, Horizon=6, Data = data, Coupe_ON = c(NA,NA,1,NA,NA,2), Coupe_modif = list(NA, NA, modif, NA, NA, 50))
+
+
+  # pour temps=0 : residuel=0: ntrt=1, annee_coupe=NA, temps_depuis_coupe=NA
+  obtenu <- as.matrix(result %>% filter(Temps==0) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(NA, NA, 0, 0), nrow = 1))
+
+  # pour temps=5 : residuel=0: ntrt=1, annee_coupe=NA, temps_depuis_coupe=NA
+  obtenu <- as.matrix(result %>% filter(Temps==5) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(NA, NA, 0, 0), nrow = 1))
+
+  # pour temps=10 : residuel=0: ntrt=1, annee_coupe=NA, temps_depuis_coupe=NA
+  obtenu <- as.matrix(result %>% filter(Temps==10, Residuel==0) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(NA, NA, 0), nrow = 1))
+
+  # pour temps=10 : residuel=1: ntrt=2, annee_coupe=2034, temps_depuis_coupe=0
+  obtenu <- as.matrix(result %>% filter(Temps==10, Residuel==1) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2034, 0, 1), nrow = 1))
+
+  # pour temps=15 : residuel=0: ntrt=1, annee_coupe=2034, temps_depuis_coupe=5
+  obtenu <- as.matrix(result %>% filter(Temps==15) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2034, 5, 1, 0), nrow = 1))
+
+  # pour temps=20 : residuel=0: ntrt=1, annee_coupe=2034, temps_depuis_coupe=10
+  obtenu <- as.matrix(result %>% filter(Temps==20) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2034, 10, 1, 0), nrow = 1))
+
+  # pour temps=25 : residuel=0: ntrt=1, annee_coupe=2034, temps_depuis_coupe=15
+  obtenu <- as.matrix(result %>% filter(Temps==25, Residuel==0) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2034, 15, 1), nrow = 1))
+
+  # pour temps=25 : residuel=1: ntrt=2, annee_coupe=2049, temps_depuis_coupe=0
+  obtenu <- as.matrix(result %>% filter(Temps==25, Residuel==1) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2049, 0, 2), nrow = 1))
+
+  # pour temps=30 : residuel=0: ntrt=2, annee_coupe=2049, temps_depuis_coupe=5
+  obtenu <- as.matrix(result %>% filter(Temps==30) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
+  expect_equal(unname(obtenu), matrix(c(2049, 5, 2, 0), nrow = 1))
+
+
+})
+
+
 
 
 # test_that("La fonction SimulSaMARE fonctionne avec un nombre iter >10 et multi_session=FALSE", {

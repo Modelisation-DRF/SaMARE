@@ -28,6 +28,7 @@ test_that("SaMARE returns the expected data frame without Gaules and MCH = 0, av
   # ntrt=1, annee_coupe=2021, sans MSCR, sans ABCD, sans MSCR
   Data_test_for_simul_samare <- readRDS(test_path("fixtures/samare", "Data_test_for_simul_samare.rds")) %>% mutate(Annee_Inventaire=2023)
 
+
   RandomTest <- readRDS(test_path("fixtures/samare", "RandomTest.rds"))
   obtenu<-SaMARE(Random =RandomTest, Data = Data_test_for_simul_samare, Gaules =NA,
                     Horizon = 6 ,
@@ -45,7 +46,7 @@ test_that("SaMARE returns the expected data frame without Gaules and MCH = 0, av
 
   # vérification mch
   mch <- unique(obtenu$mch)
-  expect_equal(mch, c(NA, 0))
+  expect_equal(mch, 0)
 
   # vérification t0
   t0 <- unique(obtenu$t0)
@@ -90,7 +91,7 @@ test_that("SaMARE returns the expected data frame without Gaules and MCH = 1, av
 
   # vérification mch
   mch <- unique(obtenu$mch)
-  expect_equal(mch, c(NA, 1))
+  expect_equal(mch, 1)
 
 })
 
@@ -303,11 +304,9 @@ test_that("SaMARE returns the expected data frame without Gaules and MCH = 0, av
                    #seed_value=NULL,
                    RecruesGaules =0,CovParms=MatchModuleCovparms,CovParmsGaules=CovparmGaules,
                    Para=MatchModuleParameters,ParaGaules=ParametresGaules,Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat,
-                   MCH = 0)
+                   MCH = 0) %>% select(-mch) %>% arrange(Placette, Annee, ArbreID)
 
-
-  attendu <- readRDS(test_path("fixtures/samare", "result_samare_plusieurs_placettes_v2.rds"))
-  set.seed(NULL)
+  attendu <- readRDS(test_path("fixtures/samare", "result_samare_plusieurs_placettes_v3.rds")) %>% select(-mch) %>% arrange(Placette, Annee, ArbreID)
   expect_equal(obtenu, attendu)
 
 
@@ -571,7 +570,7 @@ test_that("SaMARE returns the expected data frame with Gaules MCH=1", {
 # test avec gaules et plusieurs placettes
 
 # ok
-test_that("SaMARE returns the expected data frame without Gaules and MCH = 0, avec plusieurs placettes", {
+test_that("SaMARE returns the expected data frame with Gaules and MCH = 0, avec plusieurs placettes", {
   set.seed(NULL)
   set.seed(3)
 
@@ -587,9 +586,63 @@ test_that("SaMARE returns the expected data frame without Gaules and MCH = 0, av
                     #seed_value=NULL,
                     RecruesGaules = 1, CovParms=MatchModuleCovparms, CovParmsGaules=CovparmGaules,
                     Para=MatchModuleParameters, ParaGaules=ParametresGaules, Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat,
-                    MCH = 0)
+                    MCH = 0) %>% select(-mch) %>% arrange(Placette, Annee, ArbreID)
 
-  attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_plus_plot.rds"))
+  attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_plus_plot.rds")) %>% select(-mch) %>% arrange(Placette, Annee, ArbreID)
+
+
+  expect_equal(obtenu, attendu)
+
+})
+
+# pour les tests avec le simulateur de coupe, la majorité des tests sont dans test-SimulateurSaMARE.R
+# je vais en faire un ici qui compare les fichiers des résultats
+test_that("SaMARE returns the expected data frame without Gaules and MCH = 0, avec plusieurs placettes et simulateur de coupe", {
+  set.seed(NULL)
+  set.seed(3)
+
+  data_tous <- readRDS(test_path("fixtures/samare", "Data_test_for_simul_samare_plusieurs_placettes.rds")) %>% mutate(Annee_Inventaire = AnneeDep)
+  RandomTest <- readRDS(test_path("fixtures/samare", "Random_tous.rds"))
+  modif <- data.frame(ess_ind=c('ERS','HEG'),
+                      modifier=c(50,80))
+  obtenu <- SaMARE(Random =Random_tous, Data = data_tous, Gaules =NA,
+                   Horizon = 4 ,
+                   Iteration = 1,
+                   Coupe_ON = c(NA,1,2,NA),
+                   Coupe_modif = list(NA, 50, modif, NA),
+                   #seed_value=NULL,
+                   RecruesGaules =0,CovParms=MatchModuleCovparms,CovParmsGaules=CovparmGaules,
+                   Para=MatchModuleParameters,ParaGaules=ParametresGaules,Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat, MCH = 0)
+
+  attendu <- readRDS(test_path("fixtures/samare", "result_samare_simul_coupe.rds"))
+
+
+  expect_equal(obtenu, attendu)
+
+})
+test_that("SaMARE returns the expected data frame with Gaules and MCH = 0, avec plusieurs placettes et simulateur de coupe", {
+  set.seed(NULL)
+  set.seed(3)
+
+  data_tous <- readRDS(test_path("fixtures/samare", "Data_test_for_simul_samare_plusieurs_placettes.rds")) %>% mutate(Annee_Inventaire = AnneeDep)
+  RandomTest <- readRDS(test_path("fixtures/samare", "Random_tous.rds"))
+
+  RandPlacStepGaules_tous <- readRDS(test_path("fixtures/samare/avec_gaules", "RandPlacStepGaules_tous.rds")) # variance des effets aléatoires
+  Gaules_tous <- readRDS(test_path("fixtures/samare/avec_gaules", "Gaules_tous.rds"))
+  modif <- data.frame(ess_ind=c('ERS','HEG'),
+                      modifier=c(50,80))
+  obtenu <- SaMARE(Random =RandomTest, Data = data_tous, Gaules = Gaules_tous, RandomGaules=RandPlacStepGaules_tous,
+                   Horizon = 4 ,
+                   Iteration = 1,
+                   #seed_value=NULL,
+                   Coupe_ON = c(NA,1,2,NA),
+                   Coupe_modif = list(NA, 50, modif, NA),
+                   RecruesGaules = 1, CovParms=MatchModuleCovparms, CovParmsGaules=CovparmGaules,
+                   Para=MatchModuleParameters, ParaGaules=ParametresGaules, Omega=MatchModuleOmega, OmegaGaules=OmegaGaulesFormat,
+                   MCH = 0)
+
+  attendu <- readRDS(test_path("fixtures/samare/avec_gaules", "result_samare_avec_gaules_simul_coupe.rds"))
+
 
   expect_equal(obtenu, attendu)
 

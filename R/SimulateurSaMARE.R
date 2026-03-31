@@ -51,6 +51,17 @@
 #'    \item \code{FALSE} pour ne pas les calculer.
 #'    }
 #'
+#' @param Coupe_ON Vecteur contenant le numéro du traitement de coupe (0-18) pour chaque
+#'              décennie à simuler. Le nombre d'éléments doit être égal à Horizon.
+#'              Utiliser NA pour les décennies sans coupe. Par défaut = NULL (pas de coupe).
+#'
+#' @param Coupe_modif Une liste de data.frames et/ou de nombres contenant les modificateurs
+#'                    de probabilité de coupe. Par défaut = NULL (pas de modificateurs).
+#'                    La liste doit avoir la même longueur que le nombre de périodes (Horizon).
+#'                    Chaque élément peut être:
+#'                    - Un nombre unique (s'applique à toutes les essences)
+#'                    - Un data.frame avec colonnes 'essence' et 'modifier'
+#'                    - NA (pas de modification pour cette période)
 #' @return Un dataframe contenant la liste des arbres, leur état, leur DHP, pour chaque pas de simulation
 #'         et chaque iteration.
 #'
@@ -81,16 +92,20 @@
 #' @export
 
 
-SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cubage=TRUE){
+SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cubage=TRUE, Coupe_ON = NULL, Coupe_modif = NULL){
 
   select=dplyr::select
 
-  # NbIter=2; Horizon=1; Data=Test400m2; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE
+  # NbIter=2; Horizon=2; Data=Test2500m2; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE; Coupe_ON = c(0,7); Coupe_modif = c(NA,NA)
   # Data = Test400m2; NbIter = 20; Horizon = 3; multi_session = FALSE; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE
   # NbIter=2; Horizon=1; Data=Test2500m2; RecruesGaules=1; Gaules = GaulesTest2500m2; MCH = 0; cubage=TRUE; multi_session = FALSE
+  # NbIter=2; Horizon=6; Data = Test400m2Temoin[!Test400m2Temoin$Etat %in% c(11,71,72) & Test400m2Temoin$Placette=='TEM23APC5000',]; Coupe_ON = c(1,NA,NA,NA,NA,NA); RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE; Coupe_modif = NULL
+  # NbIter=2; Horizon=3; Data = Test400m2Temoin[Test400m2Temoin$Placette=='TEM23APC5002',]; Coupe_ON = c(1,NA,2); RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE; Coupe_modif = NULL
+  # NbIter=2; Horizon=3; Data = Test400m2Temoin2[Test400m2Temoin2$Placette=='TEM23APC5000',]; Coupe_ON = NULL; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE; Coupe_modif = NULL
+  # NbIter=2; Horizon=2; Data = data; Coupe_ON = c(NA,1); Coupe_modif = list(NA,modif); RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE;
 
   # Vérification des arguments de la fonction principale
-  Erreur <- verifArguments(NbIter=NbIter, Horizon=Horizon, RecruesGaules=RecruesGaules, Data=Data, Gaules=Gaules, MCH=MCH, cubage=cubage)
+  Erreur <- verifArguments(NbIter=NbIter, Horizon=Horizon, RecruesGaules=RecruesGaules, Data=Data, Gaules=Gaules, MCH=MCH, cubage=cubage,Coupe_ON=Coupe_ON, Coupe_modif=Coupe_modif)
   if (Erreur != "ok") {stop(Erreur)}
 
 
@@ -132,7 +147,7 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
   NbIter_orig <- NbIter
   test <- Data
   Data <- NULL
-  for (i in 1:(NbIter/diviseur)){
+  for (i in 1:(NbIter/diviseur)){ # on va regrouper les itérations en NbIter/2 groupes en recopiant les placettes NbIter/2 fois, pour diminuer la boucle des itérations autour de la fonction Samare en ne faisant seulement 2,
     temp <- test %>% rename(Placette_orig=Placette) %>% mutate(Placette = paste(Placette_orig,i,sep = '.'))
     Data <- bind_rows(Data,temp)
   }
@@ -246,7 +261,7 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
     Simul[[x]] <- SaMARE(Random=RandPlacStep, RandomGaules=RandPlacStepGaules, Data=Data, Gaules=Gaules,
             Iteration=x, Horizon=Horizon, RecruesGaules=RecruesGaules, MCH=MCH,
             CovParms=matchModuleCovparms, CovParmsGaules=covparmGaules,
-            Para=para, ParaGaules=paraGaules, Omega=matchModuleOmega, OmegaGaules=omegaGaulesFormat)
+            Para=para, ParaGaules=paraGaules, Omega=matchModuleOmega, OmegaGaules=omegaGaulesFormat,Coupe_ON=Coupe_ON, Coupe_modif=Coupe_modif)
   }
  Simul <- rbindlist(Simul)
 
@@ -273,12 +288,12 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
     Temps = Annee - Annee_Inventaire,
     Temps_depuis_coupe = Annee - t0,
     t0_aj_ = NULL,  # servait à vérifier sa valeur dans la fct SamaRE
-    ntrt = NULL,  # servait à vérifier sa valeur dans la fct SamaRE, elle peut être modifiée dans la boucle samare
+    #ntrt = NULL,  # servait à vérifier sa valeur dans la fct SamaRE, elle peut être modifiée dans la boucle samare
     trt = NULL  # servait à vérifier sa valeur dans la fct SamaRE, elle peut être modifiée dans la boucle samare vs ntrt original du fichier d'intrant
   )]
 
   # ajouter certaines variables échelle placette du fichier intrants
-  info <- Data %>% group_by(Placette) %>% slice(1) %>% select(Placette, Latitude, Longitude, Sup_PE, ntrt, Reg_Eco) %>% rename(reg_eco=Reg_Eco)
+  info <- Data %>% group_by(Placette) %>% slice(1) %>% select(Placette, Latitude, Longitude, Sup_PE, Reg_Eco) %>% rename(reg_eco=Reg_Eco) # il faut enlever ntrt car si on appelle le sinulateur de coupe, ça valeur va changer
   setDT(info)
   Simul <- merge(Simul, info, by = "Placette", all.x = T, sort = FALSE)
 
@@ -302,6 +317,8 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
         TRUE ~ NA_integer_
       )
     )]
+
+
   setnames(Simul,
            old = c("t0", "mch", 'prod0', 'vigu0', 'NoArbre'),   #PlacetteID=Placette: je ne renomme pas la variable
            new = c("Annee_Coupe", "MCH", "Prod", "Vig", 'origTreeID'))
@@ -314,6 +331,7 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
     as.data.frame()
   # les colonnes de gaules seront par défaut à la fin du fichier car pas nommées dans le relocate
 
+  # verif <- Simul %>% select(Placette, Iter, Residuel, Temps, Temps_depuis_coupe, ntrt, ArbreID, Etat, DHPcm)
   return(Simul)
 
 }
