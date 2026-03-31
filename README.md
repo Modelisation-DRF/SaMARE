@@ -14,7 +14,7 @@ Ce package dépend des packages OutilsDRF et Billonnage.
 
 OutilsDRF est disponible ici: https://github.com/Modelisation-DRF/OutilsDRF
 
-Billonage est disponible ici: https://github.com/Modelisation-DRF/Billonnage
+BillonnagePetro est disponible ici: https://github.com/Modelisation-DRF/BillonnagePetro
 
 
 ## Comment installer le package dans R
@@ -34,3 +34,4 @@ install_github("https://github.com/Modelisation-DRF/SaMARE")
 | 2025-06-04 |	2.4.1 |		Ajout de verification sur les colonnes et l'utilisation du package ExtractMap, ajout des gaules au temps 0 |
 | 2025-08-19 |	2.4.2 |		Ajout de la colonne reg_eco dans le fichier retourné par SimulSamare et renommer les colonnes Prod et Vig dans SortieBillonage |
 | 2025-10-21 |	2.4.3 |	Ménage dans Imports et Depends et ajout de package.R	 |
+| 2026-02-11 |	2.4.4 |	Modification de SortieBillonnage() pour prendre en compte les modifications apportées au package BillonnagePetro	 |

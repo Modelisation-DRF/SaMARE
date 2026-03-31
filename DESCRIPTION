@@ -31,11 +31,13 @@ Imports:
     purrr,
     stringr,
     tidyr,
+    BillonnagePetro,
     ExtractMap,
     OutilsDRF
 Depends: 
     R (>= 2.10)
 Remotes:
+    Modelisation-DRF/BillonnagePetro,
     Modelisation-DRF/ExtractMap,
     Modelisation-DRF/OutilsDRF
 Suggests: 
