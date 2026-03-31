@@ -49,8 +49,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
                   MCH, CovParms, CovParmsGaules, Para, ParaGaules, Omega, OmegaGaules,
                   seed_value=NULL,Coupe_ON = NULL, Coupe_modif = NULL){
 
-  #Random=RandPlacStep; RandomGaules=RandPlacStepGaules; Iteration=1; RecruesGaules=RecruesGaules; CovParms=matchModuleCovparms; Omega=matchModuleOmega; OmegaGaules=omegaGaulesFormat
-  #seed_value=3;
+  # Random=RandPlacStep; RandomGaules=RandPlacStepGaules; Iteration=1; RecruesGaules=RecruesGaules; CovParms=matchModuleCovparms; Omega=matchModuleOmega; OmegaGaules=omegaGaulesFormat
+  # seed_value=3;
   # Random =RandomTest; Data = data; Gaules =NA
   # Horizon = 6 ; Iteration = 1;
 
@@ -232,10 +232,14 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
   Plac <- Plac %>%
     group_by(Placette) %>%
     mutate(t0 = Annee_Coupe,
+           ntrt = ifelse(is.na(ntrt), 0, ntrt),  # si ntrt est NA (témoin), on met ntrt à 0
+           # le contrôle de ntrt qui ne doit pas dépasser 2 va être mis directement dans le module où cet effet est utiliser, pour que dans le fichier des simulations, on vois le vrai nombre de coupe effectuées
+
            trt = ifelse(sum(Etat == "martele")>0, "CP", # s'il y a au moins 1 arbre de martelé dans la placette c'est une CP
-                        ifelse((is.na(ntrt)==TRUE | ntrt==0),"TEM", # si ntrt est vide, c'est un témoin
-                               ifelse(Annee_Inventaire-t0<5 & (sum((DHPcm/200)^2*3.1416*Nombre)/Sup_PE)>26, "TEM", # Si ST>26 et que la coupe date de moins de 5 ans, c'est un témoin
+                        ifelse(ntrt==0,"TEM", # si ntrt = 0, c'est un témoin
+                               ifelse(Annee_Inventaire-t0<5 & (sum((DHPcm/200)^2*3.1416*Nombre)/Sup_PE)>26, "TEM", # Si ST>26 et que la coupe date de moins de 5 ans, c'est un témoin. On vérifie ceci seulement dans le fichier de départ, pas lors de l'évolution
                                       "CP"))), # sinon c'est une CP
+
            # ntrt = ifelse(trt=="CP" & sum(Etat == "martele")>0, ntrt+1,
            #               ifelse(trt=="CP", ntrt,
            #                      0)),  # cette variable ne devrait être upgradée ici, mais plutôt après la création de la placette initiale, pour le cas où il y a des arbres martelé et car quand on va intégrer le simulateur de coupe, cette variable devra être modifiée à l'intérieur de la boucle sur les horizons
@@ -273,6 +277,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
 
   # Initialisation du fichier qui contiendra les résultats de simulation de la placette
   outputTot<-c()
+  outputTot_coupe <- NULL
 
   # liste des variables à l'Échelle de la placettes qui entrent dans les équations
   var_plot <- c("Annee_Inventaire", "trt", "ntrt", "t0", "pente", "Sup_PE", "type_pe_Plac", "dom", "rid1",
@@ -280,7 +285,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
                 "prec", "temp", "grwd", "t0_aj_", "fact_red", "st_tot0", "dens_tot0", "mch")
 
   for (k in 1:Horizon){
-     #k=1
+     #k=2
     ##### 6.1 Pour k=1: on utilise le fichier de depart de la placette #####
     if   (k==1){
 
@@ -296,11 +301,12 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
 
       ###### 6.1.2 Dataframe avec les conditions initiales de la placette ######
 
-      # On remet l'année à l'année de départ et residuel, ce fichier contient des arbres martelés
+      # On remet l'année à l'année de départ et residuel, ce fichier peut contenir des arbres martelés
+      # cette table sera les arbres au temps 0, martelé+vivant, residuel=0
       outputInitial <- Plac %>%
-        mutate(Annee=Annee_Inventaire, Residuel=0) %>%
+        mutate(Annee=Annee_Inventaire, Residuel=0, mch=MCH) %>%
         select(Placette, Annee_Inventaire, Annee, ArbreID, NoArbre, Nombre, GrEspece,
-               Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter, t0, trt, ntrt) # je vais laisser ntrt ici pour pourvoir faire les validations de samare, mais dans le fichier final retourné à l'utilisateur, on mettre ntrt du fichier d'intrant
+               Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter, t0, trt, ntrt, mch) # je vais laisser ntrt ici pour pourvoir faire les validations de samare, mais dans le fichier final retourné à l'utilisateur, on mettre ntrt du fichier d'intrant
 
 
       ###### 6.1.3 Modification placette initiale pour martelage ######
@@ -308,27 +314,29 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
       # s'il y a des arbres martelés dans une placette, on garde tous les arbres (vivant+martele) avec residuel=0,
       # mais on fait une copie des arbres vivant avec residuel=1
       # s'il y a des arbres martelés, les enlever, ne garder que les vivants et mettre Residuel=1
+      # cette table sera les arbres au temps 0, vivant seulement, donc le point de départ de la simulation, residuel=1
       outputInitial_mart <- Plac %>%
         group_by(Placette) %>%
         mutate(martele = ifelse(sum(Etat == "martele")>0, T, F)) %>%
-        filter(Etat=="vivant", martele==T) %>%
-        mutate(Annee=Annee_Inventaire,Residuel=1,
+        filter(Etat=="vivant", martele==T) %>% # ne garder que les arbres vivants (donc sans les martelés) des placettes où il y avait des arbres martelés
+        mutate(mch=MCH, Annee=Annee_Inventaire,Residuel=1, # Residuel=1 indique que ces placettes ont été coupése et qu'elles contiennent les arbres résiduels, donc les non coupés
                ntrt = ntrt+1, t0=Annee_Inventaire) %>%  # ajout pour que dans le fichier des résultats, ces variables réflètent mieux la réalité, mais ne sont pas utilisées dans simul
         select(Placette, Annee_Inventaire, Annee, ArbreID, NoArbre, Nombre, GrEspece,
-               Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter, t0, trt, ntrt)
+               Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter, t0, trt, ntrt, mch)
 
       outputInitial <- rbind(outputInitial,outputInitial_mart)
 
       # dans les placettes à simuler, ne garder que les vivants (on enlève les martelés)
-      # s'il y a des arbres martelé dans la placette, on met t0 (anne_coupe) à AnneeDep
+      # s'il y a des arbres martelé dans la placette, on met t0 (annee_coupe) à AnneeDep
+      # cette table contient les arbres à faire évoluer, elle deviendra à la fin de la boucle les arbres à la fin de la période
       Plac <- Plac %>%
         group_by(Placette) %>%
-        mutate(t0 = ifelse(sum(Etat == "martele")>0, Annee_Inventaire, t0),
+        mutate(t0 = ifelse(sum(Etat == "martele")>0, Annee_Inventaire, t0), # s'il y a des arbres martelés, on indique l'année de la coupe
 
-               ntrt = ifelse(trt=="CP" & sum(Etat == "martele")>0, ntrt+1,  # j'ai déplacé ça ici, après la placette initiale, mais il faudra aussi le faire à l'intérieur de la boucle quand simulateur de coupe sera là
+               ntrt = ifelse(trt=="CP" & sum(Etat == "martele")>0, ntrt+1,  # s'il y a des arbres martelés, on ajoute un coupe au nombre de coupes
                              ifelse(trt=="CP", ntrt,
-                                    0))) %>%
-        filter(Etat=="vivant")
+                                    0))) %>% # ok, si CP a été mis à TEM à cause de ST>26, ici, ntrt va être mis à 0
+        filter(Etat=="vivant") # s'il y a des martelés, il ne sont pas retenus
 
 
       ###### 6.1.4 Génération des résidus de l'arbre pour tous les pas de simulation ######
@@ -380,6 +388,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
     else {
       #k=2
       # On utilise le dernier pas de simulation comme point de départ
+      # cette table contient les arbres à faire évoluer, à la fin de la boucle, sera les arbres à la fin de la période
       Plac <- outputTot %>%
         filter(Annee == Annee_Inventaire+(k-1)*t & Etat!="mort") %>%
         mutate(Annee=Annee_Inventaire+k*t, Etat="vivant") # on met les recrues à vivant pour le prochain step
@@ -393,8 +402,11 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
       mutate(Sup_PE = as.numeric(Sup_PE)) %>%
       group_by(Placette) %>%
       mutate(
+        Residuel=0,
 
-        t0_aj_ = ifelse(trt=="CP" & (Annee-t0<=25), Annee-t0-4.9, 0), ###### on ajuste pour que lorsque la step débute immédiatement après coupe t0_aj a une valeur de 0.1. Et maximum de 20 ans pour l'effet de coupe
+        # on ajuste pour que lorsque la step débute immédiatement après coupe t0_aj a une valeur de 0.1.
+        # Et maximum de 20 ans pour l'effet de coupe, après ça on remet l'effet du temps depuis la coupe à 0
+        t0_aj_ = ifelse(trt=="CP" & (Annee-t0<=25), Annee-t0-4.9, 0), # ici, si CP a ete remis à TEM à cause de ST>26, temps depuis la coupe sera aussi mis à 0
 
         fact_red = ifelse(trt=="TEM", 0,
                           ifelse(t0_aj_ <= 3, 1,
@@ -406,9 +418,15 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
         mch=MCH # on va créer mch ici, comme ça on aura la possibilité de la faire varier à chaque pas de simulation et de la voir dans le fichier de résultats
         )
 
+
    # ---- Simulateur de coupe ----
     # Utiliser le simulateur de coupe si pas NA à la position k de Coupe_ON
+
+    # vérifier s'il y avait du martelage à k=1, si oui, on ne fait pas de coupe même si l'utilisateur le demande
+    if (k==1 && nrow(outputInitial_mart)>0) {Coupe_ON[k] <- NA }
+
     if (!is.null(Coupe_ON) && length(Coupe_ON) >= k && !is.na(Coupe_ON[k])) {
+
       # Préparer les données pour prob_coupe
       data_for_coupe <- Plac %>%
         rename(id_pe = Placette, #ok
@@ -436,24 +454,44 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
                                               mode_simul = "STO",
                                               modifier = modifier_k)
 
-      #On garde le df après coupe
-      Plac_avec_coupe <- Plac %>%
-        mutate(Residuel=1, if_else(is.na(ntrt), 1, ntrt + 1), t0=Annee)
-      select(Placette, Annee_Inventaire, Annee, ArbreID, NoArbre, Nombre, GrEspece,
-             Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter, t0, trt, ntrt)
-
-      # Recalculer la colonne Nombre
+      # Ajouter l'info si l'arbre est à couper ou non
       Plac <- Plac %>%
         left_join(resultat_coupe %>% select(id_pe, ArbreID, COUPE),
-                  by = c("Placette"="id_pe","ArbreID" = "ArbreID")) %>%
+                  by = c("Placette"="id_pe","ArbreID" = "ArbreID"))
+
+      # Cette table sera les arbres au début de la période, vivant seulement, les arbres à couper supprimés, donc le point de départ de la simulation, residuel=1
+      Plac_apres_coupe <- Plac %>%
+        group_by(Placette) %>%
+        mutate(Annee = Annee-t,
+               t0 = Annee,
+               Residuel = 1,
+               ntrt = ifelse(sum(COUPE=='OUI')>0, ntrt+1, ntrt),
+               trt = ifelse(sum(COUPE=='OUI')>0, 'CP', trt)) %>%
+        filter(COUPE=='NON') %>% # ne garder que les arbres vivants (donc sans les coupé)
+        select(Placette, Annee_Inventaire, Annee, ArbreID, NoArbre, Nombre, GrEspece,
+               Espece, Etat, DHPcm, vigu0, prod0, ABCD, MSCR, Residuel, Iter, t0, trt, ntrt, mch)
+
+      # Ajuster la table à faire évoluer: Supprimer les arbres à couper, ajuster les variables explicatives de coupes et recalculer densite et st de la placette pour tenir compte des arbres coupés
+      Plac <- Plac %>%
+        group_by(Placette) %>%
+        mutate(t0 = Annee-t, # année de la coupe, il faut faire -t car Annee a été upgradé au début de la boucle
+               ntrt = ifelse(sum(COUPE=='OUI')>0, ntrt+1, ntrt), # s'il y a eu une coupe, on augmente de 1 le nombre de trt
+               trt = ifelse(sum(COUPE=='OUI')>0, 'CP', trt),   # s'il y a eu de la coupe, le trt est maintenant CP
+               t0_aj_ = 0.1, # le temps depuis la coupe
+               fact_red = 1  # ifelse(t0_aj_ <= 3, 1, 0): Réduction de la mortalité s'il vient d'avoir une coupe
+               ) %>%
         filter(COUPE == "NON") %>%
-        mutate(t0 = Annee-t, trt = "CP", t0_aj_ = 0.1, if_else(is.na(ntrt), 1, ntrt + 1)) %>%  #GABRIELLE
+        # recalculer variables echelle placette une fois les arbres à couper supprimés
+        mutate(st_tot0 = sum((DHPcm/200)^2 *3.1416*Nombre)/Sup_PE,
+               dens_tot0 = sum(Nombre)/Sup_PE) %>%
         select(-COUPE)
 
 
+      } else{
+      Plac_apres_coupe <- NULL
     }
 
-    # -----------------------
+    # ----------------------- FIN SIMULATEUR COUPE
 
     ##### 6.4 Effet aléatoire de step #####
     RandPlacetteStep <- RandPlac %>% filter(Step==k)
@@ -478,7 +516,8 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
     Accrois <- Plac
     Residus <- as.matrix(data.frame(Residus) %>%
       mutate(ArbreID = as.integer(ArbreID)) %>%
-      semi_join(Accrois, by = "ArbreID"))
+        dplyr::semi_join(Accrois, by = c("Placette","ArbreID"))) # semi_join est l'équivalent d'un inner_join mais sans garder les colonnes de y, ça ne fait que filtrer les lignes, pour enlever les arbres coupés de la table Residus
+
     # on applique la fonction d'accroissement
     Plac <- accrois(Accrois, t, Para.acc, RandomAcc, Residus[,k+2])
     Plac <- Plac %>% select(-xb_acc, -pred_acc)
@@ -732,6 +771,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
                NoArbre = NA,
                Espece = ifelse(GrEspece %in% c("BOJ","ERR","ERS","HEG","SAB"), GrEspece, NA),
                Etat1 = "recrue",
+               Residuel = 0,
                Nombre = Sup_PE/0.25, # le modèle de recrutement prédit un nombre de recrues dans 1/4 ha (2500 m2), il faut ramener le nombre en fct de la superficie de la placette
                # dans Capsis, c'est ceil(Nombre), et la dernière recrue générée est une fraction pour tenir compte qu'avec ceil, on en génère trop (le ceil dans capsis sert surtout à fsaire une boucle sur le nombre de recrue, il faut donc un entier)
                # Après avoir parler avec Hugues, on a décidé simplement de ne pas faire Ceil, de laisser les fractions de recrues
@@ -773,7 +813,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
       #Residus <- matrix(Residus[m,], nrow=length(m), ncol=Horizon+1)
       residus <- data.frame(Residus) %>%
         mutate(ArbreID = as.integer(ArbreID)) %>%
-        semi_join(Plac %>% filter(Etat1!="mort"), by = "ArbreID")  #Modification par gabrielle
+        dplyr::semi_join(Plac %>% filter(Etat1!="mort"), by = c("Placette", "ArbreID"))  #Modification par gabrielle
       #Residus <- Residus[m,] # avant c'était cette ligne
     }
 
@@ -809,13 +849,13 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
 
     # on ajoute les donnees du pas de simulation en cours aux autres pas de simulation pour la placette
     outputTot <- bind_rows(outputTot, Plac)
-    outputTot_coupe <- bind_rows(outputTot_coupe,Plac_avec_coupe) # Assurer d'initialisé au début  GABRIELLE
+    outputTot_coupe <- bind_rows(outputTot_coupe, Plac_apres_coupe)
 
 
   }  # fin de la boucle des simulations
 
   # Rassemblement de toutes les placettes, avant, pendant et après les coupes
-  outputTot <- bind_rows(outputTot,outputTot_coupe) %>%  arrange(Placette, Annee, Residuel, ArbreID) # trier par Placette, Annee, Residuel, ArbreID  GABRIELLE
+  outputTot <- bind_rows(outputTot, outputTot_coupe) #%>%  arrange(Placette, Annee, Residuel, ArbreID) # trier par Placette, Annee, Residuel, ArbreID  GABRIELLE
 
 
 
@@ -849,7 +889,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
 
 
       outputInitial[, MSCR := NULL]
-      outputTot[, Residuel := 0]
+      #outputTot[, Residuel := 0]
       outputTot <- rbind(outputInitial, outputTot, fill=TRUE)
 
       # attribuer une valeurs MSCR
@@ -862,7 +902,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
     # on va estimer MSCR seulement pour les step>0
     else{
 
-      outputTot[, Residuel := 0]
+      #outputTot[, Residuel := 0]
       MSCR <- AttribMSCR(outputTot, Para) %>% select(-contains("pred"), -contains("prob"), -Alea)
 
      # ajouter le data des valeurs de départ
