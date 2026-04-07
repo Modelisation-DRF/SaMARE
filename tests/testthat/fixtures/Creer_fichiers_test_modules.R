@@ -1300,3 +1300,16 @@ saveRDS(simul, test_path("fixtures/sortie_sommaire_cl_dhp", "sortie_simul.rds"))
 
 
 
+##### Fichier sans vigueur et avec mscr pour tester SimulSaMARE
+fic_sans_vig <- read.delim("Z:/Projets/IsabelleAuger/Samare/SaMARE/Test2500m2_sans_vig.csv", sep=';')
+saveRDS(fic_sans_vig, test_path("fixtures", "fic_sans_vig.rds"))
+
+
+#### Fichier pour tester AttribProd0 et AttribVigu0
+# J'ai exécuté pas à pas la fonction SaMARE et j'ai gardé une copie du data Plac juste avant d'appeler la fonction AttribVig0
+# et une copie des data des paramètres
+Plac_copie2 <- Plac_copie %>% select(-GrEspeceMSCR, -vigu0)
+saveRDS(Plac_copie2, test_path("fixtures/Vigu0_Prod0", "Plac_test.rds"))
+saveRDS(Para.ConvMSCRVig, test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRVig.rds"))
+saveRDS(Para.ConvMSCRProd1024, test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRProd1024.rds"))
+saveRDS(Para.ConvMSCRProd24, test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRProd24.rds"))

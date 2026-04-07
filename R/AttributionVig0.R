@@ -63,6 +63,8 @@ AttribVigu0<-function(Data,Para.ConvMSCRVig){
       pred <- exp(logit)/(1+exp(logit))
       vigu0 <- ifelse(pred>=runif(n=1),"ViG","NONVIG")
       Data_sans_vig_mscr$vigu0 = vigu0
+      Data_sans_vig_mscr <- Data_sans_vig_mscr %>% select(-GrEspeceMSCR)
+
 
     }
 

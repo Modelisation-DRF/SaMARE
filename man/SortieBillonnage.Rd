@@ -10,7 +10,9 @@ SortieBillonnage(Data, Type)
 \arguments{
 \item{Data}{Un dataframe qui contient en ligne les arbres dont on veut prévoir
 les rendements en produit à l'aide du module de billonnage Petro
-régionalisé. sera applier sur "ERS", "BOJ", "ERR", "BOP", "HEG", "CHR"}
+régionalisé. sera applier sur "ERS", "BOJ", "ERR", "BOP", "HEG", "CHR"
+Typiquement, une sortie de la fonction SimulSaMARE, au minimum avec les colonnes:
+DHPcm Espece Vig Prod Etat}
 
 \item{Type}{"DHP" pour utiliser les équations régionalisées basées seulement sur le DHP
 "ABCD" pour utiliser les équations régionalisées basées sur ABCD

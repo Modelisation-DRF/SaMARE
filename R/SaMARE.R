@@ -285,7 +285,7 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
                 "prec", "temp", "grwd", "t0_aj_", "fact_red", "st_tot0", "dens_tot0", "mch")
 
   for (k in 1:Horizon){
-     #k=2
+     #k=1
     ##### 6.1 Pour k=1: on utilise le fichier de depart de la placette #####
     if   (k==1){
 

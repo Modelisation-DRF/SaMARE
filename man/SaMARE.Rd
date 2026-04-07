@@ -22,7 +22,9 @@ SaMARE(
   ParaGaules,
   Omega,
   OmegaGaules,
-  seed_value = NULL
+  seed_value = NULL,
+  Coupe_ON = NULL,
+  Coupe_modif = NULL
 )
 }
 \arguments{
@@ -44,7 +46,7 @@ simuler ainsi que des variables nécessaires à la simulation.}
 
 \item{Iteration}{le numéro de l'itération}
 
-\item{Horizon}{Nombre de périodes de 5 ans sur à simuler, valeur de 1 à 12 (ex: 6 pour 30 ans de simulation).}
+\item{Horizon}{Nombre de périodes de 5 ans sur à simuler, valeur de 1 à 20 (ex: 6 pour 30 ans de simulation).}
 
 \item{RecruesGaules}{Identification du module de recrutement à utiliser
 \itemize{
@@ -77,6 +79,13 @@ de SaMARE (modules 10 à 16) les éléments du triangle inférieur de
 la matrice de variance-covariance.}
 
 \item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
+
+\item{Coupe_ON}{Vecteur contenant le numéro du traitement de coupe (0-18) pour chaque
+décennie à simuler. Utiliser NA pour les décennies sans coupe.}
+
+\item{Coupe_modif}{Une liste de data.frames et/ou de nombres contenant les modificateurs
+de probabilité de coupe. Chaque élément peut être un nombre unique
+ou un data.frame avec colonnes 'essence' et 'modifier'.}
 }
 \value{
 Retourne un dataframe avec une liste d'arbres vivants et mort avec leur DHP

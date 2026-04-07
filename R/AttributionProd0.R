@@ -95,12 +95,12 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
               pred <- exp(logit)/(1+exp(logit))
 
               prod0 <- ifelse(pred>=runif(n=1),"sciage","pate")
-              Date_feu_sans_vig_mscr_lt23$prod0 <- prod0
+              Data_feu_sans_vig_mscr_lt23$prod0 <- prod0
 
               }
 
       #else{
-      if (nrow(Data_feu_sans_vig_mscr_gt23)) { # si msrc et dhp>23.1
+      if (nrow(Data_feu_sans_vig_mscr_gt23)>0) { # si msrc et dhp>23.1
 
           #if (is.na(Data$MSCR)==FALSE & Data$DHPcm>=23.1){
 
@@ -147,7 +147,8 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
 
       }
       # remettre les feuillus sans vigueur ensemble
-      Data_feu_sans_vig <- bind_rows(Data_feu_sans_vig_mscr_lt23, Data_feu_sans_vig_mscr_gt23, Data_feu_sans_vig_sans_mscr)
+      Data_feu_sans_vig <- bind_rows(Data_feu_sans_vig_mscr_lt23, Data_feu_sans_vig_mscr_gt23, Data_feu_sans_vig_sans_mscr) %>%
+        select(-GrMSCR, -GrEspeceMSCR)
 
     }
     # remettre les feuillus sans vigueurs avec les feuillus avec vigueurs

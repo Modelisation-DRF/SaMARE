@@ -4,17 +4,17 @@
 #'
 #' @param Data Un data.frame ou data.table contenant les données d'inventaire forestier avec les colonnes suivantes:
 #'   \itemize{
-#'     \item Veg_Pot - Code de végétation potentielle, ex: "MS2"
-#'     \item PlacetteID - Identifiant de la placette
+#'     \item Iter - Identifiant de l'itération
+#'     \item Placette - Identifiant de la placette/annee/iter
+#'     \item Annee - Annee de la simulation pour l'arbre
+#'     \item ArbreID - Numéro de l'arbre
 #'     \item DHPcm - Diamètre à hauteur de poitrine en cm
-#'     \item Altitude - Altitude en mètres
-#'     \item hauteur_pred - Hauteur prédite de l'arbre en mètres
-#'     \item origTreeID - Numéro de l'arbre
+#'     \item Hautm - Hauteur de l'arbre en mètres
 #'     \item Espece - Code d'essence de l'arbre, ex: "SAB"
-#'     \item Cl_Drai - Classe de drainage ex: "2"
 #'     \item Etat - État de l'arbre ("vivant", "mort", "recrue")
-#'     \item Nombre - Nombre d'arbres représentés par cette observation dans une placette de 400 m2
-#'     \item sdom_bio - Sous-domaine bioclimatique. ex: "1", "2E", "4O"
+#'     \item Nombre - Nombre d'arbres représentés par cette observation dans une placette de superficie Sup_PE
+#'     \item Sup_PE - Superficie de la placette en ha
+#'
 #'   }
 #' @param dhs Hauteur de souche standard en mètres (point de départ des mesures), initialisée à 0.15(15 cm)
 #' @param nom_grade1 Nom du premier type de bille.
@@ -29,63 +29,48 @@
 #'
 #' @return Un data.table contenant les résultats du calcul des volumes de billes avec les colonnes:
 #'   \itemize{
-#'     \item id_pe - Identifiant de la placette
-#'     \item no_arbre - Numéro de l'arbre
+#'     \item Iter - Itération
+#'     \item Placette - Identifiant de la placette
+#'     \item ArbreID - Numéro de l'arbre
+#'     \item Annee - Annee de la simulation pour l'arbre
 #'     \item vol_bille_dm3 - Volume de la bille en dm³
 #'     \item grade_bille - Type de la bille
-#'     \item Annee - Annee de la simulation pour l'arbre
 #'   }
 #'
 #' @details
 #' La fonction effectue les opérations suivantes:
 #' \enumerate{
-#'   \item Calcule la densité d'arbres (nbTi_ha) et la surface terrière (st_ha) par placette et année
+#'   \item Calcule la densité d'arbres (nbTi_ha) et la surface terrière (st_ha) par iteration, placette et année
 #'   \item Change les noms de colonnes pour compatibilité avec calcul_vol_bille
-#'   \item Transforme les codes de sous-domaine ('E' en 'EST', 'O' en 'OUEST')
-#'   \item Extrait le premier caractère de la classe de drainage
-#'   \item Applique calcul_vol_bille avec ses paramètres
-#' }
-#'
-#' @examples
-#' \dontrun{
-#'   donnees <- data.frame(
-#'     Veg_Pot = c("MS2", "RS2"),
-#'     PlacetteID = c(1, 1),
-#'     DHPcm = c(15, 25),
-#'     Altitude = c(450, 450),
-#'     hauteur_pred = c(12, 18),
-#'     origTreeID = c(1, 2),
-#'     Espece = c("SAB", "EPN"),
-#'     Cl_Drai = c("2", "3"),
-#'     Etat = c("vivant", "vivant"),
-#'     Nombre = c(1, 1),
-#'     sdom_bio = c("4E", "4O"),
-#'     Annee = c(2020, 2020)
-#'   )
-#'
-#'   resultats <- SortieSybille(donnees, nom_grade1 = "pate", nom_grade1 = 8, diam_grade1 = 4)
-#'   head(resultats)
+#'   \item Applique calcul_vol_bille
 #' }
 #'
 #' @export
 SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, diam_grade1 = NA, nom_grade2 = NA, long_grade2 = NA, diam_grade2 = NA,
                           nom_grade3 = NA, long_grade3 = NA, diam_grade3 = NA) {
 
-  setDT(Data)
+  Data1 <- Data
+  setDT(Data1)
+
+  # créer un numéro de placette temporaire qui concatène Iter/placette/annee
+  Data1[, id_pe := paste(Iter, Placette, Annee, sep='_')]
+
+  # Enlever les morts
+  Data1 <- Data1[Etat != 'mort']
 
   # Calculer nbTi_ha et st_ha et inclure dans Data
-  Data[Etat != 'mort', `:=`(
-    nbTi_ha = sum(Nombre/0.04),
-    st_ha = sum(pi*(DHPcm/200)^2 * Nombre/0.04)
-  ), by = .(PlacetteID, Annee)]
+  Data1[, `:=`(
+    nbTi_ha = sum(Nombre)/Sup_PE,
+    st_ha = sum(pi*(DHPcm/200)^2 * Nombre)/Sup_PE
+  ), by = .(id_pe)]  # calculer par Iter/placette/annee
 
   ## Renommer les colonnes pour préparer le Data dans Sybille
-  setnames(Data, c("PlacetteID", "DHPcm", "Hautm", "ArbreID", "Espece"),
-           c("id_pe", "DHP_Ae", "HAUTEUR_M", "no_arbre", "essence"))
+  setnames(Data1, c("DHPcm", "Hautm", "ArbreID", "Espece"),
+                  c("DHP_Ae", "HAUTEUR_M", "no_arbre", "essence"))
 
   # Ajouter les colonnes manquantes et effectuer les traitements de préparation de données
   # Puisque SaMARE n'utilise pas ces colonnes, on les initialise à NA pour Sybille
-  Data[, `:=`(
+  Data1[, `:=`(
     cl_drai = NA_character_,
     veg_pot = NA_character_,
     sdom_bio = NA_character_,
@@ -93,30 +78,36 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
   )]
 
   # temporaire pour résultats
-  #Data[, essence := "BOP"]
+  #Data1[, essence := "BOP"]
 
   # Keep
-  Data[, HT_REELLE_M := 0]
+  Data1[, HT_REELLE_M := 0]
 
   # Multiplier par 10 pour satisfaire le calcul avec DHP_Ae
-  Data[, DHP_Ae := DHP_Ae * 10]
+  Data1[, DHP_Ae := DHP_Ae * 10]
 
   # On prend que les lignes où hauteur existe
-  Data <- Data[is.finite(HAUTEUR_M)]
+  Data1 <- Data1[is.finite(HAUTEUR_M)]
 
   # Garder que les colonnes nécessaires pour utiliser Sybille
-  Data_treated <- Data[, .(essence, id_pe, no_arbre, sdom_bio, cl_drai, veg_pot, DHP_Ae, HT_REELLE_M, HAUTEUR_M, nbTi_ha, st_ha, ALTITUDE, Annee)]
+  # Annee est optionnel dans la fct calcul_vol_bille()
+  Data_treated <- Data1[, .(essence, id_pe, no_arbre, sdom_bio, cl_drai, veg_pot, DHP_Ae, HT_REELLE_M, HAUTEUR_M, nbTi_ha, st_ha, ALTITUDE)]
 
   # Application de Sybille sur les données
   Data_calculated <- OutilsDRF::calcul_vol_bille(Data_treated, dhs, nom_grade1, long_grade1, diam_grade1, nom_grade2, long_grade2, diam_grade2,
                                                  nom_grade3, long_grade3, diam_grade3)
 
+  # on remet Iter/PlacetteID/Annee dans le data
+  data_placette <- Data1[, .(Iter, Placette, Annee, id_pe, no_arbre)]
+  Data_calculated <- Data_calculated[data_placette, on= .(id_pe, no_arbre)]
+
   #On renomme les colonnes pour matcher avec SaMARE
-  setnames(Data_calculated, c("id_pe", "no_arbre"),
-           c("PlacetteID", "ArbreID"))
+  setnames(Data_calculated, c("no_arbre"),
+                            c("ArbreID"))
+
 
   #On garde que les colonnes nécessaires
-  Data_calculated <- Data_calculated[, .(PlacetteID, ArbreID, Annee, grade_bille, vol_bille_dm3)]
+  Data_calculated <- Data_calculated[, .(Iter, Placette, ArbreID, Annee, grade_bille, vol_bille_dm3)]
 
   return(Data_calculated)
 
