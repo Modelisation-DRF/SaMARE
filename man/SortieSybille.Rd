@@ -20,19 +20,19 @@ SortieSybille(
 }
 \arguments{
 \item{Data}{Un data.frame ou data.table contenant les données d'inventaire forestier avec les colonnes suivantes:
-\itemize{
-  \item Veg_Pot - Code de végétation potentielle, ex: "MS2"
-  \item PlacetteID - Identifiant de la placette
-  \item DHPcm - Diamètre à hauteur de poitrine en cm
-  \item Altitude - Altitude en mètres
-  \item hauteur_pred - Hauteur prédite de l'arbre en mètres
-  \item origTreeID - Numéro de l'arbre
-  \item Espece - Code d'essence de l'arbre, ex: "SAB"
-  \item Cl_Drai - Classe de drainage ex: "2"
-  \item Etat - État de l'arbre ("vivant", "mort", "recrue")
-  \item Nombre - Nombre d'arbres représentés par cette observation dans une placette de 400 m2
-  \item sdom_bio - Sous-domaine bioclimatique. ex: "1", "2E", "4O"
-}}
+  \itemize{
+    \item Iter - Identifiant de l'itération
+    \item Placette - Identifiant de la placette/annee/iter
+    \item Annee - Annee de la simulation pour l'arbre
+    \item ArbreID - Numéro de l'arbre
+    \item DHPcm - Diamètre à hauteur de poitrine en cm
+    \item Hautm - Hauteur de l'arbre en mètres
+    \item Espece - Code d'essence de l'arbre, ex: "SAB"
+    \item Etat - État de l'arbre ("vivant", "mort", "recrue")
+    \item Nombre - Nombre d'arbres représentés par cette observation dans une placette de superficie Sup_PE
+    \item Sup_PE - Superficie de la placette en ha
+
+  }}
 
 \item{dhs}{Hauteur de souche standard en mètres (point de départ des mesures), initialisée à 0.15(15 cm)}
 
@@ -57,11 +57,12 @@ SortieSybille(
 \value{
 Un data.table contenant les résultats du calcul des volumes de billes avec les colonnes:
   \itemize{
-    \item id_pe - Identifiant de la placette
-    \item no_arbre - Numéro de l'arbre
+    \item Iter - Itération
+    \item Placette - Identifiant de la placette
+    \item ArbreID - Numéro de l'arbre
+    \item Annee - Annee de la simulation pour l'arbre
     \item vol_bille_dm3 - Volume de la bille en dm³
     \item grade_bille - Type de la bille
-    \item Annee - Annee de la simulation pour l'arbre
   }
 }
 \description{
@@ -70,32 +71,8 @@ Cette fonction prend un jeu de données forestières, le transforme selon les ex
 \details{
 La fonction effectue les opérations suivantes:
 \enumerate{
-  \item Calcule la densité d'arbres (nbTi_ha) et la surface terrière (st_ha) par placette et année
+  \item Calcule la densité d'arbres (nbTi_ha) et la surface terrière (st_ha) par iteration, placette et année
   \item Change les noms de colonnes pour compatibilité avec calcul_vol_bille
-  \item Transforme les codes de sous-domaine ('E' en 'EST', 'O' en 'OUEST')
-  \item Extrait le premier caractère de la classe de drainage
-  \item Applique calcul_vol_bille avec ses paramètres
+  \item Applique calcul_vol_bille
 }
-}
-\examples{
-\dontrun{
-  donnees <- data.frame(
-    Veg_Pot = c("MS2", "RS2"),
-    PlacetteID = c(1, 1),
-    DHPcm = c(15, 25),
-    Altitude = c(450, 450),
-    hauteur_pred = c(12, 18),
-    origTreeID = c(1, 2),
-    Espece = c("SAB", "EPN"),
-    Cl_Drai = c("2", "3"),
-    Etat = c("vivant", "vivant"),
-    Nombre = c(1, 1),
-    sdom_bio = c("4E", "4O"),
-    Annee = c(2020, 2020)
-  )
-
-  resultats <- SortieSybille(donnees, nom_grade1 = "pate", nom_grade1 = 8, diam_grade1 = 4)
-  head(resultats)
-}
-
 }

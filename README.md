@@ -38,3 +38,4 @@ install_github("https://github.com/Modelisation-DRF/SaMARE")
 | 2025-10-21 |	2.4.3 |	Ménage dans Imports et Depends et ajout de package.R	 |
 | 2026-02-11 |	2.4.4 |	Modification de SortieBillonnage() pour prendre en compte les modifications apportées au package BillonnagePetro	 |
 | 2026-03-31 |	2.4.5 |	Ajout du simulateur de coupe au package |
+| 2026-04-07 |	2.4.6 |	Modification des 3 fct de sortie pour billonnage pour tenir compte des itérations et correction du bug lorsqu'on fournit MSCR au lieu de Vigueur et correction bug valide_Vigueur |

@@ -14,7 +14,7 @@ cubage_arbres(data, simul_data, NbIter, Horizon)
 
 \item{NbIter}{Nombre d'iterations à effectuer (>=2 et un nombre pair).}
 
-\item{Horizon}{Nombre de périodes de 5 ans sur à simuler, valeur de 1 à 12 (ex: 6 pour 30 ans de simulation).}
+\item{Horizon}{Nombre de périodes de 5 ans sur à simuler, valeur de 1 à 20 (ex: 6 pour 30 ans de simulation).}
 }
 \value{
 Retourne le dataframe Data avec les colonnes hauteur_pred et vol_dm3

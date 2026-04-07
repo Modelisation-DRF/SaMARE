@@ -30,3 +30,21 @@ test_that("La fonction valide_Annee_depart() fonctionne tel qu'attendu quand la 
   obtenu2 <- unique(obtenu2$Annee_Inventaire)
   expect_equal(obtenu2, 2024)
 })
+
+# test de valide_data dans Validation_colonne.R
+test_that("La fonction valide_data() fonctionne avec une table colonne Vigueur a NA", {
+
+  sans_vig <- readRDS(test_path("fixtures", "fic_sans_vig.rds"))
+  obtenu <- valide_data(sans_vig)
+
+  expect_equal(length(obtenu),0)
+
+})
+
+test_that("La fonction valide_data() fonctionne avec une table colonne Vigueur sans NA", {
+
+  avec_vig <- Test400m2Temoin %>% mutate(ABCD = ifelse(Espece=='SAB', NA, ABCD))
+  obtenu <- valide_data(avec_vig)
+
+  expect_equal(length(obtenu),0)
+})

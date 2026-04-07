@@ -20,6 +20,8 @@
 #' @export
 
 valide_data <- function(data) {
+
+  # data = sans_vig
   data <- renommer_les_colonnes(data)
   validations <- list(
     valide_espece = "Code d'essence non valide",
@@ -377,12 +379,14 @@ valide_Vigueur <- function(data) {
   resultats <- data %>%
     mutate(
       condition_1 = Vigueur %in% valeurs_autorisees,
-      condition_2 = if_else(is.na(Vigueur), MSCR %in% c('M', 'S', 'C', 'R', 'MS', 'CR'), TRUE),
-      condition_3 = if_else(Vigueur %in% c(1,2,3,4), Espece %in% Espece_specifiques_1_4, TRUE),
-      condition_4 = if_else(Vigueur %in% c(5,6), Espece %in% Espece_specifiques_5_6, TRUE),
-      condition_5 = if_else(Vigueur == 3, DHPcm >= 23.1, TRUE)
+      condition_2 = dplyr::if_else(is.na(Vigueur), MSCR %in% c('M', 'S', 'C', 'R', 'MS', 'CR'), TRUE),
+      condition_3 = dplyr::if_else(Vigueur %in% c(1,2,3,4), Espece %in% Espece_specifiques_1_4, TRUE),
+      condition_4 = dplyr::if_else(Vigueur %in% c(5,6), Espece %in% Espece_specifiques_5_6, TRUE),
+      condition_5 = dplyr::if_else(Vigueur %in% c(3), DHPcm >= 23.1, TRUE)
     ) %>%
     reframe(all_conditions = all(condition_1 & condition_2 & condition_3 & condition_4 & condition_5))
+
+
 
   return(resultats$all_conditions)
 }

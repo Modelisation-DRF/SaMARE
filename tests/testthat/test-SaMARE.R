@@ -605,7 +605,7 @@ test_that("SaMARE returns the expected data frame without Gaules and MCH = 0, av
   RandomTest <- readRDS(test_path("fixtures/samare", "Random_tous.rds"))
   modif <- data.frame(ess_ind=c('ERS','HEG'),
                       modifier=c(50,80))
-  obtenu <- SaMARE(Random =Random_tous, Data = data_tous, Gaules =NA,
+  obtenu <- SaMARE(Random =RandomTest, Data = data_tous, Gaules =NA,
                    Horizon = 4 ,
                    Iteration = 1,
                    Coupe_ON = c(NA,1,2,NA),

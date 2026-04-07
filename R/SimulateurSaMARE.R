@@ -3,7 +3,7 @@
 #' @description \code{SimulSaMARE()} est la fonction principale pour exécuter une simulation de la croissance d'un peuplement avec le simulateur SaMARE
 #'
 #' @param NbIter Nombre d'iterations à effectuer (>=2 et un nombre pair).
-#' @param Horizon Nombre de périodes de 5 ans sur à simuler, valeur de 1 à 12 (ex: 6 pour 30 ans de simulation).
+#' @param Horizon Nombre de périodes de 5 ans sur à simuler, valeur de 1 à 20 (ex: 6 pour 30 ans de simulation).
 #' @param RecruesGaules Identification du module de recrutement à utiliser
 #' \itemize{
 #'    \item 0 pour utiliser le module de recrutement basé sur les arbres de dimension marchande (par défaut).
@@ -103,10 +103,12 @@ SimulSaMARE<-function(NbIter, Horizon, RecruesGaules=0, Data, Gaules, MCH=0, cub
   # NbIter=2; Horizon=3; Data = Test400m2Temoin[Test400m2Temoin$Placette=='TEM23APC5002',]; Coupe_ON = c(1,NA,2); RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE; Coupe_modif = NULL
   # NbIter=2; Horizon=3; Data = Test400m2Temoin2[Test400m2Temoin2$Placette=='TEM23APC5000',]; Coupe_ON = NULL; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE; Coupe_modif = NULL
   # NbIter=2; Horizon=2; Data = data; Coupe_ON = c(NA,1); Coupe_modif = list(NA,modif); RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE;
+  # NbIter=2; Horizon=2; Data = test; Coupe_ON = NULL; Coupe_modif = NULL; RecruesGaules=0; Gaules = NULL; MCH = 0; cubage=TRUE;
 
   # Vérification des arguments de la fonction principale
   Erreur <- verifArguments(NbIter=NbIter, Horizon=Horizon, RecruesGaules=RecruesGaules, Data=Data, Gaules=Gaules, MCH=MCH, cubage=cubage,Coupe_ON=Coupe_ON, Coupe_modif=Coupe_modif)
-  if (Erreur != "ok") {stop(Erreur)}
+  #if (Erreur != "ok") {stop(Erreur)}
+  if (length(Erreur) > 0) {stop(paste(unlist(Erreur), collapse = "\n"))}
 
 
 

@@ -4,12 +4,22 @@
 \alias{verifArguments}
 \title{Vérification des arguments de la fonction principale du simulateur SaMARE}
 \usage{
-verifArguments(NbIter, Horizon, RecruesGaules, Data, Gaules, MCH, cubage)
+verifArguments(
+  NbIter,
+  Horizon,
+  RecruesGaules,
+  Data,
+  Gaules,
+  MCH,
+  cubage,
+  Coupe_ON,
+  Coupe_modif
+)
 }
 \arguments{
 \item{NbIter}{Nombre d'iterations à effectuer (>=2 et un nombre pair).}
 
-\item{Horizon}{Nombre de périodes de 5 ans sur à simuler, valeur de 1 à 12 (ex: 6 pour 30 ans de simulation).}
+\item{Horizon}{Nombre de périodes de 5 ans sur à simuler, valeur de 1 à 20 (ex: 6 pour 30 ans de simulation).}
 
 \item{RecruesGaules}{Identification du module de recrutement à utiliser
 \itemize{
@@ -61,6 +71,18 @@ verifArguments(NbIter, Horizon, RecruesGaules, Data, Gaules, MCH, cubage)
    \item \code{TRUE}: pour estimer la hauteur et le volume des arbres à la fin de la simulation (par défaut)
    \item \code{FALSE} pour ne pas les calculer.
    }}
+
+\item{Coupe_ON}{Vecteur contenant le numéro du traitement de coupe (0-18) pour chaque
+décennie à simuler. Le nombre d'éléments doit être égal à Horizon.
+Utiliser NA pour les décennies sans coupe. Par défaut = NULL (pas de coupe).}
+
+\item{Coupe_modif}{Une liste de data.frames et/ou de nombres contenant les modificateurs
+de probabilité de coupe. Par défaut = NULL (pas de modificateurs).
+La liste doit avoir la même longueur que le nombre de périodes (Horizon).
+Chaque élément peut être:
+- Un nombre unique (s'applique à toutes les essences)
+- Un data.frame avec colonnes 'essence' et 'modifier'
+- NA (pas de modification pour cette période)}
 }
 \value{
 Une chaine de caractères contant "ok" s'il n'y a pas d'erreur, sinon, contient un message d'erreur.

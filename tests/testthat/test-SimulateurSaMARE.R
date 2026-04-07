@@ -283,6 +283,14 @@ test_that("La fonction SimulSaMARE retourne un message d'erreur avec un nbiter i
 
 })
 
+test_that("La fonction SimulSaMARE fonctionne avec 2 erreurs dans les arguments", {
+
+  expect_error(SimulSaMARE(NbIter=3, Horizon=25, RecruesGaules=0, Data = Test400m2Temoin),
+               "Horizon doit etre de 1 a 20\nNbIter doit etre un nombre pair")
+
+
+})
+
 test_that("La fonction SimulSaMARE fonctionne avec un nombre iter pair", {
 
   result <- SimulSaMARE(NbIter=4, Horizon=1, RecruesGaules=0, Data = Test400m2Temoin)
@@ -341,10 +349,15 @@ test_that("La fonction SimulSaMARE fonctionne avec et sans les variables météo
 
 test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne pour coupe placette temoin sans modificateur, avec cubage, hor=1, sans martelage", {
 
+  set.seed(NULL)
+  set.seed(3)
+
   data1 <- Test400m2Temoin %>% filter(Placette=='TEM23APC5000') # TEM sans arbres martelés
 
   result <- SimulSaMARE(NbIter=2, Horizon=1, Data = data1, Coupe_ON = c(1), cubage=TRUE)
   # on s'attend à ce que la coupe se fasse à la premiere periode car il n'y a pas de martelage
+
+  set.seed(NULL)
 
   # pour temps=0 et residuel=0: ntrt=0, annee_coupe=NA, temps_depuis_coupe=NA
   obtenu <- as.matrix(result %>% filter(Temps==0, Residuel==0) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt) %>% unique())
@@ -364,9 +377,14 @@ test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne pour coup
 
 test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne pour coupe placette temoin sans modificateur, avec cubage, hor=1, avec martelage", {
 
+  set.seed(NULL)
+  set.seed(3)
+
   data2 <- Test400m2Temoin %>% filter(Placette=='TEM23APC5002') # TEM avec arbres martelés
 
   result <- SimulSaMARE(NbIter=2, Horizon=1, Data = data2, Coupe_ON = c(1))
+
+  set.seed(NULL)
 
   # on s'attend à ce que la coupe ne se fasse pas à la premiere periode car il y a des arbres martelés
 
@@ -390,9 +408,14 @@ test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne pour coup
 
 test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne pour 2 coupe placette CP avec modificateur, sans cubage, hor=3, sans martelage", {
 
+  set.seed(NULL)
+  set.seed(3)
+
   data <- Test400m2CP %>% select(-NombrE) # placette CP ntrt=1, annee_coupe=2024, annee_inventaire=2024
 
   result <- SimulSaMARE(NbIter=2, Horizon=6, Data = data, Coupe_ON = c(NA,NA,1,NA, NA,2), Coupe_modif = list(NA, NA, NA, NA, NA, 50))
+
+  set.seed(NULL)
 
   # on s'attend a une coupe supplémentaire à la période 3 et 6:
   # periode 1: 2024 à 2029, 0-5 ans, pas de coupe
@@ -443,6 +466,9 @@ test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne pour 2 co
 
 test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne avec une table pour modificateur de coupe et plus d'une placette", {
 
+  set.seed(NULL)
+  set.seed(3)
+
   data <- Test400m2Temoin %>% mutate(Etat=10) # ne pas mettre de martelé
 
   modif <- data.frame(ess_ind=c('ERS','HEG'),
@@ -450,6 +476,7 @@ test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne avec une 
 
   result <- SimulSaMARE(NbIter=2, Horizon=6, Data = data, Coupe_ON = c(NA,NA,1,NA,NA,2), Coupe_modif = list(NA, NA, modif, NA, NA, 50))
 
+  set.seed(NULL)
 
   # pour temps=0 : residuel=0: ntrt=1, annee_coupe=NA, temps_depuis_coupe=NA
   obtenu <- as.matrix(result %>% filter(Temps==0) %>% select(Annee_Coupe, Temps_depuis_coupe, ntrt, Residuel) %>% unique())
@@ -490,8 +517,15 @@ test_that("La fonction SimulSaMARE avec simulateur de coupe fonctionne avec une 
 
 })
 
+test_that("La fonction SimulSaMARE fonctionne avec un fichier sans Vigueur", {
+  set.seed(NULL)
+  set.seed(5)
 
+  sans_vig <- readRDS(test_path("fixtures", "fic_sans_vig.rds"))
 
+  expect_no_error(SimulSaMARE(NbIter=2, Horizon=3, Data = sans_vig))
+
+})
 
 # test_that("La fonction SimulSaMARE fonctionne avec un nombre iter >10 et multi_session=FALSE", {
 #

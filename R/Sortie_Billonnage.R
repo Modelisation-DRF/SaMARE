@@ -4,6 +4,8 @@
 #' @param Data Un dataframe qui contient en ligne les arbres dont on veut prévoir
 #'             les rendements en produit à l'aide du module de billonnage Petro
 #'             régionalisé. sera applier sur "ERS", "BOJ", "ERR", "BOP", "HEG", "CHR"
+#'             Typiquement, une sortie de la fonction SimulSaMARE, au minimum avec les colonnes:
+#'             DHPcm Espece Vig Prod Etat
 #' @param Type "DHP" pour utiliser les équations régionalisées basées seulement sur le DHP
 #'             "ABCD" pour utiliser les équations régionalisées basées sur ABCD
 #'             "1234" pour utiliser les équations de 2015 basées sur 1234
@@ -18,13 +20,14 @@ SortieBillonnage <- function(Data, Type){
 
   # Data=fic; Type="DHP2015"
   select <- dplyr::select
-  Data_ori <- Data
+  #Data_ori <- Data
+  data <- Data
 
   # Petro a une équation pour CHR, attribuer CHR aux 3 autres especes de chenes
   # Si recrue de plus de 23 cm, elle n'a rien dans Espece, utiliser GrEspece (donc ça sera seulement ERS, ERR, BOJ, HEG qui passeront dans Petro, car les autres sont des groupes ou des ess pas de Petro)
-  Data <- Data %>%
+  data <- data %>%
     lazy_dt() %>%
-    filter(DHPcm > 23) %>%
+    filter(DHPcm > 23, Etat != 'mort') %>%
     mutate(Espece_original = Espece,
            Espece = ifelse(Espece %in% c("CHR","CHG","CHB","CHE"),"CHR", Espece),
            Espece = ifelse(is.na(Espece), GrEspece, Espece)) %>%
@@ -40,10 +43,10 @@ SortieBillonnage <- function(Data, Type){
   #   as.data.frame()
 
   #Vérifier s'il y a des données valides après filtrage et retourner immédiatement si vide
-  if (nrow(Data) == 0) {
+  if (nrow(data) == 0) {
     # Copier la structure des colonnes nécessaires depuis Data
-    cols_needed <- c("PlacetteID", "Annee", "origTreeID")
-    final_transpo <- as.data.table(Data)[0, ..cols_needed]
+    cols_needed <- c( "Iter", "Placette", "Annee", "ArbreID")
+    final_transpo <- as.data.table(data)[0, ..cols_needed]
 
     # Ajouter les colonnes supplémentaires avec les types forcés
     final_transpo[, grade_bille := character(0)]
@@ -52,9 +55,9 @@ SortieBillonnage <- function(Data, Type){
   }
 
   # Traiter les données si on a des lignes valides
-  data1 <- Data %>%
+  data1 <- data %>%
     lazy_dt() %>%
-    mutate(TigeID = seq_len(nrow(Data))) %>% # numéroter les arbres
+    mutate(TigeID = seq_len(nrow(data))) %>% # numéroter les arbres
     rename(vigu0=Vig, prod0=Prod) %>% # nécessaire pour type=1234
     as.data.frame()
 
@@ -93,8 +96,8 @@ SortieBillonnage <- function(Data, Type){
   #Vérifier nrow(final)et aussi vérifier les colonnes existantes
   if (nrow(final) == 0 || length(existing_cols) == 0) {
     # Copier la structure des colonnes nécessaires depuis Data
-    cols_needed <- c("PlacetteID", "Annee", "origTreeID")
-    final_transpo <- as.data.table(Data)[0, ..cols_needed]
+    cols_needed <- c("Iter", "Placette", "Annee", "ArbreID")
+    final_transpo <- as.data.table(data)[0, ..cols_needed]
 
     # Ajouter les colonnes supplémentaires avec les types forcés
     final_transpo[, grade_bille := character(0)]

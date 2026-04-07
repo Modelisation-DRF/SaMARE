@@ -23,17 +23,16 @@ SortieBillesFusion(
 \arguments{
 \item{Data}{Un data.frame ou data.table contenant les données d'inventaire forestier avec les colonnes suivantes:
 \itemize{
-  \item Veg_Pot - Code de végétation potentielle, ex: "MS2"
-  \item PlacetteID - Identifiant de la placette
+  \item Iter - Identifiant de l'itération
+  \item Placette - Identifiant de la placette/annee/iter
+  \item Annee - Annee de la simulation pour l'arbre
+  \item ArbreID - Numéro de l'arbre
   \item DHPcm - Diamètre à hauteur de poitrine en cm
-  \item Altitude - Altitude en mètres
-  \item hauteur_pred - Hauteur prédite de l'arbre en mètres
-  \item origTreeID - Numéro de l'arbre
+  \item Hautm - Hauteur de l'arbre en mètres
   \item Espece - Code d'essence de l'arbre, ex: "SAB"
-  \item Cl_Drai - Classe de drainage ex: "2"
   \item Etat - État de l'arbre ("vivant", "mort", "recrue")
-  \item Nombre - Nombre d'arbres représentés par cette observation dans une placette de 400 m2
-  \item sdom_bio - Sous-domaine bioclimatique. ex: "1", "2E", "4O"
+  \item Nombre - Nombre d'arbres représentés par cette observation dans une placette de superficie Sup_PE
+  \item Sup_PE - Superficie de la placette en ha
 }}
 
 \item{Type}{Le type de billonage à utiliser pour la fonction SortieBillonnage}
