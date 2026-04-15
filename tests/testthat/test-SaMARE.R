@@ -647,3 +647,4 @@ test_that("SaMARE returns the expected data frame with Gaules and MCH = 0, avec 
   expect_equal(obtenu, attendu)
 
 })
+

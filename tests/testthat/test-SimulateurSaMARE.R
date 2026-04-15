@@ -568,3 +568,4 @@ test_that("La fonction SimulSaMARE fonctionne avec un fichier sans Vigueur", {
 #   plot_obtenu <- unique(result$Placette)
 #   expect_equal(plot_obtenu, plot_attendu)
 # })
+

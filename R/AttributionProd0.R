@@ -15,6 +15,12 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
   # Data=Plac
   select=dplyr::select
 
+  # initialiser les variables
+  Data$logit <- NA
+  Data$pred <- NA
+  Data$GrMSCR <- ''
+  Data$GrEspeceMSCR <- ''
+
   # traiter les résineux séparément des feuillus
   Data_res <- Data %>% filter(GrEspece %in% c("EPX","RES","SAB"))
   Data_feu <- Data %>% filter(!(GrEspece %in% c("EPX","RES","SAB")))
@@ -54,7 +60,7 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
                   n<-nrow(Data_feu_sans_vig_mscr_lt23)
 
                   Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR<-ifelse(Data_feu_sans_vig_mscr_lt23$GrEspece=="AUT","FIN",
-                                                                   ifelse(Data_feu_sans_vig_mscr_lt23$GrEspece=="EPX","RES",
+                                                                   ifelse(Data_feu_sans_vig_mscr_lt23$GrEspece=="EPX","RES", # ceci sert à rien car on ne traite que les feuillus
                                                                           ifelse(Data_feu_sans_vig_mscr_lt23$GrEspece=="ERR","FIN",Data_feu_sans_vig_mscr_lt23$GrEspece)))
 
                   Data_feu_sans_vig_mscr_lt23$GrMSCR<-ifelse(Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR %in% c("ERR","FEN","FIN","HEG","RES","SAB") & Data_feu_sans_vig_mscr_lt23$MSCR %in% c("M","S","MS"),"MS",
@@ -72,16 +78,16 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
                 listeInterEss3<-c(rep("BOJ",n),rep("ERS",n),rep("FIN",n),rep("HEG",n))
 
               # Construction matrice X
-                XConvMSCRProd1024<-matrix(0,ncol=30,nrow=n)
-                XConvMSCRProd1024[,1]<-1
-                XConvMSCRProd1024[,2]<-Data_feu_sans_vig_mscr_lt23$DHPcm
-                XConvMSCRProd1024[,3:6]<-(Data_feu_sans_vig_mscr_lt23$GrMSCR==listeGrMSCR)*1
-                XConvMSCRProd1024[,7:11]<-(Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR==listeEss)*1
-                XConvMSCRProd1024[,12:16]<-(Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR==listeEss)*Data_feu_sans_vig_mscr_lt23$DHPcm
-                XConvMSCRProd1024[,17:20]<-(Data_feu_sans_vig_mscr_lt23$GrMSCR==listeInterMSCR1 & Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR==listeInterEss1)*1
-                XConvMSCRProd1024[,21:25]<-(Data_feu_sans_vig_mscr_lt23$GrMSCR==listeInterMSCR2 & Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR==listeInterEss2)*1
-                XConvMSCRProd1024[,26:29]<-(Data_feu_sans_vig_mscr_lt23$GrMSCR==listeInterMSCR3 & Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR==listeInterEss3)*1
-                XConvMSCRProd1024[,30]<-Data_feu_sans_vig_mscr_lt23$DHPcm^2
+                XConvMSCRProd1024<-matrix(0,ncol=30,nrow=n) #ok
+                XConvMSCRProd1024[,1]<-1 # ok
+                XConvMSCRProd1024[,2]<-Data_feu_sans_vig_mscr_lt23$DHPcm # ok
+                XConvMSCRProd1024[,3:6]<-(Data_feu_sans_vig_mscr_lt23$GrMSCR==listeGrMSCR)*1 # ok
+                XConvMSCRProd1024[,7:11]<-(Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR==listeEss)*1 # ok
+                XConvMSCRProd1024[,12:16]<-(Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR==listeEss)*Data_feu_sans_vig_mscr_lt23$DHPcm # ok
+                XConvMSCRProd1024[,17:20]<-(Data_feu_sans_vig_mscr_lt23$GrMSCR==listeInterMSCR1 & Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR==listeInterEss1)*1 # ok
+                XConvMSCRProd1024[,21:25]<-(Data_feu_sans_vig_mscr_lt23$GrMSCR==listeInterMSCR2 & Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR==listeInterEss2)*1 # ok
+                XConvMSCRProd1024[,26:29]<-(Data_feu_sans_vig_mscr_lt23$GrMSCR==listeInterMSCR3 & Data_feu_sans_vig_mscr_lt23$GrEspeceMSCR==listeInterEss3)*1 # ok
+                XConvMSCRProd1024[,30]<-Data_feu_sans_vig_mscr_lt23$DHPcm^2 # ok
 
                # selectionner les parametres de conversion en vigeur
                #Para.ConvMSCRProd1024<-Para.ConvMSCRProd1024
@@ -95,7 +101,10 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
               pred <- exp(logit)/(1+exp(logit))
 
               prod0 <- ifelse(pred>=runif(n=1),"sciage","pate")
+              Data_feu_sans_vig_mscr_lt23$logit <- logit
+              Data_feu_sans_vig_mscr_lt23$pred <- pred
               Data_feu_sans_vig_mscr_lt23$prod0 <- prod0
+
 
               }
 
@@ -107,12 +116,14 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
             n<-nrow(Data_feu_sans_vig_mscr_gt23)
 
             Data_feu_sans_vig_mscr_gt23$GrEspeceMSCR<-ifelse(Data_feu_sans_vig_mscr_gt23$GrEspece=="AUT","FIN",
-                                      ifelse(Data_feu_sans_vig_mscr_gt23$GrEspece=="EPX","RES",
-                                             ifelse(Data_feu_sans_vig_mscr_gt23$GrEspece=="ERR","FIN",Data_feu_sans_vig_mscr_gt23$GrEspece)))
+                                      ifelse(Data_feu_sans_vig_mscr_gt23$GrEspece=="EPX","RES", # les résineux ne sont pas traités
+                                             ifelse(Data_feu_sans_vig_mscr_gt23$GrEspece=="FEN","ERS", # FEN a été oublié
+                                                    ifelse(Data_feu_sans_vig_mscr_gt23$GrEspece=="ERR","FIN", Data_feu_sans_vig_mscr_gt23$GrEspece))))
 
             Data_feu_sans_vig_mscr_gt23$GrMSCR<-ifelse(Data_feu_sans_vig_mscr_gt23$GrEspeceMSCR %in% c("ERR","FEN","FIN","HEG","RES","SAB") & Data_feu_sans_vig_mscr_gt23$MSCR %in% c("M","S","MS"),"MS",
                                                        ifelse(Data_feu_sans_vig_mscr_gt23$GrEspeceMSCR %in% c("ERR","FEN","FIN","HEG","RES","SAB") & Data_feu_sans_vig_mscr_gt23$MSCR %in% c("C","R","CR"),"CR",
                                                               ifelse(Data_feu_sans_vig_mscr_gt23$GrEspeceMSCR %in% c("ERS","BOJ") & Data_feu_sans_vig_mscr_gt23$MSCR %in% c("M","S","MS"),"MS",Data_feu_sans_vig_mscr_gt23$MSCR)))
+
 
             listeGrMSCR<-c(rep("R",n),rep("C",n),rep("CR",n),rep("MS",n))
             listeEss<-c(rep("BOJ",n),rep("ERS",n),rep("FIN",n),rep("HEG",n))
@@ -121,6 +132,7 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
             XConvMSCRProd24<-matrix(0,ncol=11,nrow=n)
             XConvMSCRProd24[,1]<-1
             XConvMSCRProd24[,2:5]<-(Data_feu_sans_vig_mscr_gt23$GrMSCR==listeGrMSCR)*1
+            XConvMSCRProd24[,6:9]<-(Data_feu_sans_vig_mscr_gt23$GrEspeceMSCR==listeEss)*1 # cette ligne avait été oubliée
             XConvMSCRProd24[,10]<-Data_feu_sans_vig_mscr_gt23$DHPcm
             XConvMSCRProd24[,11]<-Data_feu_sans_vig_mscr_gt23$DHPcm^2
 
@@ -136,7 +148,10 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
             pred<-exp(logit)/(1+exp(logit))
 
             prod0<-ifelse(pred>=runif(n=1),"sciage","pate")
+            Data_feu_sans_vig_mscr_gt23$logit <- logit
+            Data_feu_sans_vig_mscr_gt23$pred <- pred
             Data_feu_sans_vig_mscr_gt23$prod0 <- prod0
+
 
       }
 
@@ -147,8 +162,7 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
 
       }
       # remettre les feuillus sans vigueur ensemble
-      Data_feu_sans_vig <- bind_rows(Data_feu_sans_vig_mscr_lt23, Data_feu_sans_vig_mscr_gt23, Data_feu_sans_vig_sans_mscr) %>%
-        select(-GrMSCR, -GrEspeceMSCR)
+      Data_feu_sans_vig <- bind_rows(Data_feu_sans_vig_mscr_lt23, Data_feu_sans_vig_mscr_gt23, Data_feu_sans_vig_sans_mscr)
 
     }
     # remettre les feuillus sans vigueurs avec les feuillus avec vigueurs
@@ -156,7 +170,8 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
 
   }
   # remettre les res et feu ensemble
-  result <- bind_rows(Data_feu, Data_res)
+  result <- bind_rows(Data_feu, Data_res) %>%
+    select(-GrMSCR, -GrEspeceMSCR)
   setorder(result, Placette, NoArbre)
 
 

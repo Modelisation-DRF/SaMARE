@@ -1305,6 +1305,9 @@ fic_sans_vig <- read.delim("Z:/Projets/IsabelleAuger/Samare/SaMARE/Test2500m2_sa
 saveRDS(fic_sans_vig, test_path("fixtures", "fic_sans_vig.rds"))
 
 
+
+########################################################
+# Conversion MSCR à Vigueur
 #### Fichier pour tester AttribProd0 et AttribVigu0
 # J'ai exécuté pas à pas la fonction SaMARE et j'ai gardé une copie du data Plac juste avant d'appeler la fonction AttribVig0
 # et une copie des data des paramètres
@@ -1313,3 +1316,26 @@ saveRDS(Plac_copie2, test_path("fixtures/Vigu0_Prod0", "Plac_test.rds"))
 saveRDS(Para.ConvMSCRVig, test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRVig.rds"))
 saveRDS(Para.ConvMSCRProd1024, test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRProd1024.rds"))
 saveRDS(Para.ConvMSCRProd24, test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRProd24.rds"))
+
+# cxréer un fichier de toutes les combinaisons possibles des variables explicatives
+set.seed(NULL)
+set.seed(3)
+list_ess <- c('BOJ','EPX','ERR', 'ERS', 'FEN', 'FIN', 'HEG', 'RES','SAB')
+list_mscr <- c('M','S','C','R')
+list_dhp <- c(10:20,25:35)
+Plac_test <- expand.grid(list_ess, list_mscr, list_dhp, stringsAsFactors = FALSE)
+names(Plac_test) <- c('GrEspece','MSCR','DHPcm')
+Plac_test <- Plac_test %>% mutate(Vigueur=NA,
+                                  Placette=1,
+                                  NoArbre = dplyr::row_number())
+
+attendu <- AttribProd0(Plac_test,Para.ConvMSCRProd1024,Para.ConvMSCRProd24)
+
+saveRDS(Plac_test,test_path("fixtures/Vigu0_Prod0", "Fic_test_complet.rds"))
+saveRDS(attendu,test_path("fixtures/Vigu0_Prod0", "resultat_attendu_prod.rds"))
+
+attendu <- AttribVigu0(Plac_test, Para.ConvMSCRVig)
+saveRDS(attendu,test_path("fixtures/Vigu0_Prod0", "resultat_attendu_vig.rds"))
+
+
+###############################################################################
