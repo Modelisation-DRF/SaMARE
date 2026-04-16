@@ -3,27 +3,26 @@ test_that("La fonction AttribProd0() fonctionne correctement sans vigueur", {
   set.seed(NULL)
   set.seed(3)
 
-
   Para.1024 <- readRDS(test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRProd1024.rds"))
   Para.24 <- readRDS(test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRProd24.rds"))
   Plac_test <- readRDS(test_path("fixtures/Vigu0_Prod0", "Fic_test_complet.rds"))
   attendu <- readRDS(test_path("fixtures/Vigu0_Prod0", "resultat_attendu_prod.rds"))
-  attendu2 <- attendu %>% dplyr::select(-prod0)
+  #attendu2 <- attendu %>% dplyr::select(-prod0)
 
-  obtenu <- AttribProd0(Plac_test,Para.1024,Para.24)
-  obtenu2 <- obtenu %>% dplyr::select(-prod0)
+  obtenu_prod <- AttribProd0(Plac_test,Para.1024,Para.24)
+  #obtenu2 <- obtenu_prod %>% dplyr::select(-prod0)
 
   # vérifier les résultats de la valeur prédite non transformée en sciage/pate
-  expect_equal(obtenu2, attendu2)
+  expect_equal(obtenu_prod, attendu)
 
 
   # les resineux ont tous prod0=resineux
-  res <- obtenu %>% filter(GrEspece %in% c('RES','EPX','SAB')) %>% dplyr::select(prod0) %>% unique()
+  res <- obtenu_prod %>% filter(GrEspece %in% c('RES','EPX','SAB')) %>% dplyr::select(prod0) %>% unique()
   expect_equal(nrow(res), 1)
   expect_equal(res$prod0, 'resineux')
 
   # les feuillus ont tous sciage ou pate
-  feu <- obtenu %>% filter(!GrEspece %in% c('RES','EPX','SAB'))
+  feu <- obtenu_prod %>% filter(!GrEspece %in% c('RES','EPX','SAB'))
   feu_unique <- feu %>%  dplyr::select(prod0) %>% unique()
   expect_equal(nrow(feu_unique), 2)
 

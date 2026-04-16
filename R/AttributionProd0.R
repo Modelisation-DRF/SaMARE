@@ -100,7 +100,7 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
 
               pred <- exp(logit)/(1+exp(logit))
 
-              prod0 <- ifelse(pred>=runif(n=1),"sciage","pate")
+              prod0 <- ifelse(pred>=runif(length(pred)),"sciage","pate") # il ne faut pas mettre runif(n=1) car ça va utiliser un seul nombre aléatoire pour comparer l'ensemble des predictions du vecteur
               Data_feu_sans_vig_mscr_lt23$logit <- logit
               Data_feu_sans_vig_mscr_lt23$pred <- pred
               Data_feu_sans_vig_mscr_lt23$prod0 <- prod0
@@ -147,7 +147,7 @@ AttribProd0<-function(Data,Para.ConvMSCRProd1024,Para.ConvMSCRProd24){
 
             pred<-exp(logit)/(1+exp(logit))
 
-            prod0<-ifelse(pred>=runif(n=1),"sciage","pate")
+            prod0<-ifelse(pred>=runif(n=length(pred)),"sciage","pate") # il ne faut pas mettre runif(n=1) car ça va utiliser un seul nombre aléatoire pour comparer l'ensemble des predictions du vecteur
             Data_feu_sans_vig_mscr_gt23$logit <- logit
             Data_feu_sans_vig_mscr_gt23$pred <- pred
             Data_feu_sans_vig_mscr_gt23$prod0 <- prod0

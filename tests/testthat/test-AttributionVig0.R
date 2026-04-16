@@ -5,11 +5,11 @@ test_that("La fonction AttribVigu0() fonctionne correctement sans vigueur", {
 
   Plac_test <- readRDS(test_path("fixtures/Vigu0_Prod0", "Fic_test_complet.rds"))
   param <- readRDS(test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRVig.rds"))
-  attendu <- readRDS(test_path("fixtures/Vigu0_Prod0", "resultat_attendu_vig.rds")) %>% dplyr::select(-vigu0)
+  attendu <- readRDS(test_path("fixtures/Vigu0_Prod0", "resultat_attendu_vig.rds")) #%>% dplyr::select(-vigu0)
 
-  obtenu <- AttribVigu0(Plac_test, param) %>% dplyr::select(-vigu0)
+  obtenu_vig <- AttribVigu0(Plac_test, param) #%>% dplyr::select(-vigu0)
 
-  expect_equal(obtenu, attendu)
+  expect_equal(obtenu_vig, attendu)
 
 })
 
@@ -51,3 +51,36 @@ test_that("La fonction AttribVigu0() fonctionne correctement sans vigueur sans m
 
 })
 
+# fic <- Test2500m2 %>% mutate(DHPcm=20, Vigueur=NA)
+# fic <- fic[1:1,]
+# data = NULL
+# for (mscr in c('M','S','C','R')) {
+#   for (esp in c('BOJ','ERR','ERS','HEG','BOP','CHR','SAB')) {
+#     fic$MSCR = mscr
+#     fic$Espece = esp
+#     data = bind_rows(data,fic)
+#   }
+# }
+# set.seed(NULL)
+# set.seed(1)
+# result <- SimulSaMARE(NbIter = 10000, Horizon = 2, Data = data)
+# result0 = result %>% filter(Annee==2026)
+# prop <- result0 %>%
+#   group_by(GrEspece, MSCR, Vigueur) %>%
+#   summarise(nb = n()) %>%
+#   group_by(GrEspece, MSCR) %>%
+#   mutate(ntot = sum(nb),
+#          prop = nb/ntot*100) %>%
+#   select(-ntot, -nb)
+#
+# prop2 <- prop %>% group_by(GrEspece, MSCR) %>% pivot_wider(names_from = Vigueur, values_from = prop)  %>%
+#   mutate(code = ifelse(MSCR=='M','1-M',
+#                        ifelse(MSCR=='S','2-S',
+#                               ifelse(MSCR=='C','3-C',
+#                                      '4-R')))) %>%
+#   arrange(GrEspece, code) %>%
+#   select(-code)
+# readr::write_delim(prop2,"ConversionMSCR30cm.csv", delim=';')
+
+# la classe 3 est pour les >23cm
+# la classe 4 est pour les <23cm

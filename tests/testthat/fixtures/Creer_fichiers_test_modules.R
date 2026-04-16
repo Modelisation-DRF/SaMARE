@@ -1317,9 +1317,8 @@ saveRDS(Para.ConvMSCRVig, test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRVig.rd
 saveRDS(Para.ConvMSCRProd1024, test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRProd1024.rds"))
 saveRDS(Para.ConvMSCRProd24, test_path("fixtures/Vigu0_Prod0", "Para.ConvMSCRProd24.rds"))
 
-# cxréer un fichier de toutes les combinaisons possibles des variables explicatives
-set.seed(NULL)
-set.seed(3)
+# créer un fichier de toutes les combinaisons possibles des variables explicatives
+
 list_ess <- c('BOJ','EPX','ERR', 'ERS', 'FEN', 'FIN', 'HEG', 'RES','SAB')
 list_mscr <- c('M','S','C','R')
 list_dhp <- c(10:20,25:35)
@@ -1328,12 +1327,15 @@ names(Plac_test) <- c('GrEspece','MSCR','DHPcm')
 Plac_test <- Plac_test %>% mutate(Vigueur=NA,
                                   Placette=1,
                                   NoArbre = dplyr::row_number())
-
-attendu <- AttribProd0(Plac_test,Para.ConvMSCRProd1024,Para.ConvMSCRProd24)
-
 saveRDS(Plac_test,test_path("fixtures/Vigu0_Prod0", "Fic_test_complet.rds"))
+
+set.seed(NULL)
+set.seed(3)
+attendu <- AttribProd0(Plac_test,Para.ConvMSCRProd1024,Para.ConvMSCRProd24)
 saveRDS(attendu,test_path("fixtures/Vigu0_Prod0", "resultat_attendu_prod.rds"))
 
+set.seed(NULL)
+set.seed(3)
 attendu <- AttribVigu0(Plac_test, Para.ConvMSCRVig)
 saveRDS(attendu,test_path("fixtures/Vigu0_Prod0", "resultat_attendu_vig.rds"))
 

@@ -66,7 +66,7 @@ AttribVigu0<-function(Data,Para.ConvMSCRVig){
       # Calcul
       logit <- as.vector(XConvMSCRVig %*% BetaMat)
       pred <- exp(logit)/(1+exp(logit))
-      vigu0 <- ifelse(pred>=runif(n=1),"ViG","NONVIG")
+      vigu0 <- ifelse(pred>=runif(length(pred)),"ViG","NONVIG") # 1=Vig, 0=NonVig, # il ne faut pas mettre runif(n=1) car ça va utiliser un seul nombre aléatoire pour comparer l'ensemble des predictions du vecteur
       Data_sans_vig_mscr$logit = logit
       Data_sans_vig_mscr$pred = pred
       Data_sans_vig_mscr$vigu0 = vigu0
