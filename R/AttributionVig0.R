@@ -14,10 +14,15 @@ AttribVigu0<-function(Data,Para.ConvMSCRVig){
 
   select=dplyr::select
 
+  # initialiser les variables
+  Data$logit <- NA
+  Data$pred <- NA
+  Data$GrEspeceMSCR <- ''
+
   Data_vig <- Data %>% filter(!is.na(Vigueur)) # arbres avec vigueur
   Data_sans_vig <- Data %>% filter(is.na(Vigueur)) # arbres sans vigueur
 
-  #if (is.na(Data$Vigueur)==FALSE){ # s'il n'y a pas de données manquantes dans la colonne Vigueur, on peut créer directement la colonne vigu0
+  #if (is.na(Data$Vigueur)==FALSE){
   if (nrow(Data_vig)>0) { # s'il n'y a pas de données manquantes dans la colonne Vigueur, on peut créer directement la colonne vigu0
 
     #vigu0<-ifelse(Data$Vigueur %in% c(1,2,5),"ViG","NONVIG")
@@ -53,7 +58,7 @@ AttribVigu0<-function(Data,Para.ConvMSCRVig){
       XConvMSCRVig[,16]<-Data_sans_vig_mscr$DHPcm
 
       # selectionner les parametres de conversion en vigeur
-      Para.ConvMSCRVig<-Para.ConvMSCRVig
+      #Para.ConvMSCRVig<-Para.ConvMSCRVig
 
       # Construction matrice beta
       BetaMat <- matrix(Para.ConvMSCRVig$ParameterEstimate,ncol=1)
@@ -61,9 +66,11 @@ AttribVigu0<-function(Data,Para.ConvMSCRVig){
       # Calcul
       logit <- as.vector(XConvMSCRVig %*% BetaMat)
       pred <- exp(logit)/(1+exp(logit))
-      vigu0 <- ifelse(pred>=runif(n=1),"ViG","NONVIG")
+      vigu0 <- ifelse(pred>=runif(length(pred)),"ViG","NONVIG") # 1=Vig, 0=NonVig, # il ne faut pas mettre runif(n=1) car ça va utiliser un seul nombre aléatoire pour comparer l'ensemble des predictions du vecteur
+      Data_sans_vig_mscr$logit = logit
+      Data_sans_vig_mscr$pred = pred
       Data_sans_vig_mscr$vigu0 = vigu0
-      Data_sans_vig_mscr <- Data_sans_vig_mscr %>% select(-GrEspeceMSCR)
+      #Data_sans_vig_mscr <- Data_sans_vig_mscr %>% select(-GrEspeceMSCR)
 
 
     }
@@ -77,7 +84,7 @@ AttribVigu0<-function(Data,Para.ConvMSCRVig){
   }
 
   # remettre les fichiers ensemble
-  result <- bind_rows(Data_vig, Data_sans_vig)
+  result <- bind_rows(Data_vig, Data_sans_vig) %>% select(-GrEspeceMSCR)
   setorder(result, Placette, NoArbre)
 
   return(result)

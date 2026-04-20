@@ -295,8 +295,9 @@ SaMARE<- function(Random, RandomGaules, Data, Gaules, Iteration, Horizon, Recrue
       ###### 6.1.1 Création des vigueur et de produit  ######
 
       Plac <- AttribVigu0(Plac, Para.ConvMSCRVig)
+      Plac <- Plac %>% select(-logit, -pred)
       Plac <- AttribProd0(Plac, Para.ConvMSCRProd1024, Para.ConvMSCRProd24)
-      Plac <- Plac %>% select(-Vigueur)
+      Plac <- Plac %>% select(-Vigueur, -logit, -pred)
 
 
       ###### 6.1.2 Dataframe avec les conditions initiales de la placette ######
