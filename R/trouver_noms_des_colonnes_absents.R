@@ -26,6 +26,25 @@ trouver_noms_absents <- function(Data) {
 }
 
 
+#' Fonction qui vérifie l'absence des champs optionels
+#' Si ils sont absents, ils sont détectés
+#'
+#'@param data Un dataframe contenant la liste d'arbres à simuler.
+#'
+#'@return Retourne la liste des champs absents
+#'
+#'@export
+#'
+#'
+trouver_noms_optionels <- function(data) {
+
+  mes_variables<- c("Annee_Inventaire", "Ptot", "Tmoy", "GrwDays", "Pente")
+
+  noms_absents <- setdiff(mes_variables , names(data))
+
+  return(noms_absents)
+}
+
 #' Fonction qui vérifie si les variables climatiques sont présentes. Si elle sont absentes, elles
 #' sont estimée à l'aide du package extract_map.
 #'
