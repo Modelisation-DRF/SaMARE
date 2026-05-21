@@ -14,8 +14,8 @@ retourne vrai ou faux s'il détecte des erreurs.
 # Exemple avec un dataframe valide
 valide_Pente(data) # Devrait retourner TRUE
 
-# Exemple avec un dataframe invalide (colonne 'Pente' manquante)
-valide_Pente(data) # Devrait retourner FALSE
+# Champ optionnel (colonne 'Pente' manquante)
+valide_Pente(data) # Devrait retourner TRUE
 
 # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
 valide_Pente(data) # Devrait retourner FALSE

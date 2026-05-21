@@ -35,15 +35,16 @@ valide_data <- function(data) {
     valide_Longitude = "Longitude non valide",
     valide_Altitude = "Altitude non valide",
     verifier_arbre_uniques_par_placette = "plusieurs noarbre identiques pour la m\uEAme placette",
-    # valide_Ptot = "Ptot non valide",
-    # valide_Tmoy = "Tmoy non valide",
+    valide_Ptot = "Ptot non valide",
+    valide_Tmoy = "Tmoy non valide",
     valide_Type_Eco = "valeur Type_Eco non valide",
     valide_MSCR = "MSCR non valide",
     valide_Reg_Eco = "Valeur non permise pour Reg_Eco",
     valide_ABCD = "ABCD non valide",
     valide_Pente = "Pente non valide",
-    valide_ntrt = "Entrer le nombre de traitements"
-    # valide_GrwDays = "GrwDays non valide"
+    valide_ntrt = "Entrer le nombre de traitements",
+    valide_GrwDays = "GrwDays non valide",
+    valide_Annee_Inventaire = "Année d'inventaire non valide"
   )
 
   # Initialiser la liste des erreurs
@@ -661,16 +662,19 @@ valide_Altitude <- function(data){
 #'
 #' @export
 valide_Ptot <- function(data){
-  if(!all(c("Placette", "Ptot") %in% names(data))|| any(is.na(data$Ptot))){
-    return (FALSE)
-  }
+  if(all(c("Placette", "Ptot") %in% names(data))){
 
+    if(all(is.na(data$Ptot) | data$Ptot == "")){
+      return(FALSE)
+    }
 
   resultats <- data %>%
     group_by(Placette) %>%
     reframe(
       valeur_unique = n_distinct(Ptot) == 1 && all(Ptot < 2000)
     )
+  }
+  else return(TRUE)
   return(all(resultats$valeur_unique))
 
 }
@@ -696,19 +700,20 @@ valide_Ptot <- function(data){
 #'
 #' @export
 valide_Tmoy <- function(data){
-  if(!all(c("Placette", "Tmoy") %in% names(data))|| any(is.na(data$Tmoy))){
-    return (FALSE)
+  if(!all(c("Placette", "Tmoy") %in% names(data))){
+
+  if(all(is.na(data$Tmoy) | data$Tmoy == "")){
+    return(FALSE)
   }
 
-  if(any(is.na(data$Tmoy)) ){
-    return (FALSE)
-  }
   resultats <- data %>%
     group_by(Placette) %>%
     reframe(
       valeur_unique = n_distinct(Tmoy) == 1 && all(Tmoy > 0 & Tmoy < 10 )
 
     )
+  }
+  else return(TRUE)
   return(all(resultats$valeur_unique))
 
 }
@@ -921,8 +926,8 @@ valide_ABCD <- function(data) {
 #'# Exemple avec un dataframe valide
 #' valide_Pente(data) # Devrait retourner TRUE
 #'
-#' # Exemple avec un dataframe invalide (colonne 'Pente' manquante)
-#' valide_Pente(data) # Devrait retourner FALSE
+#' # Champ optionnel (colonne 'Pente' manquante)
+#' valide_Pente(data) # Devrait retourner TRUE
 #'
 #' # Exemple avec un dataframe invalide (valeurs en dehors de l'intervalle)
 #' valide_Pente(data) # Devrait retourner FALSE
@@ -934,20 +939,55 @@ valide_ABCD <- function(data) {
 #' valide_Pente(data) # Devrait retourner FALSE
 #' @export
 valide_Pente <- function(data){
-  if (!all(c("Placette", "Pente") %in% names(data))) {
-    return(FALSE)
+  if (all(c("Placette", "Pente") %in% names(data))) {
+
+
+    if(all(is.na(data$Pente) | data$Pente == "")){
+      return(FALSE)
+    }
+
+    resultats <- data %>%
+      group_by(Placette) %>%
+      reframe(
+
+        valeur_unique = n_distinct(Pente) == 1 && (all((Pente >= 0 & Pente <= 100)| is.na(Pente)==TRUE))
+      )
   }
-  if(length(data$Pente) == 0){
-    return(FALSE)
+  else return(TRUE)
+  return(all(resultats$valeur_unique))
+}
+
+#' Fonction pour vérifier que les valeurs saisies dans la colonne 'Annee_Inventaire' sont correctes.
+#' @param data fichier des arbres
+#' @return retourne vrai ou faux s'il détecte des erreurs.
+#'# Exemple avec un dataframe valide
+#' valide_Annee_Inventaire(data) # Devrait retourner TRUE
+#'
+#' # Champ optionnel (colonne 'Annee_Inventaire' manquante)
+#' valide_Annee_Inventaire(data) # Devrait retourner TRUE
+#'
+#' # Exemple avec un dataframe invalide (valeurs NA)
+#' valide_Annee_Inventaire(data) # Devrait retourner FALSE
+#'
+#' @export
+valide_Annee_Inventaire <- function(data){
+  if (all(c("Placette", "Annee_Inventaire") %in% names(data))) {
+
+    if(all(is.na(data$Annee_Inventaire) | data$Annee_Inventaire == "")){
+      return(FALSE)
+    }
+
+    #Vérification Année par placette
+    resultats <- data %>%
+      group_by(Placette) %>%
+      reframe(
+        valeur_unique = n_distinct(Annee_Inventaire, na.rm = FALSE) == 1
+        & !all(is.na(data$Annee_Inventaire))
+
+      )
+
   }
-
-  resultats <- data %>%
-    group_by(Placette) %>%
-    reframe(
-
-      valeur_unique = n_distinct(Pente) == 1 && (all((Pente >= 0 & Pente <= 100)| is.na(Pente)==TRUE))
-    )
-
+  else return(TRUE)
   return(all(resultats$valeur_unique))
 }
 
@@ -971,10 +1011,10 @@ valide_Pente <- function(data){
 #' valide_GrwDays(data) # Devrait retourner FALSE
 #' @export
 valide_GrwDays <- function(data){
-  if(!all(c("GrwDays","Placette") %in% names(data))|| any(is.na(data$GrwDays))){
-    return (FALSE)
-  }
-  if(any(is.na(data$GrwDays)) ){
+  if(!all(c("GrwDays","Placette") %in% names(data))){
+
+
+  if(all(is.na(data$GrwDays) | data$GrwDays == "")){
     return (FALSE)
   }
   resultats <- data %>%
@@ -983,6 +1023,8 @@ valide_GrwDays <- function(data){
       valeur_unique = n_distinct(GrwDays) == 1 && all(GrwDays >=1 & GrwDays <365 )
 
     )
+  }
+    else return(TRUE)
   return(all(resultats$valeur_unique))
 
 }
