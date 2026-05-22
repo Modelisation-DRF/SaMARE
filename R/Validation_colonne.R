@@ -700,7 +700,7 @@ valide_Ptot <- function(data){
 #'
 #' @export
 valide_Tmoy <- function(data){
-  if(!all(c("Placette", "Tmoy") %in% names(data))){
+  if(all(c("Placette", "Tmoy") %in% names(data))){
 
   if(all(is.na(data$Tmoy) | data$Tmoy == "")){
     return(FALSE)
@@ -1011,7 +1011,7 @@ valide_Annee_Inventaire <- function(data){
 #' valide_GrwDays(data) # Devrait retourner FALSE
 #' @export
 valide_GrwDays <- function(data){
-  if(!all(c("GrwDays","Placette") %in% names(data))){
+  if(all(c("GrwDays","Placette") %in% names(data))){
 
 
   if(all(is.na(data$GrwDays) | data$GrwDays == "")){
